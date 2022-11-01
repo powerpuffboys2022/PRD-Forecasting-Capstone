@@ -4,8 +4,12 @@
 python3 -m venv env
 source env/bin/activate
 
-# Install Django and Django REST framework into the virtual environment
+# Install Django
 pip install -r requirements.txt
 
 # Set up a new project with a single application
-django-admin startapp prd
+django-admin startapp prdrest
+cd prdrest
+
+# Start PRD Django Server
+python manage.py runserver
