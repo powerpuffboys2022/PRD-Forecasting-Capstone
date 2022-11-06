@@ -1,3 +1,5 @@
+"use client";
+
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -86,7 +88,7 @@ const SideBar = () => {
                 className={
                   "duration-200 ease-out hover:bg-[#E0E0E0] rounded-lg cursor-pointer flex border-l-4 space-x-3 px-1 py-2 justify-start items-center " +
                   `${
-                    route.path === router.pathname
+                    router && route.path === router.pathname
                       ? "bg-[#C5DCFA] border-primary"
                       : "border-transparent"
                   } ${route.styling}`
