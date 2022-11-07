@@ -1,11 +1,10 @@
 import Head from "next/head";
 import HomeLayout from "../layouts/HomeLayout";
 
-export default function Home() {
-  return (
-    <div>
-      <Head>
-        <title>Dashboard</title>
+const sales_forecasting = () => {
+  return <div>
+    <Head>
+        <title>Sales Forecast</title>
         <meta
           name="description"
           content="A admin web app for Philip Rice Dealer that focuses on Sales Forecasting."
@@ -13,14 +12,13 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <h1 className="">
-          <span className="font-mono">Dashboard</span>
-        </h1>
+        
       </main>
-    </div>
-  );
-}
+  </div>;
+};
 
-Home.getLayout = function getLayout(page) {
+sales_forecasting.getLayout = function getLayout(page) {
   return <HomeLayout>{page}</HomeLayout>;
 };
+
+export default sales_forecasting;
