@@ -7,6 +7,7 @@ import { MdAttachMoney } from "react-icons/md";
 import { GoPackage } from "react-icons/go";
 import { ImStatsDots } from "react-icons/im";
 import { AiOutlineLoading } from "react-icons/ai";
+import { FaPen } from 'react-icons/fa';
 
 import LogoutConfirm from "./modals/Confirm";
 
@@ -141,7 +142,7 @@ const SideBar = () => {
             ))}
           </div>
 
-          <div className="flex mt-8 duration-200 items-center px-2 h-1/6 m-2 rounded-md">
+          <div className="flex mt-8 duration-200 items-center md:px-0 h-1/6 m-2 rounded-md">
             {loading && <AiOutlineLoading className="text-2xl animate-spin" />}
             { currentUser &&
               <>
@@ -149,6 +150,10 @@ const SideBar = () => {
 
                 <div className="px-2 w-full relative">
                   <p className="text-sm">{ currentUser.userName }</p>
+                </div>
+                <div className="tooltip " data-tip="Edit">
+                <FaPen className="mr-2 cursor-pointer" onClick={() => router.push("/profile")} />
+                  
                 </div>
                 <div className="tooltip w-1/6" data-tip="Logout">
                   <button
