@@ -3,6 +3,9 @@ const bcrypt = require('bcrypt');
 const cookie = require("cookie");
 const User = require("../../../models/User")
 const jose = require("jose");
+const generator = require('generate-password');
+import Mailer from "../../../services/Mailer"
+import { dateToBeutify } from "../../../helpers"
 
 dbConnect();
 
@@ -30,10 +33,12 @@ const setAuthCookie = async (res, payload, expires) => {
 
 const handler = async (req, res) => {
   try {
-    let { authMode, loginData, registerData } = req.body;
+    let { authMode, loginData, registerData, recoverData } = req.body;
     // authMode 0 - SignIn
     // authMode 1 - Register
     // authMode -1 - Sign out
+    // authMode -2 - sent & generate temporary password
+
     if(authMode === undefined) return res.status(400).json({ message : "missing authentication mode(authMode)"})
     
     if(authMode === 0 && loginData){
@@ -67,8 +72,33 @@ const handler = async (req, res) => {
         await setAuthCookie(res, {}, new Date(0));
         return res.status(200).json({ message : "signed out"})
     }
+
+    if(authMode === -2 && recoverData){
+        
+        const userData = await User.findOne({ email : recoverData.email });
+        if(!userData) return res.status(404).json({ message : `User (${recoverData.email}) not found`}); 
+
+        var genPass = generator.generate({
+            length: 10,
+            numbers: true
+        });
+
+        const genPassHashed = await bcrypt.hash( genPass, 10 );
+
+        const updateUser = await User.updateOne({ _id : userData._id }, { $set : { password : genPassHashed } });
+
+        await Mailer( recoverData.email , {
+                subject : "Temporary Password",
+                template_name : "forgotPassword.html",
+                userName : userData.userName,
+                tempPass : genPass,
+                time_string : dateToBeutify(new Date())
+            } );
+
+        return res.status(200).json({ message : "Password Changed"})
+    }
     
-    return res.status(200).json({ message : "Server did nothing lol."})
+    return res.status(400).json({ message : "Server did nothing lol."})
   } catch (e) {
     console.log(e)
     res.status(500).json({

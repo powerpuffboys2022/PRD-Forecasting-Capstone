@@ -4,7 +4,8 @@ const nextConfig = {
   env : {
     MONGO_URI : process.env.MONGO_URI,
     SECRET : process.env.SECRET,
-    AUTHORIZATION_EXPIRATION : process.env.AUTHORIZATION_EXPIRATION
+    AUTHORIZATION_EXPIRATION : process.env.AUTHORIZATION_EXPIRATION,
+    SENDGRID_KEY : process.env.SENDGRID_KEY
   }
 }
 

@@ -15,7 +15,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const login = (e) => {
-    setLoading(true)
+    setLoading(true);
     const response = fetch("/api/auth", {
       method: "POST",
       mode: "cors",
@@ -41,15 +41,16 @@ const Login = () => {
       })
       .catch((err) => {
         setErr(err.message);
-      }).finally((d) => {
-        setLoading(false)
+      })
+      .finally((d) => {
+        setLoading(false);
       });
     e.preventDefault();
   };
 
   return (
     <div className="bg-rice-pattern h-screen w-full flex justify-center items-center">
-        <Head>
+      <Head>
         <title>Login</title>
         <meta
           name="description"
@@ -82,11 +83,11 @@ const Login = () => {
                 setEmail(val);
               }}
               value={email}
-              className={`input input-sm bg-base-200/50 w-full max-w-xs focus:ring-4 ${
+              className={`input input-sm bg-base-200/50 w-full hover:bg-base-100 max-w-xs focus:ring-4 hover:ring-4 ${
                 !err.includes("not found") &&
                 Validator(email, ["isEmpty", "isEmail"])
-                  ? "focus:ring-fuchsia-100"
-                  : "ring-2 ring-rose-300"
+                  ? "ring-fuchsia-100"
+                  : "ring-rose-300"
               }`}
             />
           </div>
@@ -97,11 +98,10 @@ const Login = () => {
             <div className="label absolute top-0 right-0">
               <div
                 className="tooltip tooltip-left sm:tooltip-right font-inter"
-                data-tip="show / hide password"
+                data-tip={`${hidePass ? "show" : "hide"} password`}
               >
                 <label className="swap swap-rotate">
                   <input
-                  tabIndex={999}
                     type="checkbox"
                     checked={hidePass}
                     onChange={(e) => {
@@ -118,35 +118,53 @@ const Login = () => {
               type={hidePass ? "password" : "text"}
               onChange={(e) => {
                 var val = e.target.value;
-                setErr("")
+                setErr("");
                 setPassword(val);
               }}
               value={password}
-              className={`input input-sm bg-base-200/50 w-full max-w-xs focus:ring-4 ${
+              className={`input input-sm bg-base-200/50 w-full hover:bg-base-100 max-w-xs focus:ring-4 hover:ring-4 ${
                 err.includes("Invalid") ||
-                Validator(password, ["isEmpty"])
-                  ? "focus:ring-fuchsia-100"
-                  : "ring-2 ring-rose-300"
+                Validator(password, ["isEmpty", "min"], 8)
+                  ? "ring-fuchsia-100"
+                  : "ring-rose-300"
               }`}
             />
+            <label className="label">
+                <span></span>
+                <a
+                tabIndex={4}
+                className="text-primary cursor-pointer text-sm"
+                onClick={() => router.push("/forgot")}
+              >
+                forgot password
+              </a>
+            </label>
+              
           </div>
 
           <button
-          tabIndex={3}
+            tabIndex={3}
             disabled={
               !Validator(email, ["isEmail"]) || !Validator(password, ["min"], 8)
             }
             onClick={(e) => {
               login(e);
             }}
-            className={"btn mt-8 btn-sm btn-primary btn-wide "+`${loading ? "loading":""}`}
+            className={
+              "btn mt-8 btn-sm btn-primary btn-wide " +
+              `${loading ? "loading" : ""}`
+            }
           >
             Login{" "}
           </button>
         </form>
         <p className="mt-5 text-sm">
           Don't have an account?{" "}
-          <a tabIndex={4} className="text-primary cursor-pointer" onClick={()=>router.push('/register')}>
+          <a
+            tabIndex={4}
+            className="text-primary cursor-pointer"
+            onClick={() => router.push("/register")}
+          >
             Register Now
           </a>
         </p>

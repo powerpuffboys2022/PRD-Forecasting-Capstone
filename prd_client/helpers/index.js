@@ -16,5 +16,21 @@ export const Validator = (val, validations, minLength, maxLength) => {
 
     return res;
 }
+
 export const isEmpty = (val) => !val || val.length === 0
+
 export const isNotNumber = (val) => isNaN(val) || isNaN(parseFloat(val))
+
+export const dateToBeutify = (date) => {
+    let thisDate = new Date(date);
+    let wordDate = `${thisDate.toLocaleString("en-us", {
+      month: "short",
+    })} ${thisDate.getDate()}, ${thisDate.getFullYear()} at ${thisDate.toLocaleTimeString(
+      "en-US",
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    )}`;
+    return wordDate;
+  };
