@@ -17,6 +17,7 @@
     "es6-template-strings": "^2.0.1",
     "eslint": "8.26.0",
     "eslint-config-next": "13.0.1",
+    "firebase": "^9.13.0",
     "generate-password": "^1.7.0",
     "jose": "^4.10.4",
     "mongoose": "^6.7.1",
