@@ -20,6 +20,9 @@ const handler = async (req, res) => {
 
             const userData = await User.findOne({ _id : payload._id });
 
+            if(!userData) return res.status(404).json({ message : `user with _id(${_id}) can't be found`})
+
+
             return res.status(200).json(userData)
         }catch(e){ 
             return res.status(401).json({ message : "Invalid authorization_token"})

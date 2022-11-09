@@ -17,7 +17,6 @@ const userProfile = () => {
   const [newImg, setNewImg] = useState();
 
   const [loading, setLoading] = useState();
-  const [uploading, setUploading] = useState();
   const [hidePass, setHidePass] = useState(true);
   const [err, setErr] = useState("");
 
@@ -26,29 +25,85 @@ const userProfile = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleUpload = (image_file) => {
-    const storageRef = ref(storage, `/profiles/${uuidv4()}_${image_file.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, image_file);
+  const handleUpload = () => {
+    const storageRef = ref(storage, `/profiles/${uuidv4()}_${newImg.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, newImg);
+
     uploadTask.on(
       "state_changed",
-      (snapshot) => {
-        // const percent = Math.round(
-        //   (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        // );
-        // setPercent(percent);
-      },
+      (snapshot) => {},
       (err) => console.log(err),
       () => {
         // download url
         getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-          setFireStoreURL(url);
+          saveWithImg(url);
         });
       }
     );
   };
 
+  const saveNoImg = () => {
+    setLoading(true);
+    let newUserData = { userName };
+
+    if (password.length > 0) newUserData.password = password;
+
+    const response = fetch("/api/prd/updateUser", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        updateMode: 0,
+        _id: userData._id,
+        userData: newUserData,
+      }),
+    })
+      .then((data) => {
+        setLoading(false);
+        loadUser();
+      })
+      .catch((err) => {
+        setErr(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const saveWithImg = async (imgUrl) => {
+    setLoading(true);
+    let newUserData = { userName, imgUrl };
+    if (password.length > 0) newUserData.password = password;
+    const response = fetch("/api/prd/updateUser", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        updateMode: 0,
+        _id: userData._id,
+        userData: newUserData,
+      }),
+    })
+      .then((data) => {
+        setLoading(false);
+        loadUser();
+      })
+      .catch((err) => {
+        setErr(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   const loadUser = () => {
-    setLoading(true)
+    setLoading(true);
     const response = fetch("/api/prd/userInfo", {
       method: "POST",
       mode: "cors",
@@ -58,16 +113,23 @@ const userProfile = () => {
       },
       body: JSON.stringify({}),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        setUserData(data);
-        setUserName(data.userName);
-      }).finally((e)=>{
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((data) => {
+            setUserData(data);
+            setUserName(data.userName);
+            setImgUrl(data.imgUrl);
+          });
+        }
+      })
+      .finally((e) => {
         setLoading(false);
       });
   };
 
-  useEffect(() => { loadUser(); }, []);
+  useEffect(() => {
+    loadUser();
+  }, []);
 
   return (
     <div className="bg-rice-pattern w-full flex justify-center">
@@ -83,21 +145,52 @@ const userProfile = () => {
         <div className="flex items-center space-x-3">
           <div className="avatar">
             <div className="w-16 rounded-full">
-              <img src="https://placeimg.com/192/192/people" />
+              <img src={imgUrl} alt="User Profile Pic" />
             </div>
           </div>
           <div>
             <p className="text-2xl font-medium">Jervx / Profile</p>
-            <p className="text-xs">{!userData ? "?" : userData.email} | Joined {!userData ? "?" : dateToBeutify(new Date(userData.dateJoined))}</p>
+            <p className="text-xs">
+              {!userData ? "?" : userData.email} | Joined{" "}
+              {!userData ? "?" : dateToBeutify(new Date(userData.dateJoined))}
+            </p>
           </div>
         </div>
-        {
-            loading && <progress className="progress w-full mt-2"></progress>
-        }
+        {loading && <progress className="progress w-full mt-2"></progress>}
+        {!loading && !userData && (
+          <p className="text-xs mt-4 text-error">
+            Failed to load your account info...
+          </p>
+        )}
         <form>
           <div className="mt-8 form-control w-full">
             <label className="label">
-              <span className="label-text font-inter font-medium ">Username</span>
+              <span className="label-text font-inter font-medium ">
+                Upload New Photo
+              </span>
+            </label>
+            <input
+              type="file"
+              disabled={!userData || loading}
+              className={
+                "file-input file-input-sm w-full focus:ring-4 hover:ring-4 " +
+                `${userData ? "ring-fuchsia-100" : "ring-rose-300"}`
+              }
+              accept="image/png, image/gif, image/jpeg"
+              onChange={(e) => {
+                setNewImg(e.target.files[0]);
+                setImgUrl(URL.createObjectURL(e.target.files[0]));
+              }}
+            />
+            <label className="label">
+              <span className="text-sm opacity-70"></span>
+            </label>
+          </div>
+          <div className="mt-3 form-control w-full">
+            <label className="label">
+              <span className="label-text font-inter font-medium ">
+                Username
+              </span>
             </label>
             <input
               readOnly={loading}
@@ -109,6 +202,7 @@ const userProfile = () => {
                 var val = e.target.value;
                 setUserName(val);
               }}
+              disabled={!userData || loading}
               value={userName}
               className={`input px-4 py-5 input-sm bg-base-200/50 w-full hover:bg-base-100 focus:ring-4 hover:ring-4 ${
                 !err.includes("not found") && Validator(userName, ["isEmpty"])
@@ -117,7 +211,9 @@ const userProfile = () => {
               }`}
             />
             <label className="label">
-              <span className="text-sm opacity-70">Who you are, & how do you want to be identified in this app</span>
+              <span className="text-sm opacity-70">
+                Who you are, & how do you want to be identified in this app
+              </span>
             </label>
           </div>
           <div className="mt-3 form-control w-full relative">
@@ -145,6 +241,7 @@ const userProfile = () => {
             <input
               readOnly={loading}
               tabIndex={2}
+              disabled={!userData || loading}
               type={hidePass ? "password" : "text"}
               onChange={(e) => {
                 var val = e.target.value;
@@ -160,12 +257,35 @@ const userProfile = () => {
               }`}
             />
             <label className="label">
-              <span className="text-sm opacity-70">Secure your account using passphrase (min 8 chars)</span>
+              <span className="text-sm opacity-70">
+                Secure your account using passphrase (min 8 chars)
+              </span>
 
               <span></span>
             </label>
           </div>
-          <button disabled={!Validator(userName, ["min"], 4)} className="font-inter btn btn-sm btn-primary mt-4">Save Changes</button>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              router.back();
+            }}
+            className="font-inter btn btn-sm mt-4 mr-2"
+          >
+            Back
+          </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              if (!newImg) saveNoImg();
+              else handleUpload();
+            }}
+            disabled={!Validator(userName, ["min"], 4)}
+            className={`font-inter btn btn-sm btn-primary mt-4 ${
+              loading ? "btn-loading" : ""
+            }`}
+          >
+            Save Changes
+          </button>
         </form>
       </div>{" "}
     </div>
