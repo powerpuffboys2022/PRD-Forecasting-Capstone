@@ -7,6 +7,7 @@ import { MdAttachMoney } from "react-icons/md";
 import { GoPackage } from "react-icons/go";
 import { ImStatsDots } from "react-icons/im";
 import { AiOutlineLoading } from "react-icons/ai";
+import { FaPen } from "react-icons/fa";
 
 import LogoutConfirm from "./modals/Confirm";
 
@@ -141,16 +142,26 @@ const SideBar = () => {
             ))}
           </div>
 
-          <div className="flex mt-8 duration-200 items-center px-2 h-1/6 m-2 rounded-md">
+          <div className="flex mt-8 duration-200 items-center md:px-0 h-1/6 m-2 rounded-md">
             {loading && <AiOutlineLoading className="text-2xl animate-spin" />}
-            { currentUser &&
+            {currentUser && (
               <>
-                <HiUser className="text-4xl" />
-
-                <div className="px-2 w-full relative">
-                  <p className="text-sm">{ currentUser.userName }</p>
+                <div className="avatar">
+                  <div className="w-8 rounded-full">
+                    <img alt="User Profile Pic" src={currentUser.imgUrl} />
+                  </div>
                 </div>
-                <div className="tooltip w-1/6" data-tip="Logout">
+
+                <div className="px-2  w-1/2">
+                  <p className="text-sm truncate">{currentUser.userName}</p>
+                </div>
+                <div className="tooltip" data-tip="Edit">
+                  <FaPen
+                    className="cursor-pointer"
+                    onClick={() => router.push("/profile")}
+                  />
+                </div>
+                <div className="tooltip w-1/3" data-tip="Logout">
                   <button
                     onClick={() => setModalState(1)}
                     className="btn btn-sm btn-square btn-outline"
@@ -159,7 +170,7 @@ const SideBar = () => {
                   </button>
                 </div>
               </>
-            }
+            )}
           </div>
         </div>
       </div>
