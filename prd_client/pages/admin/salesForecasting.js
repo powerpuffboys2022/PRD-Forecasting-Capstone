@@ -1,5 +1,5 @@
 import Head from "next/head";
-import HomeLayout from "../layouts/HomeLayout";
+import HomeLayout from "../../layouts/HomeLayout";
 
 const sales_forecasting = () => {
   return <div>

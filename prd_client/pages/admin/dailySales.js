@@ -1,11 +1,11 @@
 import Head from "next/head";
-import HomeLayout from "../layouts/HomeLayout";
+import HomeLayout from "../../layouts/HomeLayout";
 
-const orders = () => {
+const daily_sales = () => {
   return (
     <div>
       <Head>
-        <title>Orders</title>
+        <title>Daily Sales</title>
         <meta
           name="description"
           content="A admin web app for Philip Rice Dealer that focuses on Sales Forecasting."
@@ -17,8 +17,8 @@ const orders = () => {
   );
 };
 
-orders.getLayout = function getLayout(page) {
+daily_sales.getLayout = function getLayout(page) {
   return <HomeLayout>{page}</HomeLayout>;
 };
 
-export default orders;
+export default daily_sales;

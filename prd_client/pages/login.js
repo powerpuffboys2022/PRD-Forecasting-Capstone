@@ -37,7 +37,7 @@ const Login = () => {
         return res;
       })
       .then((data) => {
-        router.push("/");
+        data.json().then((data) => router.push(data.toUrl))
       })
       .catch((err) => {
         setErr(err.message);
@@ -58,7 +58,7 @@ const Login = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="flex flex-col justify-center">
+      <div className="flex flex-col justify-center card glass p-8 shadow-md">
         <img
           className="w-4/12 m-auto"
           src="https://cdn.discordapp.com/attachments/955281529481883729/1036886425045577758/prd.png"
@@ -97,7 +97,7 @@ const Login = () => {
             </label>
             <div className="label absolute top-0 right-0">
               <div
-                className="tooltip tooltip-left sm:tooltip-right font-inter"
+                className="tooltip tooltip-left font-inter"
                 data-tip={`${hidePass ? "show" : "hide"} password`}
               >
                 <label className="swap swap-rotate">

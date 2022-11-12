@@ -49,7 +49,8 @@ const handler = async (req, res) => {
         if(!await bcrypt.compare(loginData.password, userData.password)) return res.status(403).json({ message : "Invalid Password"})
 
         await setAuthCookie(res, userData.toObject(), Number.parseInt(process.env.AUTHORIZATION_EXPIRATION));
-        return res.status(200).json({ message : "authorized"})
+
+        return res.status(200).json({ message : "authorized", toUrl : userData.userType === 1 ? "/admin" : "/shop"})
     }
 
     if(authMode === 1 && registerData){

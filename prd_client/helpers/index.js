@@ -1,6 +1,6 @@
 var validator = require("email-validator");
 
-export const Validator = (val, validations, minLength, maxLength) => {
+export const Validator = (val, validations, minLength, maxLength, expected) => {
     let res = true;
 
     if(!minLength) minLength = 0;
@@ -12,6 +12,7 @@ export const Validator = (val, validations, minLength, maxLength) => {
         if(validations[x] === 'isNotNumber') if(isNotNumber(val)) return false;
         if(validations[x] === 'min') if(val.length < minLength) return false
         if(validations[x] === 'max') if(val.length > maxLength) return false
+        if(validations[x] === 'equals') if(!equals(val, expected)) return 
     }
 
     return res;
@@ -20,6 +21,8 @@ export const Validator = (val, validations, minLength, maxLength) => {
 export const isEmpty = (val) => !val || val.length === 0
 
 export const isNotNumber = (val) => isNaN(val) || isNaN(parseFloat(val))
+
+export const equals = (val, compare) => val === compare
 
 export const dateToBeutify = (date) => {
     let thisDate = new Date(date);

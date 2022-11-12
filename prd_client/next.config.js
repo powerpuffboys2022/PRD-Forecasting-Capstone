@@ -12,7 +12,8 @@ const nextConfig = {
     firebaseConfig_storageBucket : process.env.firebaseConfig_storageBucket,
     firebaseConfig_messagingSenderId : process.env.firebaseConfig_messagingSenderId,
     firebaseConfig_appId : process.env.firebaseConfig_appId,
-    firebaseConfig_measurementId : process.env.firebaseConfig_measurementId
+    firebaseConfig_measurementId : process.env.firebaseConfig_measurementId,
+    REGISTER_ADMIN_SECRET : process.env.REGISTER_ADMIN_SECRET
   }
 }
 

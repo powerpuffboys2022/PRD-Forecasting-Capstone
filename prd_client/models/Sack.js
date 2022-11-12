@@ -7,7 +7,8 @@ const SackSchema = new Schema({
   quantity : { type : Number, required : true },
   date : { type : Date, default : Date.now },
   time : { type : Date, default : Date.now },
-  totalPrice : { type : Number, required : true }
+  totalPrice : { type : Number, required : true },
+  status : { type : Number, default : 1 } // 1 - pending, 2 - processing, 3 - shipping , 4 - delivered
 });
 
 const Sack = models.Sack || model('Sack', SackSchema);

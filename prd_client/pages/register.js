@@ -8,12 +8,16 @@ import Head from "next/head";
 const Register = () => {
   const router = useRouter();
 
+  const REGISTER_ADMIN_SECRET = process.env.REGISTER_ADMIN_SECRET
+
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [hidePass, setHidePass] = useState(true);
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
+  const [userType, setUserType] = useState(0);
+  const [secret, setSecret] = useState("");
 
   const register = async () => {
     setLoading(true);
@@ -31,6 +35,7 @@ const Register = () => {
           email,
           userName,
           password,
+          userType
         },
       }),
     })
@@ -39,13 +44,14 @@ const Register = () => {
         return res;
       })
       .then((data) => {
-        router.push("/");
+        router.push(userType === 1 ? "/admin" : "/shop");
       })
       .catch((err) => {
         setErr(err.message);
-      }).finally(()=>{
-        setLoading(false);
       })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -58,7 +64,7 @@ const Register = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="flex flex-col justify-center">
+      <div className="flex flex-col justify-center card glass p-8 shadow-md">
         <img
           className="w-4/12 m-auto"
           src="https://cdn.discordapp.com/attachments/955281529481883729/1036886425045577758/prd.png"
@@ -111,7 +117,7 @@ const Register = () => {
             </label>
             <div className="label absolute top-0 right-0">
               <div
-                className="tooltip tooltip-left sm:tooltip-right font-inter"
+                className="tooltip tooltip-left font-inter"
                 data-tip={`${hidePass ? "show" : "hide"} password`}
               >
                 <label className="swap rounded-full swap-rotate">
@@ -141,20 +147,51 @@ const Register = () => {
               }`}
             />
           </div>
+          <div className="form-control mt-3">
+            <label className="label cursor-pointer">
+              <span className="label-text">Register as Admin</span>
+              <input onChange={(e) => { setUserType( e.target.checked ? 1 : 0) }} type="checkbox" className="toggle toggle-sm" checked={ userType === 1 } />
+            </label>
+          </div>
+          {
+            userType === 1 && <div className="mt-3 form-control w-full max-w-xs relative">
+            <label className="label">
+              <span className="text-sm font-inter font-medium">Secret</span>
+            </label>
+            <input
+              type={"password"}
+              onChange={(e) => {
+                var val = e.target.value;
+                setSecret(val);
+              }}
+              value={secret}
+              placeholder="Enter Admin SECRET"
+              className={`input input-sm bg-base-200/50 w-full hover:bg-base-100 max-w-xs focus:ring-4 hover:ring-4 ${
+                Validator(secret, ['equals'], 0, 0, REGISTER_ADMIN_SECRET)
+                  ? "focus:ring-fuchsia-100"
+                  : "ring-2 ring-rose-300"
+              }`}
+            />
+            <label className="label">
+              <span className="text-xs font-inter font-medium">{ Validator(secret, ['equals'], 0, 0, REGISTER_ADMIN_SECRET) ? "" : "Enter Admin secret code"}</span>
+            </label>
+          </div>
+          }
           <button
             disabled={
               !Validator(email, ["isEmail"]) ||
               !Validator(userName, ["isEmpty"]) ||
-              !Validator(password, ["min"], 8)
+              !Validator(password, ["min"], 8) || (userType === 1 ? !Validator(secret, ['equals'], 0, 0, REGISTER_ADMIN_SECRET) : false)
+              
             }
             onClick={(e) => {
               e.preventDefault();
               register();
             }}
             className={
-                "btn mt-8 btn-sm btn-primary btn-wide " +
-                `${loading ? "loading" : ""}`
-              }
+              "btn mt-4 btn-sm btn-primary btn-wide " +
+              `${loading ? "loading" : ""}`
+            }
           >
             Register
           </button>

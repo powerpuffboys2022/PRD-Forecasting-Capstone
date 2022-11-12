@@ -10,7 +10,7 @@ const RiceSchema = new Schema({
   stock : { type : Number, required : true },
   pricePerKg : { type : Number, required : true },
   weightNet : { type : Number, require : true },
-  dateAdded : { type : Date, default : Date.now },
+  dateAdded : { type : Date, default : Date.now }
 });
 
 const Rice = models.Rice || model('Rice', UserSchema);
