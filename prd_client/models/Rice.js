@@ -1,15 +1,16 @@
 import { Schema, model, models } from 'mongoose';
 
 const RiceSchema = new Schema({
-  name : { type : String, required : true },
-  articleName : { type : String, required : true },
-  articleCode : { type : String },
+  articleName : { type : String, required : true }, // name ng bigas
+  articleCode : { type : String }, // shortcut ng name
+  description : { type : String, required : true}, // malagkit something
   price : { type : Number, require : true, default : 0},
+  imgUrl : { type : String, require : true },
   purchased : { type : Number, require : true, default : 0},
   sold : { type : Number, default : 0 },
   stock : { type : Number, required : true },
   pricePerKg : { type : Number, required : true },
-  weightNet : { type : Number, require : true },
+  netWeight : { type : Number, require : true },
   dateAdded : { type : Date, default : Date.now }
 });
 

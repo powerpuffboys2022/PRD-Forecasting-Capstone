@@ -8,7 +8,16 @@ const UserSchema = new Schema({
   userType : { type : Number, default : 0 }, // 0 - user, 1 - admin, 2 - ?
   dateJoined : { type : Date, default : Date.now },
   signInCount : { type : Number, default : 0 },
-  history : { type : [], default : [] }
+  address : { type : String, required : true },
+  contact : { type : String, required : true},
+  cart : { type : [], default : [] }
+
+  /*
+    {
+        riceId,
+        qty,
+    }
+  */
 });
 
 const User = models.User || model('User', UserSchema);

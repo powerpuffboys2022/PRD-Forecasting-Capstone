@@ -13,6 +13,8 @@ const Register = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [contact, setContact] = useState("");
+  const [address, setAddress] = useState("");
   const [hidePass, setHidePass] = useState(true);
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
@@ -35,7 +37,9 @@ const Register = () => {
           email,
           userName,
           password,
-          userType
+          userType,
+          contact,
+          address
         },
       }),
     })
@@ -55,7 +59,7 @@ const Register = () => {
   };
 
   return (
-    <div className="bg-rice-pattern h-screen w-full flex justify-center items-center">
+    <div className="bg-rice-pattern min-h-screen py-8 w-full flex justify-center items-center">
       <Head>
         <title>Register</title>
         <meta
@@ -64,7 +68,7 @@ const Register = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="flex flex-col justify-center card glass p-8 shadow-md">
+      <div className="flex flex-col justify-center glass md:1/3 lg:w-1/4 card p-4 shadow-md">
         <img
           className="w-4/12 m-auto"
           src="https://cdn.discordapp.com/attachments/955281529481883729/1036886425045577758/prd.png"
@@ -73,7 +77,7 @@ const Register = () => {
           {err}
         </p>
         <form>
-          <div className="mt-4 form-control w-full max-w-xs">
+          <div className="mt-3 form-control w-full">
             <label className="label">
               <span className="text-sm font-inter font-medium ">Email</span>
             </label>
@@ -85,7 +89,7 @@ const Register = () => {
                 setEmail(val);
               }}
               value={email}
-              className={`input input-sm bg-base-200/50 w-full hover:bg-base-100 max-w-xs focus:ring-4 hover:ring-4 ${
+              className={`input input-sm bg-base-200/50 w-full hover:bg-base-100 focus:ring-4 hover:ring-4 ${
                 !err.includes("email") &&
                 Validator(email, ["isEmpty", "isEmail"])
                   ? "focus:ring-fuchsia-100"
@@ -93,7 +97,7 @@ const Register = () => {
               }`}
             />
           </div>
-          <div className="mt-3 form-control w-full max-w-xs">
+          <div className="mt-3 form-control w-full">
             <label className="label">
               <span className="text-sm font-inter font-medium ">User Name</span>
             </label>
@@ -104,14 +108,53 @@ const Register = () => {
                 setUserName(val);
               }}
               value={userName}
-              className={`input input-sm bg-base-200/50 w-full hover:bg-base-100 max-w-xs focus:ring-4 hover:ring-4 ${
+              className={`input input-sm bg-base-200/50 w-full hover:bg-base-100 focus:ring-4 hover:ring-4 ${
                 Validator(userName, ["isEmpty"])
                   ? "focus:ring-fuchsia-100"
                   : "ring-2 ring-rose-300"
               }`}
             />
           </div>
-          <div className="mt-3 form-control w-full max-w-xs relative">
+
+          <div className="mt-3 form-control w-full">
+            <label className="label">
+              <span className="text-sm font-inter font-medium ">Contact</span>
+            </label>
+            <input
+              type="text"
+              onChange={(e) => {
+                var val = e.target.value;
+                setContact(val);
+              }}
+              value={contact}
+              className={`input input-sm bg-base-200/50 w-full hover:bg-base-100 focus:ring-4 hover:ring-4 ${
+                Validator(contact, ["isEmpty"])
+                  ? "focus:ring-fuchsia-100"
+                  : "ring-2 ring-rose-300"
+              }`}
+            />
+          </div>
+          <div className="mt-3 form-control w-full">
+            <label className="label">
+              <span className="text-sm font-inter font-medium ">Address</span>
+            </label>
+            <textarea
+              rows="3"
+              type="text"
+              onChange={(e) => {
+                var val = e.target.value;
+                setAddress(val);
+              }}
+              value={address}
+              className={`textarea bg-base-200/50 w-full hover:bg-base-100 focus:ring-4 hover:ring-4 ${
+                Validator(address, ["isEmpty"])
+                  ? "focus:ring-fuchsia-100"
+                  : "ring-2 ring-rose-300"
+              }`}
+            />
+          </div>
+
+          <div className="mt-3 form-control w-full relative">
             <label className="label">
               <span className="text-sm font-inter font-medium">Password</span>
             </label>
@@ -140,7 +183,7 @@ const Register = () => {
                 setPassword(val);
               }}
               value={password}
-              className={`input input-sm bg-base-200/50 w-full hover:bg-base-100 max-w-xs focus:ring-4 hover:ring-4 ${
+              className={`input input-sm bg-base-200/50 w-full hover:bg-base-100 focus:ring-4 hover:ring-4 ${
                 Validator(password, ["isEmpty", "min"], 8)
                   ? "focus:ring-fuchsia-100"
                   : "ring-2 ring-rose-300"
@@ -154,7 +197,7 @@ const Register = () => {
             </label>
           </div>
           {
-            userType === 1 && <div className="mt-3 form-control w-full max-w-xs relative">
+            userType === 1 && <div className="mt-3 form-control w-full relative">
             <label className="label">
               <span className="text-sm font-inter font-medium">Secret</span>
             </label>
@@ -166,7 +209,7 @@ const Register = () => {
               }}
               value={secret}
               placeholder="Enter Admin SECRET"
-              className={`input input-sm bg-base-200/50 w-full hover:bg-base-100 max-w-xs focus:ring-4 hover:ring-4 ${
+              className={`input input-sm bg-base-200/50 w-full hover:bg-base-100 focus:ring-4 hover:ring-4 ${
                 Validator(secret, ['equals'], 0, 0, REGISTER_ADMIN_SECRET)
                   ? "focus:ring-fuchsia-100"
                   : "ring-2 ring-rose-300"
@@ -189,7 +232,7 @@ const Register = () => {
               register();
             }}
             className={
-              "btn mt-4 btn-sm btn-primary btn-wide " +
+              "btn mt-4 btn-sm btn-primary btn-wide w-full" +
               `${loading ? "loading" : ""}`
             }
           >

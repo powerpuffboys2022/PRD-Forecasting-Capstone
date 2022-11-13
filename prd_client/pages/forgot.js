@@ -53,7 +53,7 @@ const Forgot = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="flex flex-col justify-center">
+      <div className="flex flex-col justify-center card glass p-8 shadow-md">
         <img
           className="w-4/12 m-auto"
           src="https://cdn.discordapp.com/attachments/955281529481883729/1036886425045577758/prd.png"
