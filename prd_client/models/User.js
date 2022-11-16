@@ -2,7 +2,7 @@ import { Schema, model, models } from 'mongoose';
 
 const UserSchema = new Schema({
   email : { type : String, required : true, unique : true },
-  imgUrl : { type : String, default : ""},
+  imgUrl : { type : String, default : "https://cdn.discordapp.com/attachments/955281529481883729/1042486237413519440/propertyCat.png"},
   userName : { type : String, required : true },
   password : { type : String, required : true },
   userType : { type : Number, default : 0 }, // 0 - user, 1 - admin, 2 - ?

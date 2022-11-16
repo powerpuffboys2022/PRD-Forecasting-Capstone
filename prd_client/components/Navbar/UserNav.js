@@ -47,12 +47,16 @@ const UserNav = () => {
   return (
     <nav className="flex w-full justify-between py-4 px-5 md:px-20 font-inter font-medium ">
       <div className="flex items-center w-1/4">
-        <a href="/">Philip Rice Dealer</a>
+        {/* <a href="/">Philip Rice Dealer</a> */}
+        <img className="h-6" src="/usernavlogo.png"/>
       </div>
-      <div className="opacity-90 w-2/4 flex justify-center space-x-12 md:space-x-16 items-center">
+      <div className="opacity-90 w-2/4 font-inter flex justify-center space-x-12 md:space-x-8 items-center">
         {/* <a className="cursor-pointer" onClick={() => router.push("/shop")}>Home</a> */}
-        <a className="cursor-pointer" onClick={() => router.push("/shop")}>Our Rice</a>
-        <a className="cursor-pointer" onClick={() => router.push("/shop/about")}>About</a>
+        <a className="cursor-pointer" onClick={() => router.push("/shop")}>Home</a>
+        <a className="cursor-pointer" onClick={() => router.push("/shop/store")}>Store</a>
+        <a className="cursor-pointer" onClick={() => router.push("/shop/cart")}>Cart</a>
+        <a className="cursor-pointer" onClick={() => router.push("/shop/transaction")}>Transaction</a>
+
       </div>
       <div className="flex items-center w-1/4 space-x-4 justify-end">
         {!loading && userData && (

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "mabilis" : "next dev --turbo",
+    "mabilis": "next dev --turbo",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -23,8 +23,6 @@
     "jose": "^4.10.4",
     "mongoose": "^6.7.1",
     "next": "13.0.1",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
     "react-icons": "^4.6.0",
     "uuid": "^9.0.0",
     "validator": "^13.7.0"
