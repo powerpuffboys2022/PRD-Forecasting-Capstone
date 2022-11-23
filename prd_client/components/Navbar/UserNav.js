@@ -45,12 +45,12 @@ const UserNav = () => {
   }, []);
 
   return (
-    <nav className="flex w-full justify-between py-4 px-5 md:px-20 font-inter font-medium ">
-      <div className="flex items-center w-1/4">
+    <nav className="fixed z-10 backdrop-blur-md bg-base-100/40 flex w-full justify-between py-4 px-5 md:px-20 font-inter font-medium ">
+      <div className="flex items-center w-1/3 md:w-1/4">
         {/* <a href="/">Philip Rice Dealer</a> */}
         <img className="h-6" src="/usernavlogo.png"/>
       </div>
-      <div className="opacity-90 w-2/4 font-inter flex justify-center space-x-12 md:space-x-8 items-center">
+      <div className="hidden md:flex opacity-90 w-2/4 font-inter  justify-center space-x-12 md:space-x-8 items-center">
         {/* <a className="cursor-pointer" onClick={() => router.push("/shop")}>Home</a> */}
         <a className="cursor-pointer" onClick={() => router.push("/shop")}>Home</a>
         <a className="cursor-pointer" onClick={() => router.push("/shop/store")}>Store</a>
