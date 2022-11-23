@@ -4,16 +4,46 @@ import UserLayout from "../../layouts/UserLayout";
 
 import Slider from "react-slick";
 
+import RiceCard from "../../components/Users/RiceCard"
+
 export default function Home() {
   const router = useRouter();
 
   const settings = {
     dots: true,
-    infinite: true,
+    infinite: false,
     speed: 500,
     slidesToShow: 3,
-    slidesToScroll: 1
+    slidesToScroll: 1,
   };
+
+  const rices = [{
+    articleName : "Jasmine Rice", // name ng bigas
+  articleCode : "jsmn", // shortcut ng name
+  description : "Malagkit", // malagkit something
+  price : 1500,
+  imgUrl : "https://sunnywoodrice.com/wp-content/uploads/2019/05/Farmboy-Jasmine-2019-2kg-FINAL-01.jpg",
+  purchased : 0,
+  sold : 5,
+  stock : 25,
+  pricePerKg : 43,
+  netWeight : 25,
+  dateAdded : { type : Date, default : Date.now }
+  },{
+    articleName : "Jasmine Rice Malagkit", // name ng bigas
+  articleCode : "jsmn-mlgkt", // shortcut ng name
+  description : "Malagkit", // malagkit something
+  price : 2100,
+  imgUrl : "https://sunnywoodrice.com/wp-content/uploads/2019/05/Farmboy-Jasmine-2019-2kg-FINAL-01.jpg",
+  purchased : 0,
+  sold : 8,
+  stock : 12,
+  pricePerKg : 47,
+  netWeight : 50,
+  dateAdded : { type : Date, default : Date.now }
+  },
+];
+
 
   return (
     <div>
@@ -40,58 +70,10 @@ export default function Home() {
             </button>
           </div>
           <div className="w-2/3 px-8">
-            <Slider className="" {...settings}>
-              <div className="card mx-4 w-96 bg-base-100 shadow-xl">
-                <figure>
-                  <img src="https://placeimg.com/400/225/arch" alt="Shoes" />
-                </figure>
-                <div className="card-body">
-                  <h2 className="card-title">Shoes!</h2>
-                  <p>If a dog chews shoes whose shoes does he choose?</p>
-                  <div className="card-actions justify-end">
-                    <button className="btn btn-primary">Buy Now</button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="card mx-4 w-96 bg-base-100 shadow-xl">
-                <figure>
-                  <img src="https://placeimg.com/400/225/arch" alt="Shoes" />
-                </figure>
-                <div className="card-body">
-                  <h2 className="card-title">Shoes!</h2>
-                  <p>If a dog chews shoes whose shoes does he choose?</p>
-                  <div className="card-actions justify-end">
-                    <button className="btn btn-primary">Buy Now</button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="card mx-4 w-96 bg-base-100 shadow-xl">
-                <figure>
-                  <img src="https://placeimg.com/400/225/arch" alt="Shoes" />
-                </figure>
-                <div className="card-body">
-                  <h2 className="card-title">Shoes!</h2>
-                  <p>If a dog chews shoes whose shoes does he choose?</p>
-                  <div className="card-actions justify-end">
-                    <button className="btn btn-primary">Buy Now</button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="card mx-4 w-96 bg-base-100 shadow-xl">
-                <figure>
-                  <img src="https://placeimg.com/400/225/arch" alt="Shoes" />
-                </figure>
-                <div className="card-body">
-                  <h2 className="card-title">Shoes!</h2>
-                  <p>If a dog chews shoes whose shoes does he choose?</p>
-                  <div className="card-actions justify-end">
-                    <button className="btn btn-primary">Buy Now</button>
-                  </div>
-                </div>
-              </div>
+            <Slider className="h-96 my-10" {...settings}>
+              {
+                rices.map((rc, i) => <RiceCard articleName={rc.articleName} imgUrl={rc.imgUrl} netWeight={rc.netWeight} price={rc.price} key={i}/>)
+              }
             </Slider>
           </div>
         </section>
