@@ -4,6 +4,7 @@ const RiceCard = ({ imgUrl, articleName, price, netWeight }) => {
 
   const colors = ["bg-rose-100", "bg-pink-100", "bg-purple-100", "bg-indigo-100", "bg-cyan-100", "bg-teal-100", "bg-lime-100", "bg-amber-100", "bg-orange-100", "bg-red-100", "bg-stone-100"]
   const col = colors[Math.floor(Math.random() * colors.length)];
+  
   return (
     <div className="w-full cursor-pointer group hover:scale-105 duration-200 h-96 px-3 py-2 ">
         <div className="h-1/4 ">
