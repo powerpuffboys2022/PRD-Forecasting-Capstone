@@ -11,9 +11,10 @@ const RiceSchema = new Schema({
   stock : { type : Number, required : true },
   pricePerKg : { type : Number, required : true },
   netWeight : { type : Number, require : true },
-  dateAdded : { type : Date, default : Date.now }
+  dateAdded : { type : Date, default : Date.now },
+  isDeleted : { type : Boolean, default : false}
 });
 
-const Rice = models.Rice || model('Rice', UserSchema);
+const Rice = models.Rice || model('Rice', RiceSchema);
 
 module.exports = Rice;
