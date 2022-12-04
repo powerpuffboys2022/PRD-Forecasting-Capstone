@@ -3,12 +3,22 @@ import { useState, useEffect } from "react";
 import UserLayout from "../../layouts/UserLayout";
 import { BiFilter } from "react-icons/bi";
 
+
+import { toast } from 'react-toastify';
+
 import RiceCard2 from "../../components/Users/RiceCard2";
+import Loading2 from "../../components/Loading2";
+import Loading from "../../components/Loading";
 
 const rice = () => {
+  const [loading, setLoading] = useState(false);
   const [rices, setRices] = useState([]);
   const [search, setSearch] = useState("");
-  const [userData, setUserData] = useState()
+  const [userData, setUserData] = useState();
+
+  const [sort, setSort] = useState(0); // 0 - low to high, 1 - high to low
+  const [min, setMin] = useState(0);
+  const [max, setMax] = useState(999999);
 
   const loadUser = () => {
     const response = fetch("/api/prd/userInfo", {
@@ -24,10 +34,26 @@ const rice = () => {
       .then((data) => {
         setUserData(data);
         init();
-      });
+      })
+      .catch((err)=>{
+        toast.error("Failed To Load Your Data", { position : toast.POSITION.TOP_LEFT })
+      })
+      .finally(() => {});
   };
 
   const searchFunc = () => {
+    setLoading(true);
+    let contents = [
+      { articleName: { $regex: search, $options: "i" } },
+      { description: { $regex: search, $options: "i" } },
+      { articleCode: { $regex: search, $options: "i" } },
+    ];
+
+    if (!isNaN(parseInt(search))) {
+      contents.push({ netWeight: parseInt(search) });
+      contents.push({ price: parseInt(search) });
+    }
+
     const response = fetch("/api/prd/rice", {
       method: "POST",
       mode: "cors",
@@ -37,22 +63,52 @@ const rice = () => {
       },
       body: JSON.stringify({
         mode: 0,
-        content: {
-          articleName: { $regex: search, $options: "i" },
-        },
+        content: { $or: contents },
       }),
     })
       .then((res) => {
         return res;
       })
       .then((data) => {
-        data.json().then((data) => setRices(data));
+        data.json().then((dt) => {
+          let newdt = filter(dt);
+          setRices(newdt);
+        });
       })
-      .catch((err) => {})
-      .finally((d) => {});
+      .catch((err) => {
+        toast.error("Failed To Load Your Search", { position : toast.POSITION.TOP_LEFT })
+      })
+      .finally((d) => {
+        setLoading(false);
+      });
+  };
+
+  const sortPrice = (a, b) => {
+    const A = a.price;
+    const B = b.price;
+    if (sort === 0) {
+      if (A > B) return -1;
+      if (A < B) return 1;
+    }
+    if (sort === 1) {
+      if (A < B) return -1;
+      if (A > B) return 1;
+    }
+    return 0;
+  };
+
+  const filter = (data) => {
+    let ndata = data;
+    ndata = ndata.filter((obj) => obj.price >= min && obj.price <= max);
+    ndata = ndata.sort(sortPrice);
+    return ndata;
   };
 
   const init = () => {
+    if (search.length !== 0) {
+      searchFunc();
+      return;
+    }
     const response = fetch("/api/prd/rice", {
       method: "POST",
       mode: "cors",
@@ -69,13 +125,21 @@ const rice = () => {
         return res;
       })
       .then((data) => {
-        data.json().then((data) => setRices(data));
+        data.json().then((dt) => {
+          let newdt = filter(dt);
+          setRices(newdt);
+        });
       })
-      .catch((err) => {})
-      .finally((d) => {});
+      .catch((err) => {
+        toast.error("Failed To Load Products", { position : toast.POSITION.TOP_LEFT })
+      })
+      .finally((d) => {
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
+    setLoading(true);
     loadUser();
   }, []);
 
@@ -104,8 +168,10 @@ const rice = () => {
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter")
-                      if (search.length > 0) searchFunc();
-                      else init();
+                      if (search.length > 0) {
+                        setLoading(true);
+                        searchFunc();
+                      } else init();
                   }}
                   value={search}
                   className="input w-full"
@@ -114,12 +180,15 @@ const rice = () => {
                 />
               </div>
               <div className="dropdown">
-                <label tabIndex={0} className="btn m-1">
-                  <BiFilter className="text-xl" />
+                <label
+                  tabIndex={0}
+                  className="btn btn-ghost bg-base-100 hover:bg-base-200 text-black m-1"
+                >
+                  <BiFilter className="text-2xl" />
                 </label>
                 <div
                   tabIndex={0}
-                  className="dropdown-content menu p-4 shadow bg-base-100 rounded-box w-52"
+                  className="dropdown-content menu p-4 shadow bg-base-100/70 backdrop-blur-md  w-52"
                 >
                   <p className="text-lg font-medium">Filters</p>
                   <div className="divider my-2 py-2" />
@@ -127,6 +196,10 @@ const rice = () => {
                     <label className="label cursor-pointer">
                       <span className="label-text">High to Low</span>
                       <input
+                        checked={sort === 0}
+                        onChange={(e) => {
+                          setSort(e.target.checked ? 0 : 1);
+                        }}
                         type="radio"
                         name="radio-10"
                         className="radio checked:bg-red-500"
@@ -138,6 +211,10 @@ const rice = () => {
                       <span className="label-text">Low to High</span>
                       <input
                         type="radio"
+                        onChange={(e) => {
+                          setSort(e.target.checked ? 1 : 0);
+                        }}
+                        checked={sort === 1}
                         name="radio-10"
                         className="radio checked:bg-blue-500"
                       />
@@ -146,27 +223,57 @@ const rice = () => {
                   <div className="divider my-2 py-2" />
 
                   <div className="form-control">
-                    <label className="label"><span className="font-medium text-lg">Range</span></label>
+                    <label className="label">
+                      <span className="font-medium text-lg">Price Range</span>
+                    </label>
                     <label className="input-group">
                       <input
                         type="text"
                         placeholder="min"
+                        value={min}
+                        onChange={(e) => {
+                          let parsed = e.target.value;
+                          var regex = /^[0-9\b]+$/;
+                          if (parsed.length === 0) setMin(parsed);
+                          if (!parsed.includes(".") && !regex.test(parsed))
+                            return;
+                          setMin(parsed);
+                        }}
                         className="input input-bordered w-1/2"
                       />
                       <input
                         type="text"
                         placeholder="max"
+                        value={max}
+                        onChange={(e) => {
+                          let parsed = e.target.value;
+                          var regex = /^[0-9\b]+$/;
+                          if (parsed.length === 0) setMax(parsed);
+                          if (!parsed.includes(".") && !regex.test(parsed))
+                            return;
+                          setMax(parsed);
+                        }}
                         className="input input-bordered w-1/2"
                       />
                     </label>
                   </div>
+
+                  <button
+                    className="mt-4 btn btn-sm w-full"
+                    onClick={() => {
+                        toast.success("Filter Applied", { position : toast.POSITION.TOP_LEFT })
+                        init()
+                    }}
+                  >
+                    apply
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="bg-2 font-inter w-full py-8 md:py-16 flex justify-center items-center">
+        <section className="relative bg-slate-50 bg-2 font-inter min-h-screen w-full py-8 md:py-16 flex justify-center items-center">
           <div className="w-full mx-5 md:mx-0 md:w-3/4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {rices.map((rice, i) => (
               <RiceCard2
@@ -174,7 +281,10 @@ const rice = () => {
                 uid={userData._id}
                 gcart={userData.cart}
                 _id={rice._id}
-                onAddToCart={()=>{ loadUser() }}
+                onAddToCart={() => {
+                  loadUser();
+                }}
+                description={rice.description}
                 articleName={rice.articleName}
                 imgUrl={rice.imgUrl}
                 netWeight={rice.netWeight}
@@ -182,6 +292,12 @@ const rice = () => {
                 stock={rice.stock}
               />
             ))}
+          </div>
+          <div className="absolute top-8 left-auto">
+            <Loading loading={loading} />
+            {!loading && (
+              <p className="font-medium ">{rices.length} Product(s) Found</p>
+            )}
           </div>
         </section>
       </main>

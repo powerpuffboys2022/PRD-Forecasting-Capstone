@@ -9,6 +9,9 @@ import { storage } from "../../services/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
 import { Validator, dateToBeutify } from "../../helpers";
 
 import Head from "next/head";
@@ -37,7 +40,10 @@ const userProfile = () => {
     uploadTask.on(
       "state_changed",
       (snapshot) => {},
-      (err) => console.log(err),
+      (err) => {
+        console.log(err)
+        toast.error("Failed Uploading Photo", { position : toast.POSITION.BOTTOM_RIGHT })
+      },
       () => {
         // download url
         getDownloadURL(uploadTask.snapshot.ref).then((url) => {
@@ -83,9 +89,12 @@ const userProfile = () => {
       .then((data) => {
         setLoading(false);
         loadUser();
+        setPassword("")
+        toast.success("Successfully Saved", { position : toast.POSITION.BOTTOM_RIGHT })
       })
       .catch((err) => {
         setErr(err.message);
+        toast.error("Failed Saving", { position : toast.POSITION.BOTTOM_RIGHT })
       })
       .finally(() => {
         setLoading(false);
@@ -112,9 +121,12 @@ const userProfile = () => {
       .then((data) => {
         setLoading(false);
         loadUser();
+        setPassword("")
+        toast.success("Successfully Saved", { position : toast.POSITION.BOTTOM_RIGHT })
       })
       .catch((err) => {
         setErr(err.message);
+        toast.error("Failed Saving", { position : toast.POSITION.BOTTOM_RIGHT })
       })
       .finally(() => {
         setLoading(false);
@@ -139,6 +151,7 @@ const userProfile = () => {
             setUserData(data);
             setUserName(data.userName);
             setImgUrl(data.imgUrl);
+            
           });
         }
       })
@@ -153,6 +166,19 @@ const userProfile = () => {
 
   return (
     <>
+        <ToastContainer
+        position="top-right"
+        autoClose={1000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        limit={1}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <LogoutConfirm
         title={"You are about to logout"}
         description={"Are you sure to logout now?"}

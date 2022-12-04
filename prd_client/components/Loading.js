@@ -4,7 +4,7 @@ import { VscLoading } from "react-icons/vsc"
 
 const Loading = ({ loading }) => {
   return (
-    <>{loading && <VscLoading className="h-8 animate-spin"/>}</>
+    <>{loading && <VscLoading className="text-2xl animate-spin"/>}</>
   )
 }
 

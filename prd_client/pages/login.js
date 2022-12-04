@@ -2,6 +2,9 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { Validator } from "../helpers";
 
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
 import { RiEyeFill, RiEyeCloseFill } from "react-icons/ri";
 import Head from "next/head";
 
@@ -32,12 +35,21 @@ const Login = () => {
       }),
     })
       .then((res) => {
-        if (res.status === 404) throw Error("User not found");
-        if (res.status === 403) throw Error("Invalid Credential");
+        if (res.status === 404) {
+            toast.warning("User not found", { position : toast.POSITION.TOP_RIGHT })
+            throw Error("User not found");
+        }
+        if (res.status === 403) {
+            toast.warning("Invalid Credential", { position : toast.POSITION.TOP_RIGHT })
+            throw Error("Invalid Credential");
+        }
         return res;
       })
       .then((data) => {
-        data.json().then((data) => router.push(data.toUrl))
+        data.json().then((data) => {
+            toast.success("Signed In", { position : toast.POSITION.TOP_RIGHT })
+            router.push(data.toUrl)
+        })
       })
       .catch((err) => {
         setErr(err.message);
@@ -50,6 +62,19 @@ const Login = () => {
 
   return (
     <div className="bg-rice-pattern h-screen w-full flex justify-center items-center">
+         <ToastContainer
+        position="top-right"
+        autoClose={1000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        limit={1}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Head>
         <title>Login</title>
         <meta

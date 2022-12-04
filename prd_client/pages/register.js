@@ -2,6 +2,9 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { Validator } from "../helpers";
 
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
 import { RiEyeFill, RiEyeCloseFill } from "react-icons/ri";
 import Head from "next/head";
 
@@ -60,6 +63,19 @@ const Register = () => {
 
   return (
     <div className="bg-rice-pattern min-h-screen py-8 w-full flex justify-center items-center">
+        <ToastContainer
+        position="top-right"
+        autoClose={1000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        limit={1}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Head>
         <title>Register</title>
         <meta

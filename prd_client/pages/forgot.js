@@ -2,6 +2,9 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { Validator } from "../helpers";
 
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
 import Head from "next/head";
 
 const Forgot = () => {
@@ -29,11 +32,15 @@ const Forgot = () => {
       }),
     })
       .then((res) => {
-        if (res.status === 404) throw Error("User not found");
+        if (res.status === 404){
+            toast.warning("This email is not registered", { position : toast.POSITION.TOP_RIGHT })
+            throw Error("User not found");
+        }
         return res;
       })
       .then((data) => {
         setIsSent(true);
+        toast.success("Your temporary password was sent via your email", { position : toast.POSITION.TOP_RIGHT })
       })
       .catch((err) => {
         setErr(err.message);
@@ -45,6 +52,19 @@ const Forgot = () => {
 
   return (
     <div className="bg-rice-pattern h-screen w-full flex justify-center items-center">
+        <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        limit={1}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Head>
         <title>Forgot</title>
         <meta
