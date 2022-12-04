@@ -101,7 +101,7 @@ const UserNav = () => {
               className="avatar cursor-pointer"
               onClick={() => router.push("/general/profile")}
             >
-              <div className="w-8 rounded-full">
+              <div className="w-8 rounded-full hover:ring-4 duration-200 ease-in hover:ring-gray-600">
                 <img src={userData.imgUrl} />
               </div>
             </div>
