@@ -14,17 +14,17 @@ const handler = async (req, res) => {
     }
 
     if(mode === 1){ // create order / checkout
-        const rice = await Transaction.create({...content});
+        const transaction = await Transaction.create({...content});
         return res.status(200).json({ message : "created"});
     }
 
-    if(mode === 2){ // update rice
-        const rice = await Rice.updateOne({ _id }, { ...content })
+    if(mode === 2){ // update transaction
+        const transaction = await Transaction.updateOne({ _id }, { ...content })
         return res.status(200).json({ message : "updated"});
     }
 
     if(mode === 3){ // soft delete
-        const rice = await Rice.updateOne({ ...content }, { $set : { isDeleted : true } });
+        const transaction = await Transaction.updateOne({ ...content }, { $set : { isDeleted : true } });
         return res.status(200).json({ message : "set as deleted"});
     }
 
