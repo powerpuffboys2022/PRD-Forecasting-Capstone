@@ -4,7 +4,7 @@ const Confirm = ({ shown, title, content, onOkay }) => {
       <input type="checkbox" className="modal-toggle" />
       <div className={`modal ${shown ? 'modal-open' : ''} bg-base-100/20 backdrop-blur-sm modal-bottom sm:modal-middle`}>
         <div className="modal-box">
-          <h3 className="font-bold text-lg">
+          <h3 className="font-bold text-lg text-center">
             {title}
           </h3>
           {
