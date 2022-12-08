@@ -378,7 +378,7 @@ const userProfile = () => {
                 e.preventDefault();
                 router.back();
               }}
-              className="font-inter btn btn-sm mt-4 mr-2"
+              className="font-inter btn hover:bg-neutral btn-outline hover:text-white btn-ghost btn-sm mr-2"
             >
               <IoClose className="" />
             </button>
@@ -389,7 +389,7 @@ const userProfile = () => {
                 else handleUpload();
               }}
               disabled={!Validator(userName, ["min"], 4) || !Validator(address, ["isEmpty"])}
-              className={`font-inter btn btn-sm btn-primary mt-4 ${
+              className={`btn hover:bg-yellow-500 btn-outline hover:text-white btn-ghost btn-sm ${
                 loading ? "btn-loading" : ""
               }`}
             >

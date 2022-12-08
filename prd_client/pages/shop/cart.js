@@ -67,6 +67,7 @@ const cart = () => {
         name : itm.articleName, 
         imgUrl : itm.imgUrl,
         price : itm.price, 
+        description : itm.description,
         netWeight : itm.netWeight, 
         qty : itm.qty }))
     return plc
@@ -153,7 +154,6 @@ const cart = () => {
 
   const fetchCart = () => {
     let prod_ids = [];
-
     userData.cart.forEach((id, i) => {
       prod_ids.push(id._id);
     });

@@ -17,6 +17,9 @@ const UserNav = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({}),
+    }).then((res)=>{
+        if(res.status === 401) router.push("/login");
+        return res
     })
       .then((response) => response.json())
       .then((data) => {

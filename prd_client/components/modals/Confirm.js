@@ -11,10 +11,10 @@ const Confirm = ({ shown, title, description, onAccept, onDecline, acceptText, d
             {description}
           </p>
           <div className="modal-action">
-            <label onClick={()=>onAccept()} className="btn btn-primary btn-sm">
+            <label onClick={()=>onAccept()} className="btn hover:bg-yellow-500 hover:text-white btn-sm">
               {acceptText}
             </label>
-            <label onClick={()=>onDecline()} className="btn btn-sm">
+            <label onClick={()=>onDecline()} className="btn btn-error btn-sm">
               {declineText}
             </label>
           </div>

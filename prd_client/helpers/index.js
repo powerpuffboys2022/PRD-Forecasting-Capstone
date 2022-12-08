@@ -1,4 +1,5 @@
 var validator = require("email-validator");
+var moment = require('moment'); 
 
 export const Validator = (val, validations, minLength, maxLength, expected) => {
     let res = true;
@@ -52,10 +53,24 @@ export const getStatusColor = ( status ) => {
     if(status === 1) return "text-gray-700 animate-pulse duration-700"
     if(status === 2) return "text-yellow-500"
     if(status === 3) return "text-teal-700"
-    if(status === 4) return "text-green-400"
+    if(status === 4) return "text-green-600"
     return "opacity-80"
 }
 
 export const beautifyMoney = ( amount, dec ) => {
     return (amount).toFixed(dec).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+}
+
+export const getDateAgo = (current, given) => {
+    let a = moment(current);
+    let b = moment(given);
+
+    return a.diff(b, "days");
+  };
+
+export const dateMomentBeautify = ( date, format) => {
+    //"MMMM Do YYYY, h:mm a"
+    return moment(
+        date
+      ).format(format)
 }

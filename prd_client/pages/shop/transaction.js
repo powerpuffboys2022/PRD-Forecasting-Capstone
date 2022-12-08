@@ -3,17 +3,27 @@ import UserLayout from "../../layouts/UserLayout";
 import { useState, useEffect } from "react";
 import moment from "moment";
 
-import { beautifyMoney, getStatusColor, statusToWord } from "../../helpers"
+import { AiFillCloseCircle, AiFillEye } from "react-icons/ai";
+
+import {
+  getDateAgo,
+  beautifyMoney,
+  getStatusColor,
+  statusToWord,
+} from "../../helpers";
 
 import { toast } from "react-toastify";
 
-import CustomConfirm from "../../components/modals/CustomConfirm"
-import CancelConfirm from "../../components/modals/modalCustomContent/CancelConfirm"
+import CustomConfirm from "../../components/modals/CustomConfirm";
+import CancelConfirm from "../../components/modals/modalCustomContent/CancelConfirm";
+import Confirm from "../../components/modals/Confirm"
 
 import { BsSearch } from "react-icons/bs";
 import Loading from "../../components/Loading";
+import { useRouter } from "next/router";
 
 const transactions = () => {
+  const router = useRouter();
   const [userData, setUserData] = useState();
   const [loading, setLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
@@ -33,7 +43,7 @@ const transactions = () => {
       },
       body: JSON.stringify({
         mode: 0,
-        content: { _id }
+        content: { _id },
       }),
     })
       .then((response) => response.json())
@@ -47,6 +57,10 @@ const transactions = () => {
 
   const loadTransactions = () => {
     setLoading(true);
+    if(!userData._id){
+        setLoading(false)
+        return
+    }
     let content = { userId: userData._id, isDeleted: false };
 
     const response = fetch("/api/prd/transaction", {
@@ -90,13 +104,6 @@ const transactions = () => {
       });
   };
 
-  const getDateAgo = (current, given) => {
-    let a = moment(current);
-    let b = moment(given);
-
-    return a.diff(b, "days");
-  };
-
   useEffect(() => {
     if (userData) loadTransactions();
   }, [userData]);
@@ -106,30 +113,57 @@ const transactions = () => {
   }, []);
 
   const cancelOrder = (reason) => {
-    let content = { status : -1 , reason};
+    let content = { status: -1, reason };
     const response = fetch("/api/prd/transaction", {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          Accept: "application/json, text/plain, */*",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          mode: 2,
-          _id : focusedOrderId,
-          content,
-        }),
+      method: "POST",
+      mode: "cors",
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        mode: 2,
+        _id: focusedOrderId,
+        content,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setTransactions(data);
+        loadTransactions();
       })
-        .then((response) => response.json())
-        .then((data) => {
-          setTransactions(data);
-          loadTransactions();
-        })
-        .finally(() => {
-          setLoading(false);
-          setFocusedOrderId(-1);
-          setModalState(-1);
-        });
+      .finally(() => {
+        setLoading(false);
+        setFocusedOrderId(-1);
+        setModalState(-1);
+      });
+  };
+
+  const softDelete = () => {
+    let content = { isDeleted : true };
+    const response = fetch("/api/prd/transaction", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        mode: 2,
+        _id : focusedOrderId,
+        content,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setTransactions(data);
+        loadTransactions();
+      })
+      .finally(() => {
+        setLoading(false);
+        setFocusedOrderId(-1);
+        setModalState(-1);
+      });
   }
 
   return (
@@ -139,15 +173,28 @@ const transactions = () => {
         <meta name="description" content="Philip Rice Dealer Online Store" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <CustomConfirm title={"Cancel Order"} shown={modalState === 1} content={
-        <CancelConfirm acceptText="Proceed" declineText="No" onAccept={cancelOrder} onDecline={()=>setModalState(-1)} />
-      } />
+
+      <CustomConfirm
+        title={"Cancel Order"}
+        shown={modalState === 1}
+        content={
+          <CancelConfirm
+            acceptText="Proceed"
+            declineText="No"
+            onAccept={cancelOrder}
+            onDecline={() => setModalState(-1)}
+          />
+        }
+      />
+
+      <Confirm acceptText={"Proceed"} declineText={"No"} description={"Are you sure to delete this order record?"} onAccept={()=>softDelete()} onDecline={()=>setModalState(0)} title={"Delete Record"} shown={modalState === 2 }/>
+
       <div className="mt-14 w-full md:w-5/6 p-2 md:p-8 ">
         <div className="mt-8 w-full">
-          <p className="text-xl mt-8 mx-auto text-center md:text-4xl font-medium font-inter">
+          <p className="text-lg mt-4 md:mt-8 mx-auto text-center md:text-4xl font-medium font-inter">
             Your Transactions
           </p>
-          <p className="mx-auto text-center mt-6">
+          <p className="mx-auto text-center mt-4 md:mt-6">
             {transactions.length} transaction(s)
           </p>
           <div className="mt-8">
@@ -165,22 +212,28 @@ const transactions = () => {
                 type="search"
                 id="default-search"
                 value={_id}
-                onChange={(e)=>{
-                    set_id(e.target.value)
+                onChange={(e) => {
+                  set_id(e.target.value);
                 }}
                 onKeyDown={(e) => {
-                    if (e.key === "Enter")
-                      if (_id.length > 0) {
-                        loadTransactionsWithFilter()
-                      } else loadTransactions();
-                  }}
+                  if (e.key === "Enter")
+                    if (_id.length > 0) {
+                      loadTransactionsWithFilter();
+                    } else loadTransactions();
+                }}
                 className="block focus:drop-shadow-xl drop-shadow-md duration-200 ease-out w-full p-4 pl-10 text-sm outline-none focus:ring-2 focus:ring-yellow-400 border-gray-300 rounded-lg bg-gray-50"
                 placeholder="Search Transaction ID"
                 required
               />
               <button
                 type="submit"
-                onClick={()=>loadTransactionsWithFilter()}
+                onClick={() => {
+                  if (_id.length === 0) {
+                    loadTransactions();
+                  } else {
+                    loadTransactionsWithFilter();
+                  }
+                }}
                 className="text-black absolute right-2.5 bottom-2.5 bg-yellow-400 hover:bg-yellow-500 duration-200 ease-in-out focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-4 py-2 "
               >
                 Search
@@ -188,8 +241,11 @@ const transactions = () => {
             </div>
           </div>
         </div>
-        <div className="h-4/6 group mt-8 overflow-scroll fade">
-          <div className="overflow-x-auto w-full relative">
+        <div className="h-4/6 group mt-8 overflow-scroll fade relative">
+          <div className="absolute mx-auto left-[50%]">
+            <Loading loading={loading} />
+          </div>
+          <div className="overflow-x-auto w-full">
             {!loading && transactions.length > 0 && (
               <table className="table w-full mx-0 shadow-xl">
                 <thead>
@@ -206,7 +262,10 @@ const transactions = () => {
                 </thead>
                 <tbody>
                   {transactions.map((trans, i) => (
-                    <tr key={i} className="hover:bg-gray-500 duration-150 ease-in-out">
+                    <tr
+                      key={i}
+                      className="hover:bg-gray-500 duration-150 ease-in-out"
+                    >
                       <td>
                         <p className="font-medium text-xs">{trans._id}</p>
                       </td>
@@ -268,7 +327,7 @@ const transactions = () => {
                         </div>
                       </td>
                       <td>
-                      <div>
+                        <div>
                           {!trans.trackingDates.completed ? (
                             <p className="text-lg font-bold">-</p>
                           ) : (
@@ -289,16 +348,62 @@ const transactions = () => {
                           )}
                         </div>
                       </td>
-                      <td><p className={"font-medium "+`${getStatusColor(trans.status)}`}>
-                        {statusToWord(trans.status)}
-                        </p><p className="text-rose-600 text-gray-700 text-green-400 animate-pulse duration-700 text-yellow-500 text-teal-700"></p></td>
-                      <td><p className="font-inter font-medium">{beautifyMoney(trans.totalPrice, 2)}</p></td>
                       <td>
-                        {trans.status === 1  && <button onClick={()=>{
-                            setFocusedOrderId(trans._id)
-                            setModalState(1)
-                        }} className="btn btn-sm btn-ghost hover:bg-rose-600 hover:text-white">Cancel</button>}
-                        {trans.status !== 1 && <button className="btn btn-sm btn-ghost hover:bg-yellow-500 hover:text-white">View</button>}
+                        <p
+                          className={
+                            "font-medium " + `${getStatusColor(trans.status)}`
+                          }
+                        >
+                          {statusToWord(trans.status)}
+                        </p>
+                        <p className="text-rose-600 text-gray-700 text-green-600 animate-pulse duration-700 text-yellow-500 text-teal-700"></p>
+                      </td>
+                      <td>
+                        <p className="font-inter font-medium">
+                          {beautifyMoney(trans.totalPrice, 2)}
+                        </p>
+                      </td>
+                      <td>
+                        <div className="flex items-center justify-center space-x-2">
+                        <div className="tooltip tooltip-left" data-tip="Cancel Order">
+                          <button
+                            onClick={() => {
+                              setFocusedOrderId(trans._id);
+                              setModalState(1);
+                            }}
+                            disabled={trans.status !== 1}
+                            className="btn btn-sm bg-base-300 text-gray-800 hover:bg-rose-600 hover:text-white"
+                          >
+                            Cancel
+                          </button>
+                          </div>
+                        <div className="tooltip  tooltip-left" data-tip="View Order Details">
+
+                          <button
+                            onClick={() => {
+                              router.push(
+                                `/general/transaction?_id=${trans._id}`
+                              );
+                            }}
+                            className="btn btn-sm btn-square bg-base-300 text-gray-800 hover:bg-yellow-500 hover:text-white"
+                          >
+                            <AiFillEye className="text-lg" />
+                          </button>
+                          </div>
+                        <div className="tooltip tooltip-left" data-tip="Remove Record">
+
+                          <button
+                           onClick={()=>{
+                            setFocusedOrderId(trans._id);
+                            setModalState(2)
+                           }}
+                            disabled={trans.status > -1 && trans.status < 4}
+                            className="btn btn-sm btn-square"
+                          >
+                            <AiFillCloseCircle className="text-lg" />
+                          </button>
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -316,9 +421,6 @@ const transactions = () => {
                 </p>
               </div>
             )}
-            <div className="absolute top-8 left-auto">
-              <Loading loading={loading} />
-            </div>
           </div>
         </div>
       </div>

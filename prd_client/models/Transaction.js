@@ -5,7 +5,7 @@ const TransactionSchema = new Schema({
   totalPrice : { type : Number, required : true },
   userId : { type : Schema.Types.ObjectId, required : true}, // from who
   updatedBy : { type : Schema.Types.ObjectId, default : null }, // who accepted/decline this transaction
-  status : { type : Number, default : 4 }, // -1 Cancelled, 1 - pending, 2 - processing, 3 - shipping , 4 - delivered
+  status : { type : Number, default : 1 }, // -1 Cancelled, 1 - pending, 2 - processing, 3 - shipping , 4 - delivered
   placedDate : { type : Date, default : Date.now }, // placedDate
   trackingDates : { type : {}, default : {
     processed : null, // date where it was processed
