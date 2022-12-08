@@ -37,3 +37,25 @@ export const dateToBeutify = (date) => {
     )}`;
     return wordDate;
   };
+
+export const statusToWord = ( status ) => {
+    if(status === -1) return "cancelled"
+    if(status === 1) return "pending request"
+    if(status === 2) return "processing.."
+    if(status === 3) return "shipped"
+    if(status === 4) return "delivered"
+    return "untracked"
+}
+
+export const getStatusColor = ( status ) => {
+    if(status === -1) return "text-rose-600"
+    if(status === 1) return "text-gray-700 animate-pulse duration-700"
+    if(status === 2) return "text-yellow-500"
+    if(status === 3) return "text-teal-700"
+    if(status === 4) return "text-green-400"
+    return "opacity-80"
+}
+
+export const beautifyMoney = ( amount, dec ) => {
+    return (amount).toFixed(dec).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+}

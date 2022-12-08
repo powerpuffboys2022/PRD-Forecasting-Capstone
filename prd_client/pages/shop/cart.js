@@ -10,6 +10,8 @@ import { CiCircleRemove, CiCirclePlus, CiCircleMinus } from "react-icons/ci";
 import Notify from "../../components/modals/Notify";
 import LoadingModal from "../../components/modals/LoadingModal";
 
+import { beautifyMoney } from "../../helpers"
+
 import { useRouter } from "next/router";
 
 const cart = () => {
@@ -336,7 +338,7 @@ const cart = () => {
                               );
                               remove(prod._id);
                             }}
-                            className="text-lg md:text-2xl text-error hover cursor-pointer"
+                            className="text-lg md:text-2xl text-error duration-200 ease-in hover:rotate-90 hover:scale-125 cursor-pointer"
                           />
                         </div>
                       </td>
@@ -360,7 +362,7 @@ const cart = () => {
         </div>
         <div className="font-inter mx-5 md:mx-16 flex items-center justify-between">
           <p className="text-2xl font-bold">Total</p>
-          <p className="text-2xl font-medium">{total.toFixed(2)}</p>
+          <p className="text-2xl font-medium">{beautifyMoney(total, 2)}</p>
         </div>
       </div>
     </div>

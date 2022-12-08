@@ -31,6 +31,7 @@ const userProfile = () => {
   const [userData, setUserData] = useState();
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [address, setAddress] = useState("");
   const [modalState, setModalState] = useState(-1);
 
   const handleUpload = () => {
@@ -69,7 +70,7 @@ const userProfile = () => {
 
   const saveNoImg = () => {
     setLoading(true);
-    let newUserData = { userName };
+    let newUserData = { userName, address };
 
     if (password.length > 0) newUserData.password = password;
 
@@ -103,7 +104,7 @@ const userProfile = () => {
 
   const saveWithImg = async (imgUrl) => {
     setLoading(true);
-    let newUserData = { userName, imgUrl };
+    let newUserData = { userName, address, imgUrl };
     if (password.length > 0) newUserData.password = password;
     const response = fetch("/api/prd/updateUser", {
       method: "POST",
@@ -150,8 +151,8 @@ const userProfile = () => {
             console.log(data.imgUrl)
             setUserData(data);
             setUserName(data.userName);
+            setAddress(data.address);
             setImgUrl(data.imgUrl);
-            
           });
         }
       })
@@ -260,6 +261,7 @@ const userProfile = () => {
                 <span className="text-sm opacity-70"></span>
               </label>
             </div>
+
             <div className="mt-3 form-control w-full">
               <label className="label">
                 <span className="label-text font-inter font-medium ">
@@ -290,6 +292,38 @@ const userProfile = () => {
                 </span>
               </label>
             </div>
+
+            <div className="mt-3 form-control w-full">
+              <label className="label">
+                <span className="label-text font-inter font-medium ">
+                  address
+                </span>
+              </label>
+              <input
+                readOnly={loading}
+                type="text"
+                tabIndex={1}
+                required
+                onChange={(e) => {
+                  setErr("");
+                  var val = e.target.value;
+                  setAddress(val);
+                }}
+                disabled={!userData || loading}
+                value={address}
+                className={`input px-4 py-5 input-sm bg-base-200/50 w-full hover:bg-base-100 focus:ring-4 hover:ring-4 ${
+                  !err.includes("not found") && Validator(address, ["isEmpty"])
+                    ? "ring-fuchsia-100"
+                    : "ring-rose-300"
+                }`}
+              />
+              <label className="label">
+                <span className="text-sm opacity-70">
+                  Your address where you want your orders to be delivered
+                </span>
+              </label>
+            </div>
+
             <div className="mt-3 form-control w-full relative">
               <label className="label">
                 <span className="text-sm font-inter font-medium">Password</span>
@@ -338,6 +372,7 @@ const userProfile = () => {
                 <span></span>
               </label>
             </div>
+
             <button
               onClick={(e) => {
                 e.preventDefault();
@@ -353,7 +388,7 @@ const userProfile = () => {
                 if (!newImg) saveNoImg();
                 else handleUpload();
               }}
-              disabled={!Validator(userName, ["min"], 4)}
+              disabled={!Validator(userName, ["min"], 4) || !Validator(address, ["isEmpty"])}
               className={`font-inter btn btn-sm btn-primary mt-4 ${
                 loading ? "btn-loading" : ""
               }`}

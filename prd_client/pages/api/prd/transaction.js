@@ -15,6 +15,9 @@ const handler = async (req, res) => {
 
     if(mode === 1){ // create order / checkout
         const transaction = await Transaction.create({...content});
+
+        // also clear user cart
+        
         return res.status(200).json({ message : "created"});
     }
 
