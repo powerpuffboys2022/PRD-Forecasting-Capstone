@@ -7,7 +7,7 @@ import Loading from "../../components/Loading";
 import { BsTelephoneFill } from "react-icons/bs";
 import { SiMinutemailer } from "react-icons/si";
 import { FaMapMarkerAlt } from "react-icons/fa";
-
+import { HiArrowSmLeft } from "react-icons/hi";
 const transaction = () => {
   const router = useRouter();
   const [transactionId, setTransactionId] = useState("");
@@ -134,6 +134,12 @@ const transaction = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="font-inter w-full mx-4 pb-14 md:mx-0 md:w-2/4 mt-12 relative">
+      <button
+            className="btn btn-sm btn-ghost absolute top-0 left-0"
+            onClick={() => router.back() }
+          >
+            <HiArrowSmLeft className="text-lg mr-2" /> Go back
+          </button>
         <p className="text-lg md:text-3xl font-inter mx-auto text-center">
           Transaction Information
         </p>
