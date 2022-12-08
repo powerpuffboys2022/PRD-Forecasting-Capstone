@@ -86,7 +86,7 @@ const Forgot = () => {
         <form>
           {isSent ? (
             <p className="font-inter text-sm break-all">
-              We've sen't your temporary password to your email
+              We&apos;ve sen&apos;t your temporary password to your email
             </p>
           ) : (
             <div className="mt-8 form-control w-full max-w-xs">

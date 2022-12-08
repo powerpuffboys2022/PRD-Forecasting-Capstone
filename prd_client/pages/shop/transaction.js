@@ -22,7 +22,7 @@ import { BsSearch } from "react-icons/bs";
 import Loading from "../../components/Loading";
 import { useRouter } from "next/router";
 
-const transactions = () => {
+const Transactions = () => {
   const router = useRouter();
   const [userData, setUserData] = useState();
   const [loading, setLoading] = useState(false);
@@ -428,8 +428,8 @@ const transactions = () => {
   );
 };
 
-transactions.getLayout = function getLayout(page) {
+Transactions.getLayout = function getLayout(page) {
   return <UserLayout>{page}</UserLayout>;
 };
 
-export default transactions;
+export default Transactions;

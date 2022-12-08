@@ -11,7 +11,7 @@ import RiceCard2 from "../../components/Users/RiceCard2";
 import Loading2 from "../../components/Loading2";
 import Loading from "../../components/Loading";
 
-const rice = () => {
+const Store = () => {
   const [loading, setLoading] = useState(false);
   const [rices, setRices] = useState([]);
   const [search, setSearch] = useState("");
@@ -446,8 +446,8 @@ const rice = () => {
   );
 };
 
-rice.getLayout = function getLayout(page) {
+Store.getLayout = function getLayout(page) {
   return <UserLayout>{page}</UserLayout>;
 };
 
-export default rice;
+export default Store;

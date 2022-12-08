@@ -8,7 +8,7 @@ import { BsTelephoneFill } from "react-icons/bs";
 import { SiMinutemailer } from "react-icons/si";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { HiArrowSmLeft } from "react-icons/hi";
-const transaction = () => {
+const Transaction = () => {
   const router = useRouter();
   const [transactionId, setTransactionId] = useState("");
   const [transaction, setTransaction] = useState();
@@ -452,4 +452,4 @@ const transaction = () => {
   );
 };
 
-export default transaction;
+export default Transaction;

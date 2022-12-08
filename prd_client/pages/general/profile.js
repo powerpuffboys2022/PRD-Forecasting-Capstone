@@ -18,7 +18,7 @@ import Head from "next/head";
 import LogoutConfirm from "../../components/modals/Confirm";
 import Loading from "../../components/Loading";
 
-const userProfile = () => {
+const UserProfile = () => {
   const router = useRouter();
 
   const [newImg, setNewImg] = useState();
@@ -402,4 +402,4 @@ const userProfile = () => {
   );
 };
 
-export default userProfile;
+export default UserProfile;

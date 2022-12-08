@@ -14,7 +14,7 @@ import { beautifyMoney } from "../../helpers"
 
 import { useRouter } from "next/router";
 
-const cart = () => {
+const Cart = () => {
 
     const router = useRouter()
 
@@ -215,7 +215,7 @@ const cart = () => {
             <div className="p-4">
                 <img src="/checkout.png" className="mx-auto h-24"/>
                 <p className="text-justify mt-4">Your order has been placed and waiting for admin aproval. You can still cancel it if your order is still pending. Once accepted by admin, you cannot cancel it anymore.</p>
-                <p className="mt-4">You can view/track it's progress on the <a className="link font-semibold" onClick={()=>router.push("/shop/transaction")}>Transaction</a> tab.</p>
+                <p className="mt-4">You can view/track it&apos;s progress on the <a className="link font-semibold" onClick={()=>router.push("/shop/transaction")}>Transaction</a> tab.</p>
             </div>
         }
         onOkay={() => {
@@ -369,8 +369,8 @@ const cart = () => {
   );
 };
 
-cart.getLayout = function getLayout(page) {
+Cart.getLayout = function getLayout(page) {
   return <UserLayout>{page}</UserLayout>;
 };
 
-export default cart;
+export default Cart;

@@ -184,7 +184,7 @@ const Login = () => {
           </button>
         </form>
         <p className="mt-5 text-sm">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <a
             tabIndex={4}
             className="text-primary cursor-pointer"
