@@ -1,14 +1,18 @@
 import { NextResponse } from "next/server";
-
+console.log("IMPORTED NEXT RESPONSE")
 const jose = require("jose")
+console.log("IMPORTED JOSE")
 const secret = process.env.SECRET;
-
+console.log("SECRET ENV")
 
 const middleware = async (req) => {
+    console.log("WORKING!")
     const { cookies } = req;
+    console.log("COOKIE")
 
     const jwt = cookies.get("authorization_token")
     const url = req.url;
+    console.log("JWT",url)
 
     if(url.substr(url.length - 1) === "/"){
         if(!jwt){
