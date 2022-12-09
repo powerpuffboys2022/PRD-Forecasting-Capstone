@@ -14,23 +14,23 @@ const middleware = async (req) => {
     const url = req.url;
     console.log("JWT",url)
 
-    if(url.substr(url.length - 1) === "/"){
-        if(!jwt){
-            return NextResponse.redirect(new URL("/login", req.url))
-        }
+    // if(url.substr(url.length - 1) === "/"){
+    //     if(!jwt){
+    //         return NextResponse.redirect(new URL("/login", req.url))
+    //     }
 
-        try{
-            const { payload, protectedHeader} = await jose.jwtVerify(jwt.value, new TextEncoder().encode(process.env.SECRET), {
-                issuer: 'prd',
-                audience: 'prd',
-              })
+    //     try{
+    //         const { payload, protectedHeader} = await jose.jwtVerify(jwt.value, new TextEncoder().encode(process.env.SECRET), {
+    //             issuer: 'prd',
+    //             audience: 'prd',
+    //           })
               
-            // return NextResponse.next();
-            return payload.userType === 1 ? NextResponse.redirect(new URL("/admin", req.url)) : NextResponse.redirect(new URL("/shop", req.url))
-        }catch(e){ 
-            return NextResponse.redirect(new URL("/login", req.url)) 
-        }
-    }
+    //         // return NextResponse.next();
+    //         return payload.userType === 1 ? NextResponse.redirect(new URL("/admin", req.url)) : NextResponse.redirect(new URL("/shop", req.url))
+    //     }catch(e){ 
+    //         return NextResponse.redirect(new URL("/login", req.url)) 
+    //     }
+    // }
 
 
     return NextResponse.next();
