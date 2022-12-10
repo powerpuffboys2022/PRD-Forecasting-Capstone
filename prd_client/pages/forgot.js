@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { Validator } from "../helpers";
 
-import { toast, ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import Head from "next/head";
@@ -32,15 +32,19 @@ const Forgot = () => {
       }),
     })
       .then((res) => {
-        if (res.status === 404){
-            toast.warning("This email is not registered", { position : toast.POSITION.TOP_RIGHT })
-            throw Error("User not found");
+        if (res.status === 404) {
+          toast.warning("This email is not registered", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+          throw Error("User not found");
         }
         return res;
       })
       .then((data) => {
         setIsSent(true);
-        toast.success("Your temporary password was sent via your email", { position : toast.POSITION.TOP_RIGHT })
+        toast.success("Your temporary password was sent via your email", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
       .catch((err) => {
         setErr(err.message);
@@ -59,7 +63,7 @@ const Forgot = () => {
 
   return (
     <div className="bg-rice-pattern h-screen w-full flex justify-center items-center">
-        <ToastContainer
+      <ToastContainer
         position="top-right"
         autoClose={2000}
         hideProgressBar={true}
@@ -78,6 +82,43 @@ const Forgot = () => {
           name="description"
           content="Philip Rice Dealer Online store & forecasting"
         />
+        <link itemprop="image" href="cover.png" />
+        <meta itemprop="name" content="Philip Rice Dealer" />
+        <meta
+          itemprop="description"
+          content="Philip Rice Dealer Online store & forecasting"
+        />
+        <meta
+          itemprop="image"
+          content="cover.png"
+        />
+
+        <meta
+          property="og:url"
+          content="https://prd-forecasting-capstone.vercel.app"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Philip Rice Dealer" />
+        <meta
+          property="og:description"
+          content="Philip Rice Dealer Online store & forecasting"
+        />
+        <meta
+          property="og:image"
+          content="cover.png"
+        />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Philip Rice Dealer" />
+        <meta
+          name="twitter:description"
+          content="Philip Rice Dealer Online store & forecasting"
+        />
+        <meta
+          name="twitter:image"
+          content="cover.png"
+        />
+
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="flex flex-col justify-center card glass p-8 shadow-md">
