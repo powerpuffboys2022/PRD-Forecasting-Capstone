@@ -5,7 +5,7 @@ const User = require("../../../models/User")
 const jose = require("jose");
 const generator = require('generate-password');
 import Mailer from "../../../services/Mailer"
-import { dateToBeutify } from "../../../helpers"
+import { dateMomentBeautify } from "../../../helpers"
 
 dbConnect();
 
@@ -93,7 +93,7 @@ const handler = async (req, res) => {
                 template_name : "forgotPassword",
                 userName : userData.userName,
                 tempPass : genPass,
-                time_string : dateToBeutify(new Date())
+                time_string : dateMomentBeautify(new Date())
             } );
 
         return res.status(200).json({ message : "Password Changed"})
