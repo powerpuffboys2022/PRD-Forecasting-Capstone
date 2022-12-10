@@ -23,6 +23,7 @@ const NotAllowed = () => {
         }
       >
         <div className="mx-8 md:mx-0 bg-base-100/40 p-4 md:p-8 rounded-lg">
+            <img src="/notallowed.png" className="h-24 mx-auto"/>
             <p className="md:text-lg text-center">Your account is not allowed on this page</p>
             <button onClick={()=>{router.back()}} className="w-full mt-6 btn btn-ghost btn-outline">Go Back</button>
         </div>
