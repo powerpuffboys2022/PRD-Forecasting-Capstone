@@ -1,14 +1,14 @@
-const nodeEmailer = require('nodemailer');
+// const nodeEmailer = require('nodemailer');
 
-// const sgMail = require("@sendgrid/mail");
-// const fs = require('fs');
+const sgMail = require("@sendgrid/mail");
+const fs = require('fs');
 
-// const setApiKey = async () => { 
-    // const key = process.env.SENDGRID_KEY;
-    // sgMail.setApiKey(key);
-// }
+const setApiKey = async () => { 
+    const key = process.env.SENDGRID_KEY;
+    sgMail.setApiKey(key);
+}
 
-// setApiKey()
+setApiKey()
 
 // const getFileContent = (template_content) => {
 //     let contents = fs.readFileSync(`templates/${template_content.template_name}`, 'utf-8');
@@ -30,16 +30,6 @@ const transTemplate = (template_content) => {
     return template(/*getFileContent(template_content)*/ getTemplate(template_content.template_name), {...template_content})
 }
 
-// const sendMail = async(msg) => {
-//     try{
-//         const sent = await sgMail.send(msg);
-//         console.log("Emal Sent")
-//         return sent;
-//     }catch(e){
-//         console.log(e)
-//     }
-// }
-
 const sendEmail = async(userEmail, template_content) => {
     /**
      * user_email : string
@@ -49,31 +39,39 @@ const sendEmail = async(userEmail, template_content) => {
      * }
      */
 
-    let smtpTransport = nodeEmailer.createTransport({
-        service: 'Gmail',
-        port: 465,
-        auth: {
-            user: process.env.MASTEREMAIL,
-            pass: process.env.MASTERPASS
-        }
-    });
+    // let smtpTransport = nodeEmailer.createTransport({
+    //     service: 'Gmail',
+    //     port: 465,
+    //     auth: {
+    //         user: process.env.MASTEREMAIL,
+    //         pass: process.env.MASTERPASS
+    //     }
+    // });
     
     let mailOptions = {
         // from: "uptech.coderph@gmail.com",
-        // from : "phscapstonesystem@gmail.com",
-        from : process.env.MASTEREMAIL,
+        from : "phscapstonesystem@gmail.com",
+        // from : process.env.MASTEREMAIL,
         to: userEmail,
         subject : template_content.subject,    
         html: transTemplate(template_content)
     };
     
-    let result = await smtpTransport.sendMail(mailOptions, (error, response) => {
-        if (error) console.log("error ",error);
-        else console.log('Sucess Sending To '+userEmail);
-    });
+    // let result = await smtpTransport.sendMail(mailOptions, (error, response) => {
+    //     if (error) console.log("error ",error);
+    //     else console.log('Sucess Sending To '+userEmail);
+    // });
 
-    smtpTransport.close();
+    // smtpTransport.close();
     // sendMail(mailOptions)
+
+    try{
+        const sent = await sgMail.send(mailOptions);
+        console.log("Email Sent To "+userEmail)
+        return sent;
+    }catch(e){
+        console.log(e)
+    }
 }
 
 module.exports = sendEmail

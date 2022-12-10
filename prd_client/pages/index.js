@@ -22,8 +22,8 @@ const Index = () => {
       })
       .then((response) => response.json())
       .then((data) => {
-        if (data.role === 0) router.push("/shop");
-        else if (data.role === 1) router.push("/admin");
+        if (data.userType === 0) router.push("/shop");
+        else if (data.userType === 1) router.push("/admin");
       });
   };
 
