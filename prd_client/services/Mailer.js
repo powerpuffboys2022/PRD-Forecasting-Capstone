@@ -56,6 +56,8 @@ const sendEmail = async(userEmail, template_content) => {
         subject : template_content.subject,    
         html: transTemplate(template_content)
     };
+
+    // console.log(mailOptions.html)
     
     // let result = await smtpTransport.sendMail(mailOptions, (error, response) => {
     //     if (error) console.log("error ",error);
@@ -67,7 +69,7 @@ const sendEmail = async(userEmail, template_content) => {
 
     try{
         const sent = await sgMail.send(mailOptions);
-        console.log("Email Sent To "+userEmail)
+        console.log("Email Sent To "+userEmail, sent)
         return sent;
     }catch(e){
         console.log(e)

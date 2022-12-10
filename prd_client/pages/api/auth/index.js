@@ -93,7 +93,7 @@ const handler = async (req, res) => {
                 template_name : "forgotPassword",
                 userName : userData.userName,
                 tempPass : genPass,
-                time_string : dateMomentBeautify(new Date())
+                time_string : dateMomentBeautify(new Date(), "MMMM Do YYYY")
             } );
 
         return res.status(200).json({ message : "Password Changed"})
