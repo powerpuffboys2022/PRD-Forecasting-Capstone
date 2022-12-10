@@ -79,7 +79,7 @@ const Login = () => {
         <title>Login</title>
         <meta
           name="description"
-          content="A admin web app for Philip Rice Dealer that focuses on Sales Forecasting."
+          content="Philip Rice Dealer Online store & forecasting"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -159,7 +159,7 @@ const Login = () => {
                 <a
                 tabIndex={4}
                 className="text-primary cursor-pointer text-sm"
-                onClick={() => router.push("/forgot")}
+                onClick={() => router.push(`/forgot?email=${email}`)}
               >
                 forgot password
               </a>

@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Validator } from "../helpers";
 
 import { toast, ToastContainer } from 'react-toastify';
@@ -50,6 +50,13 @@ const Forgot = () => {
       });
   };
 
+  useEffect(() => {
+    let { email } = router.query;
+    if (email) {
+      setEmail(email);
+    }
+  }, [router]);
+
   return (
     <div className="bg-rice-pattern h-screen w-full flex justify-center items-center">
         <ToastContainer
@@ -69,7 +76,7 @@ const Forgot = () => {
         <title>Forgot</title>
         <meta
           name="description"
-          content="A admin web app for Philip Rice Dealer that focuses on Sales Forecasting."
+          content="Philip Rice Dealer Online store & forecasting"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>

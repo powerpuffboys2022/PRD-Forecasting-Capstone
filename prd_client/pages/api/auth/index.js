@@ -90,7 +90,7 @@ const handler = async (req, res) => {
 
         await Mailer( recoverData.email , {
                 subject : "Temporary Password",
-                template_name : "forgotPassword.html",
+                template_name : "forgotPassword",
                 userName : userData.userName,
                 tempPass : genPass,
                 time_string : dateToBeutify(new Date())

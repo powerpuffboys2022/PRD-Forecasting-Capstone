@@ -7,7 +7,7 @@ const sales_forecasting = () => {
         <title>Sales Forecast</title>
         <meta
           name="description"
-          content="A admin web app for Philip Rice Dealer that focuses on Sales Forecasting."
+          content="Philip Rice Dealer Online store & forecasting"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
