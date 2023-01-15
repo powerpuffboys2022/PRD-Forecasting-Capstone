@@ -158,14 +158,14 @@ const Store = () => {
           name="description"
           content="Philip Rice Dealer Online store & forecasting"
         />
-        <link itemprop="image" href="cover.png" />
-        <meta itemprop="name" content="Philip Rice Dealer" />
+        <link itemProp="image" href="cover.png" />
+        <meta itemProp="name" content="Philip Rice Dealer" />
         <meta
-          itemprop="description"
+          itemProp="description"
           content="Philip Rice Dealer Online store & forecasting"
         />
         <meta
-          itemprop="image"
+          itemProp="image"
           content="cover.png"
         />
 
