@@ -15,6 +15,7 @@ import { BsCurrencyDollar } from "react-icons/bs";
 import { IoIosExit } from "react-icons/io";
 
 import LogoutConfirm from "./modals/Confirm";
+import Link from "next/link";
 
 const SideBar = () => {
   const router = useRouter();
@@ -112,7 +113,7 @@ const SideBar = () => {
       <div className="bg-[#192434] sidebar w-64 md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in ">
         <div className="sidebar-header flex items-center justify-center py-4 px-4">
           <div className="inline-flex">
-            <a href="/" className="inline-flex flex-row items-center">
+            <Link href="/" className="inline-flex flex-row items-center">
               <img className="w-16 mr-2" src="/prd_logo.png" />
               <span className="leading-10 text-gray-100 text-2xl font-bold ml-1 uppercase">
                 Philip Rice Dealer

@@ -227,7 +227,7 @@ const ProductCard = ({ rice, isNew, onsave, ondelete, onupdate }) => {
             <span className="sr-only">Note</span>
             <div>
               <span className="font-medium">Note!</span> This product is not yet
-              recorded, don't forget to save.
+              recorded, don&apos;t forget to save.
             </div>
           </div>
         )}
