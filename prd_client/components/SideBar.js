@@ -181,7 +181,7 @@ const SideBar = () => {
             </li>
             <li className="my-px">
               <a
-                href="/general/profile"
+                onClick={()=>{router.push("/general/profile")}}
                 className="flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-300 hover:bg-gray-100 hover:text-gray-700"
               >
                 <span className="flex items-center justify-center text-2xl text-yellow-500">

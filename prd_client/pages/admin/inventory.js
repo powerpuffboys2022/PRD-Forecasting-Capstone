@@ -12,7 +12,7 @@ import CustomConfirm from "../../components/modals/CustomConfirm";
 import { toast } from "react-toastify";
 import { scanVals } from "../../helpers"
 
-const inventory = () => {
+const Inventory = () => {
   const [loading, setLoading] = useState({ rice: true });
   const [modal, setModal] = useState(-1);
   const [confirm, setConfirm] = useState("");
@@ -352,8 +352,8 @@ const inventory = () => {
   );
 };
 
-inventory.getLayout = function getLayout(page) {
+Inventory.getLayout = function getLayout(page) {
   return <HomeLayout>{page}</HomeLayout>;
 };
 
-export default inventory;
+export default Inventory;
