@@ -118,7 +118,7 @@ const SideBar = () => {
               <span className="leading-10 text-gray-100 text-2xl font-bold ml-1 uppercase">
                 Philip Rice Dealer
               </span>
-            </a>
+            </Link>
           </div>
         </div>
         <div className="sidebar-content px-4 py-6">
