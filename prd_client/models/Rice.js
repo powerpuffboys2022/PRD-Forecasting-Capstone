@@ -6,8 +6,8 @@ const RiceSchema = new Schema({
   description : { type : String, required : true}, // malagkit something
   price : { type : Number, require : true, default : 0},
   imgUrl : { type : String, require : true },
-  purchased : { type : Number, require : true, default : 0},
-  sold : { type : Number, default : 0 },
+  purchased : { type : Number, require : true, default : 0}, // purchased per kg ata?
+  sold : { type : Number, default : 0 }, // sack ata?
   stock : { type : Number, required : true },
   pricePerKg : { type : Number, required : true },
   netWeight : { type : Number, require : true },
