@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import getConfig from 'next/config';
 
 import { TbBuildingWarehouse } from "react-icons/tb";
 import { RiScales2Fill } from "react-icons/ri";
@@ -31,9 +32,11 @@ const ProductCard = ({ rice, isNew, onsave, ondelete, onupdate }) => {
   const [sold, setSold] = useState(0);
   const [purchased, setPurchased] = useState(0);
 
+  const { publicRuntimeConfig } = getConfig();
+
   const handleUpload = () => {
     setLoading(true);
-    const storageRef = ref(storage, `/products/${uuidv4()}_${fileImg.name}`);
+    const storageRef = ref(storage, `/products/${isNew ? uuidv4() : rice._id}`);
     const uploadTask = uploadBytesResumable(storageRef, fileImg);
     uploadTask.on(
       "state_changed",
@@ -66,6 +69,7 @@ const ProductCard = ({ rice, isNew, onsave, ondelete, onupdate }) => {
           pricePerKg,
           stock,
           description,
+          netWeight,
           imgUrl: !url ? imgUrl : url,
         },
       });
@@ -99,7 +103,7 @@ const ProductCard = ({ rice, isNew, onsave, ondelete, onupdate }) => {
         setPricePKg(0);
         setPurchased(0);
         setSold(0);
-        return
+        return;
       }
       setLoading(true);
       const req = axios.post("/api/prd/rice", {
@@ -129,66 +133,68 @@ const ProductCard = ({ rice, isNew, onsave, ondelete, onupdate }) => {
   return (
     <div className="pr-2 relative ">
       <div className="bg-white rounded-lg p-4">
-        <div className="mt-4 flex justify-center">
-          <div data-theme="dracula" className="stats font-helvetica shadow">
-            <div className="stat">
-              <div className="stat-figure text-4xl text-yellow-400">
-                <GiPaperBagFolded className="text-2xl mr-2 " />
-              </div>
-              <div className="stat-title">Sold (Sack)</div>
-              <div className="stat-value text-yellow-400">{sold}</div>
-              <div className="stat-desc">{rice.sold} items sold</div>
-            </div>
-
-            <div className="stat">
-              <div className="stat-figure text-4xl text-yellow-400">
-                <RiScales2Fill />
-              </div>
-              <div className="stat-title ">Sold (retail)</div>
-              <div className="stat-value text-yellow-400">{purchased}</div>
-              <div className="stat-desc">{rice.purchased} kg sold</div>
-            </div>
-
-            <div className="stat">
-              <div
-                className={
-                  "stat-figure text-4xl " +
-                  `${
-                    stock === 0
-                      ? "text-red-500"
-                      : `${
-                          stock > 1 && stock <= 10
-                            ? "text-orange-500"
-                            : "text-blue-500"
-                        }`
-                  }`
-                }
-              >
-                <TbBuildingWarehouse />
+        {!isNew && (
+          <div className="mt-4 flex justify-center">
+            <div data-theme="dracula" className="stats font-helvetica shadow">
+              <div className="stat">
+                <div className="stat-figure text-4xl text-yellow-400">
+                  <GiPaperBagFolded className="text-2xl mr-2 " />
+                </div>
+                <div className="stat-title">Sold (Sack)</div>
+                <div className="stat-value text-yellow-400">{sold}</div>
+                <div className="stat-desc">{rice.sold} items sold</div>
               </div>
 
-              <div className="stat-title">Stock</div>
-              <div
-                className={
-                  "stat-value " +
-                  `${
-                    stock === 0
-                      ? "text-red-500"
-                      : `${
-                          stock > 1 && stock <= 10
-                            ? "text-orange-500"
-                            : "text-blue-500"
-                        }`
-                  }`
-                }
-              >
-                {stock}
+              <div className="stat">
+                <div className="stat-figure text-4xl text-yellow-400">
+                  <RiScales2Fill />
+                </div>
+                <div className="stat-title ">Sold (retail)</div>
+                <div className="stat-value text-yellow-400">{purchased}</div>
+                <div className="stat-desc">{rice.purchased} kg sold</div>
               </div>
 
-              <div className="stat-desc">{stock} stock on hand</div>
+              <div className="stat">
+                <div
+                  className={
+                    "stat-figure text-4xl " +
+                    `${
+                      stock === 0
+                        ? "text-red-500"
+                        : `${
+                            stock > 1 && stock <= 10
+                              ? "text-orange-500"
+                              : "text-blue-500"
+                          }`
+                    }`
+                  }
+                >
+                  <TbBuildingWarehouse />
+                </div>
+
+                <div className="stat-title">Stock</div>
+                <div
+                  className={
+                    "stat-value " +
+                    `${
+                      stock === 0
+                        ? "text-red-500"
+                        : `${
+                            stock > 1 && stock <= 10
+                              ? "text-orange-500"
+                              : "text-blue-500"
+                          }`
+                    }`
+                  }
+                >
+                  {stock}
+                </div>
+
+                <div className="stat-desc">{stock} stock on hand</div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
         {/* <img
         src={imgUrl}
         className="mt-4 mx-auto w-72 p-4 rounded-md smooth-shadow2"
@@ -217,10 +223,11 @@ const ProductCard = ({ rice, isNew, onsave, ondelete, onupdate }) => {
             className="flex items-center p-4 animate-pulse mt-6 text-sm text-blue-700 bg-blue-100 rounded-lg dark:bg-gray-800 dark:text-blue-400"
             role="alert"
           >
-            <MdOutlineTipsAndUpdates className="text-2xl mr-2 "/>
+            <MdOutlineTipsAndUpdates className="text-2xl mr-2 " />
             <span className="sr-only">Note</span>
             <div>
-              <span className="font-medium">Note!</span> This product is not yet recorded, don't forget to save.
+              <span className="font-medium">Note!</span> This product is not yet
+              recorded, don't forget to save.
             </div>
           </div>
         )}
@@ -237,7 +244,7 @@ const ProductCard = ({ rice, isNew, onsave, ondelete, onupdate }) => {
             </div>
           </div>
         )}
-        {stock <= 10 && stock > 0  && !isNew && (
+        {stock <= 10 && stock > 0 && !isNew && (
           <div
             className="flex items-center animate-pulse p-4 mt-6 text-sm text-yellow-700 border border-yellow-300 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-400 dark:border-yellow-800"
             role="alert"
@@ -276,12 +283,11 @@ const ProductCard = ({ rice, isNew, onsave, ondelete, onupdate }) => {
             <div className="flex flex-col items-center justify-center pt-5 pb-6">
               <BsCloudUpload className="text-4xl text-gray-500" />
               <p className="mb-2 mt-2 text-sm text-gray-500 dark:text-gray-400">
-                change product photo by{" "}
-                <span className="font-semibold">clicking here</span> or by drag
-                and drop
+              <span className="font-semibold">Upload/Change</span> product photo by{" "}
+                <span className="font-semibold">clicking here</span>
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                PNG, JPG or GIF
+              <p className={`${fileImg? "animate-pulse" : ""} `+" text-sm mt-4 font-medium text-gray-500 dark:text-gray-400"}>
+                {fileImg ? `${fileImg.name} - ${(fileImg.size / 1000000).toFixed(2)} MB` : "PNG, JPG or GIF - max size "+(publicRuntimeConfig.maxUploadImage / 1000000)+" MB"}
               </p>
             </div>
             <input
@@ -290,6 +296,13 @@ const ProductCard = ({ rice, isNew, onsave, ondelete, onupdate }) => {
               className="hidden"
               onChange={(e) => {
                 if (e.target.files.length === 0) return;
+                if (e.target.files[0].size > publicRuntimeConfig.maxUploadImage ){
+                    toast.warning("Too large, Image size limit is "+(publicRuntimeConfig.maxUploadImage / 1000000)+" MB", {
+                        position: toast.POSITION.BOTTOM_RIGHT,
+                        autoClose: 3000
+                      });
+                    return;
+                }
                 setFileImg(e.target.files[0]);
                 setImgUrl(URL.createObjectURL(e.target.files[0]));
               }}

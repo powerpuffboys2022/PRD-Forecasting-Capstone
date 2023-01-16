@@ -74,3 +74,13 @@ export const dateMomentBeautify = ( date, format) => {
         date
       ).format(format)
 }
+
+export const scanVals = ( obj, what, skips) => {
+    for(const prop in obj){
+        const toCheck = `${obj[prop]}`.toLowerCase()
+        if(`${skips.join()}`.includes(prop)) continue
+        if(prop === "_id" && what.length !== obj[prop].length)continue
+        if(toCheck.includes(what.toLowerCase()) || toCheck == what.toLowerCase()) return true
+    }
+    return false
+  }

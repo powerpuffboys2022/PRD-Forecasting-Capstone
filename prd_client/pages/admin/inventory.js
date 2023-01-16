@@ -3,14 +3,14 @@ import HomeLayout from "../../layouts/HomeLayout";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-import { BsDot, BsSearch } from "react-icons/bs";
+import { BsSearch } from "react-icons/bs";
 import { VscClose } from "react-icons/vsc";
 import { HiTrash } from "react-icons/hi";
 
-import Loading from "../../components/Loading";
 import ProductCard from "../../components/Admin/ProductCard";
 import CustomConfirm from "../../components/modals/CustomConfirm";
 import { toast } from "react-toastify";
+import { scanVals } from "../../helpers"
 
 const inventory = () => {
   const [loading, setLoading] = useState({ rice: true });
@@ -18,7 +18,10 @@ const inventory = () => {
   const [confirm, setConfirm] = useState("");
   const [isNew, setIsNew] = useState(false);
 
+  const [search, setSearch] = useState("");
+
   const [rices, setRices] = useState([]);
+  const [c_rices, setC_rices] = useState([]);
   const [selected, setSelected] = useState();
 
   const init = async () => {
@@ -26,6 +29,8 @@ const inventory = () => {
       setLoading({ ...loading, rice: true });
       const req = await axios.post("/api/prd/rice", { mode: 0 });
       setRices(req.data);
+      setC_rices(req.data)
+      setSearch("")
     } catch (e) {
     } finally {
       setLoading({ ...loading, rice: false });
@@ -51,6 +56,11 @@ const inventory = () => {
     } finally {
     }
   };
+
+  const remap = () => {
+    const candidates = c_rices.filter((rc)=> scanVals(rc, search, ["dateAdded","imgUrl"]))
+    setRices(candidates)
+  }
 
   useEffect(() => {
     init();
@@ -210,6 +220,21 @@ const inventory = () => {
                   <BsSearch className="text-2xl" />
                 </div>
                 <input
+                    onChange={(e)=>{
+                        if(e.target.value === ""){
+                            setRices(c_rices)
+                        }
+                        setSearch(e.target.value)
+                    }}
+                    onKeyDown={(e)=>{
+                        if(e.code === "Enter"){
+                            if(search.length === 0){
+                                init();
+                                return;
+                            }
+                            remap();
+                        }
+                    }}
                   type="search"
                   id="default-search"
                   className="block w-full p-4 pl-10 text-sm text-stone-800 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"

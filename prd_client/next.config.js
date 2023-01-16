@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  publicRuntimeConfig : {
+    maxUploadImage : 5000000
+  },
   env : {
     MONGO_URI : process.env.MONGO_URI,
     SECRET : process.env.SECRET,
