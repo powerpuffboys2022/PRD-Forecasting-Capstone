@@ -27,6 +27,12 @@ const handler = async (req, res) => {
         return res.status(200).json({ message : "set as deleted"});
     }
 
+    if(mode === 4){ // getSpecificRice
+        const rice = await Rice.findOne({ ...content });
+        if(!rice) return res.status(404).json({ error : "Product can't be found."})
+        return res.status(200).json(rice);
+    }
+
     if(mode === -1){ // hard delete
         const rice = await Rice.updateOne({ ...content }, { $set : { isDeleted : true } });
         return res.status(200).json({ message : "unrecoverable delete"});

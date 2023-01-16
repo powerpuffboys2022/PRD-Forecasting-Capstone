@@ -126,9 +126,9 @@ const SideBar = () => {
             <li className="my-px">
               <a
                 onClick={()=>router.push("/admin/")}
-                className={"flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-700 " + `${router.route === '/admin' ? "bg-gray-100 text-gray-700" : "text-gray-300 "}`}
+                className={"flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-300  hover:bg-gray-100 hover:text-gray-700 " + `${router.route === '/admin' ? "bg-gray-100 text-gray-700" : "text-gray-300 "}`}
               >
-                <span className="flex items-center justify-center text-2xl text-[#a59016]">
+                <span className="flex items-center justify-center text-2xl bg-yellow-500">
                   <AiFillHome />
                 </span>
                 <span className="ml-3">Dashboard</span>
@@ -142,9 +142,9 @@ const SideBar = () => {
             <li className="my-px">
               <a
                 onClick={()=>router.push("/admin/orders")}
-                className={"flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-700 " + `${router.route === '/admin/orders' ? "bg-gray-100 text-gray-700" : "text-gray-300 "}`}
+                className={"flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-300 hover:bg-gray-100 hover:text-gray-700 " + `${router.route === '/admin/orders' ? "bg-gray-100 text-gray-700" : "text-gray-300 "}`}
               >
-                <span className="flex items-center justify-center text-2xl text-[#a59016]">
+                <span className="flex items-center justify-center text-2xl bg-yellow-500">
                   <HiOutlineClipboardList />
                 </span>
                 <span className="ml-3">Orders</span>
@@ -153,9 +153,9 @@ const SideBar = () => {
             <li className="my-px">
               <a
                 onClick={()=>router.push("/admin/inventory")}
-                className={"flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-700 " + `${router.route === '/admin/inventory' ? "bg-gray-100 text-gray-700" : "text-gray-300 "}`}
+                className={"flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-300  hover:bg-gray-100 hover:text-gray-700 " + `${router.route === '/admin/inventory' ? "bg-gray-100 text-gray-700" : "text-gray-300 "}`}
               >
-                <span className="flex items-center justify-center text-2xl text-[#a59016]">
+                <span className="flex items-center justify-center text-2xl bg-yellow-500">
                   <MdInventory />
                 </span>
                 <span className="ml-3">Inventory</span>
@@ -164,9 +164,9 @@ const SideBar = () => {
             <li className="my-px">
               <a
                 onClick={()=>router.push("/admin/dailySales")}
-                className={"flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-700 " + `${router.route === '/admin/dailySales' ? "bg-gray-100 text-gray-700" : "text-gray-300 "}`}
+                className={"flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-300 hover:bg-gray-100 hover:text-gray-700 " + `${router.route === '/admin/dailySales' ? "bg-gray-100 text-gray-700" : "text-gray-300 "}`}
               >
-                <span className="flex items-center justify-center text-2xl text-[#a59016]">
+                <span className="flex items-center justify-center text-2xl bg-yellow-500">
                   <BsCurrencyDollar />
                 </span>
                 <span className="ml-3">Daily Sales</span>
@@ -185,7 +185,7 @@ const SideBar = () => {
                 href="/general/profile"
                 className="flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-300 hover:bg-gray-100 hover:text-gray-700"
               >
-                <span className="flex items-center justify-center text-2xl text-[#a59016]">
+                <span className="flex items-center justify-center text-2xl bg-yellow-500">
                   <FaUser />
                 </span>
                 <span className="ml-3">Profile</span>
@@ -194,9 +194,9 @@ const SideBar = () => {
             <li className="my-px">
               <a
                 onClick={()=>router.push("/admin/accounts")}
-                className={"flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-700 " + `${router.route === '/admin/accounts' ? "bg-gray-100 text-gray-700" : "text-gray-300 "}`}
+                className={"flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-300 hover:bg-gray-100 hover:text-gray-700 " + `${router.route === '/admin/accounts' ? "bg-gray-100 text-gray-700" : "text-gray-300 "}`}
                 >
-                <span className="flex items-center justify-center text-2xl text-[#a59016]">
+                <span className="flex items-center justify-center text-2xl bg-yellow-500">
                   <FaUsers />
                 </span>
                 <span className="ml-3">Accounts</span>
@@ -210,7 +210,7 @@ const SideBar = () => {
                 onClick={() => setModalState(1)}
                 className="flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-300 hover:bg-gray-100 hover:text-gray-700 w-full"
               >
-                <span className="flex items-center justify-center text-2xl text-[#a59016]">
+                <span className="flex items-center justify-center text-2xl bg-yellow-500">
                   <IoIosExit />
                 </span>
                 <span className="ml-3">Logout</span>
@@ -285,7 +285,7 @@ const SideBar = () => {
               </>
             )}
           </div>
-        </div> */}
+        </div> */} 
       </div>
       {/* <div className="w-64"></div> */}
     </>
