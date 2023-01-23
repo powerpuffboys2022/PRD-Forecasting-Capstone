@@ -110,7 +110,7 @@ const SideBar = () => {
         acceptText={"Yes"}
         declineText={"No"}
       />
-      <div className="bg-[#192434] sidebar w-64 md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in ">
+      <div className="bg-[#1e293b] sidebar w-1/6 md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in ">
         <div className="sidebar-header flex items-center justify-center py-4 px-4">
           <div className="inline-flex">
             <Link href="/" className="inline-flex flex-row items-center">

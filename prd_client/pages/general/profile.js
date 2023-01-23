@@ -82,7 +82,7 @@ const UserProfile = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        updateMode: 0,
+        mode: 0,
         _id: userData._id,
         userData: newUserData,
       }),
@@ -114,7 +114,7 @@ const UserProfile = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        updateMode: 0,
+        mode: 0,
         _id: userData._id,
         userData: newUserData,
       }),

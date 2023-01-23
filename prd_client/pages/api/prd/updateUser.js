@@ -8,28 +8,42 @@ dbConnect();
 
 const handler = async (req, res) => {
   try {
-    let { updateMode, _id, userData } = req.body;
+    let { mode, _id, content, filter, hasPass } = req.body;
 
-    // updateMode 
+    // mode 
     // 0 -> Update 
+    // 1 -> Create
+    // 2 -> Retrieve
     // -1 -> Delete Account
 
-    if( updateMode === 0 && _id && userData ){
-        if(userData.password){
-            const hashedPass = await bcrypt.hash(userData.password, 10);
-            userData.password = hashedPass;
+    if( mode === 0 && filter ){
+        if(hasPass){
+            const hashedPass = await bcrypt.hash(content.password, 10);
+            content.password = hashedPass;
         }
         
-        const updateUser = await User.updateOne({ _id }, { $set : { ...userData }});
+        const updateUser = await User.updateOne({ ...filter }, { $set : { ...content }});
         return res.status(200).json({ message : "Updated Info" })
     }
 
-    if(updateMode === -1 && _id){
+    if(mode === 1 ){
+        const isConflict = await User.findOne({ email : content.email })
+        if( isConflict ) return res.status(409).json({ message : "Email already registered"})
+        const create = await User.create({ ...content })
+        return res.status(200).json({ message : "Created!"})
+    }
+
+    if( mode === 2 ) {
+        const users = await User.find({})
+        return res.status(200).json(users)
+    }
+
+    if(mode === -1 && _id){
         const updateUser = await User.deleteOne({ _id })
         return res.status(200).json({ message : "Account Deleted"})
     }
     
-    return res.status(400).json({ message : "No updateMode specified, the server did nothin"})
+    return res.status(400).json({ message : "No mode specified, the server did nothin"})
   } catch (e) {
     console.log(e);
     res.status(500).json({
