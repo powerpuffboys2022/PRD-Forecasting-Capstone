@@ -200,9 +200,9 @@ const SideBar = () => {
                   <FaUsers />
                 </span>
                 <span className="ml-3">Accounts</span>
-                <span className="flex items-center justify-center text-xs text-red-500 font-semibold bg-red-100 h-6 px-2 rounded-full ml-auto">
+                {/* <span className="flex items-center justify-center text-xs text-red-500 font-semibold bg-red-100 h-6 px-2 rounded-full ml-auto">
                   10
-                </span>
+                </span> */}
               </a>
             </li>
             <li className="my-px">

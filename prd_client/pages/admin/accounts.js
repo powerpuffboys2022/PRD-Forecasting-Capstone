@@ -17,7 +17,7 @@ import CustomConfirm from "../../components/modals/CustomConfirm";
 import { toast } from "react-toastify";
 
 
-const accounts = () => {
+const Accounts = () => {
   const [tab, setTab] = useState(-1);
   const [loading, setLoading] = useState(false);
   const [isNew, setIsNew] = useState(false);
@@ -340,8 +340,8 @@ const accounts = () => {
   );
 };
 
-accounts.getLayout = function getLayout(page) {
+Accounts.getLayout = function getLayout(page) {
   return <HomeLayout>{page}</HomeLayout>;
 };
 
-export default accounts;
+export default Accounts;

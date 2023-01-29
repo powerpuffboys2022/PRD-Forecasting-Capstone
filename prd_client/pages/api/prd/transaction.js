@@ -31,6 +31,14 @@ const handler = async (req, res) => {
         return res.status(200).json({ message : "set as deleted"});
     }
 
+    if(mode === 4){ // get specific transaction
+        const transaction = await Transaction.findOne({...content, isDeleted : false});
+        if(!transaction){
+            return res.status(404).json({ message : "this transaction is not found"})
+        }
+        return res.status(200).json(transaction);
+    }
+
     if(mode === -1){ // hard delete
         const rice = await Rice.updateOne({ ...content }, { $set : { isDeleted : true } });
         return res.status(200).json({ message : "unrecoverable delete"});

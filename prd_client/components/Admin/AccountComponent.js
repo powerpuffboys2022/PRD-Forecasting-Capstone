@@ -187,7 +187,7 @@ const AccountComponent = ({ isNew, role, data, onUpdate, onDelete, close }) => {
   }, []);
 
   return (
-    <div className="p-4 w-full ">
+    <div className="p-4 w-full">
   
 
       <div className="flex justify-between">
@@ -504,6 +504,8 @@ const AccountComponent = ({ isNew, role, data, onUpdate, onDelete, close }) => {
           </>
         )}
       </div>
+
+      <p className="h-8"></p>
     </div>
   );
 };
