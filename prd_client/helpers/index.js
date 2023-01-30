@@ -44,7 +44,7 @@ export const dateToBeutify = (date) => {
   };
 
 export const statusToWord = ( status ) => {
-    if(status === -1) return "cancelled"
+    if(status === -1) return "canceled"
     if(status === 1) return "pending request"
     if(status === 2) return "processing.."
     if(status === 3) return "shipped"

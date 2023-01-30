@@ -15,7 +15,6 @@ const handler = async (req, res) => {
     // 1 -> Create
     // 2 -> Retrieve
     // -1 -> Delete Account
-
     if( mode === 0 && filter ){
         if(hasPass){
             const hashedPass = await bcrypt.hash(content.password, 10);

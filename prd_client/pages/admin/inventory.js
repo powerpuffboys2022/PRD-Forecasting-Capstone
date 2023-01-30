@@ -11,15 +11,16 @@ import ProductCard from "../../components/Admin/ProductCard";
 import CustomConfirm from "../../components/modals/CustomConfirm";
 import { toast } from "react-toastify";
 import { scanVals } from "../../helpers"
+import { useRouter } from "next/router";
 
 const Inventory = () => {
+  const router = useRouter()
   const [loading, setLoading] = useState({ rice: true });
   const [modal, setModal] = useState(-1);
   const [confirm, setConfirm] = useState("");
   const [isNew, setIsNew] = useState(false);
 
   const [search, setSearch] = useState("");
-
   const [rices, setRices] = useState([]);
   const [c_rices, setC_rices] = useState([]);
   const [selected, setSelected] = useState();
@@ -30,7 +31,7 @@ const Inventory = () => {
       const req = await axios.post("/api/prd/rice", { mode: 0 });
       setRices(req.data);
       setC_rices(req.data)
-      setSearch("")
+    //   setSearch("")
     } catch (e) {
     } finally {
       setLoading({ ...loading, rice: false });
@@ -61,6 +62,18 @@ const Inventory = () => {
     const candidates = c_rices.filter((rc)=> scanVals(rc, search, ["dateAdded","imgUrl"]))
     setRices(candidates)
   }
+
+  useEffect(() => {
+    if (!router) {
+      return;
+    }
+    
+    const { srch } = router.query
+    if(!srch) return
+    setSearch(srch)
+  }, [router]);
+
+  useEffect(()=>{ remap() },[search, c_rices])
 
   useEffect(() => {
     init();
@@ -235,6 +248,7 @@ const Inventory = () => {
                             remap();
                         }
                     }}
+                    value={search}
                   type="search"
                   id="default-search"
                   className="block w-full p-4 pl-10 text-sm text-stone-800 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"

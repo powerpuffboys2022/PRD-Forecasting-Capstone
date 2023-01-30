@@ -31,6 +31,7 @@ const UserProfile = () => {
   const [userData, setUserData] = useState();
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [contact, setContact] = useState("");
   const [address, setAddress] = useState("");
   const [modalState, setModalState] = useState(-1);
 
@@ -70,9 +71,11 @@ const UserProfile = () => {
 
   const saveNoImg = () => {
     setLoading(true);
-    let newUserData = { userName, address };
-
+    let newUserData = { userName, address, contact };
     if (password.length > 0) newUserData.password = password;
+
+    let bodyreq = { mode: 0, filter : { _id : userData._id }, content: newUserData }
+    if (password.length > 0) bodyreq.hasPass = true
 
     const response = fetch("/api/prd/updateUser", {
       method: "POST",
@@ -81,11 +84,7 @@ const UserProfile = () => {
         Accept: "application/json, text/plain, */*",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        mode: 0,
-        _id: userData._id,
-        userData: newUserData,
-      }),
+      body: JSON.stringify(bodyreq),
     })
       .then((data) => {
         setLoading(false);
@@ -104,8 +103,12 @@ const UserProfile = () => {
 
   const saveWithImg = async (imgUrl) => {
     setLoading(true);
-    let newUserData = { userName, address, imgUrl };
+
+    let newUserData = { userName, address, contact, imgUrl };
     if (password.length > 0) newUserData.password = password;
+    let bodyreq = { mode: 0, filter : { _id : userData._id }, content : newUserData }
+    if (password.length > 0) bodyreq.hasPass = true
+
     const response = fetch("/api/prd/updateUser", {
       method: "POST",
       mode: "cors",
@@ -113,11 +116,7 @@ const UserProfile = () => {
         Accept: "application/json, text/plain, */*",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        mode: 0,
-        _id: userData._id,
-        userData: newUserData,
-      }),
+      body: JSON.stringify(bodyreq),
     })
       .then((data) => {
         setLoading(false);
@@ -151,6 +150,7 @@ const UserProfile = () => {
             console.log(data.imgUrl)
             setUserData(data);
             setUserName(data.userName);
+            setContact(data.contact);
             setAddress(data.address);
             setImgUrl(data.imgUrl);
           });
@@ -326,6 +326,37 @@ const UserProfile = () => {
               <label className="label">
                 <span className="text-sm opacity-70">
                   Who you are, & how do you want to be identified in this app
+                </span>
+              </label>
+            </div>
+
+            <div className="mt-3 form-control w-full">
+              <label className="label">
+                <span className="label-text font-inter font-medium ">
+                  Contact
+                </span>
+              </label>
+              <input
+                readOnly={loading}
+                type="text"
+                tabIndex={1}
+                required
+                onChange={(e) => {
+                  setErr("");
+                  var val = e.target.value;
+                  setContact(val);
+                }}
+                disabled={!userData || loading}
+                value={contact}
+                className={`input px-4 py-5 input-sm bg-base-200/50 w-full hover:bg-base-100 focus:ring-4 hover:ring-4 ${
+                  !err.includes("not found") && Validator(contact, ["isEmpty"])
+                    ? "ring-fuchsia-100"
+                    : "ring-rose-300"
+                }`}
+              />
+              <label className="label">
+                <span className="text-sm opacity-70">
+                  Contact number can help us reach you aside from your email.
                 </span>
               </label>
             </div>

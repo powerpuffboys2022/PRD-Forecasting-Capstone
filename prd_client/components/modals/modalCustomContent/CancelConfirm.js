@@ -6,7 +6,7 @@ const CancelConfirm = ({ onAccept, onDecline, acceptText, declineText }) => {
   return (
     <>
       <div>
-        <p className="mt-5">Let us know why this order needs to be cancelled</p>
+        <p className="mt-5">Let us know why this order needs to be canceled</p>
         <textarea
           id="message"
           rows="4"
