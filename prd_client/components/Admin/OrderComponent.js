@@ -204,11 +204,11 @@ const OrderComponent = ({
         <>
           <div className="p-4 border mt-6 rounded-md">
             <p className="text-lg font-medium">Tracking / Status</p>
-            <p className="text-sm mt-4 ">
+            <p className="text-sm text-gray-500 mt-2 ">
               Tracking helps identify what is the status of the order. This will
               reflect to the user tracking record as well.
             </p>
-            <ol className="ml-6 mt-4 relative text-gray-500 border-l border-gray-200">
+            <ol className="ml-6 mt-6 relative text-gray-500 border-l border-gray-200">
               <li
                 className={
                   "mb-10 ml-6 " +
@@ -353,7 +353,7 @@ const OrderComponent = ({
 
           <div className="p-4 border rounded-md mt-6">
             <p className="text-lg font-medium">Items </p>
-            <p className="mt-2 text-sm">You can check the items current stock and other details by clicking the name of the item. </p>
+            <p className="mt-2 text-sm text-gray-500">You can check the items current stock and other details by clicking the name of the item. </p>
 
             <div className="relative overflow-x-auto mt-6 rounded-md">
               <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -420,7 +420,7 @@ const OrderComponent = ({
 
           <div className="mt-6 p-4 mb-6 border rounded-md">
             <p className="text-lg font-medium">Delivery</p>
-            <p className="mt-2 text-sm">
+            <p className="mt-2 text-sm text-gray-500">
               The details below will be used for delivery purposes
             </p>
             {partnerData ? (

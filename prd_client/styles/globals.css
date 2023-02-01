@@ -78,3 +78,18 @@ body {
   0px 111px 80px rgba(0, 0, 0, 0.03)
 ;
 }
+
+.smooth-shadow-thin{
+    box-shadow:
+  0px 0px 0.4px -30px rgba(0, 0, 0, 0.028),
+  0px 0px 25.1px -30px rgba(0, 0, 0, 0.041),
+  0px 0px 130px -30px rgba(0, 0, 0, 0.07)
+;
+}
+
+.smooth-shadow-fade{
+    box-shadow:
+  0px 0px 2.4px rgba(0, 0, 0, 0.035),
+  0px 0px 19px rgba(0, 0, 0, 0.07)
+;
+}

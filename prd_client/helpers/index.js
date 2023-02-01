@@ -52,14 +52,15 @@ export const statusToWord = ( status ) => {
     return "untracked"
 }
 
-export const statusToIcon = ( status ) => {
-    if(status === -1) return <AiOutlineStop className="text-red-700 text-lg"/>
-    if(status === 1) return <MdPendingActions className="text-yellow-700 text-lg" />
-    if(status === 2) return <TbTruckLoading  className="text-blue-700 text-lg"/>
-    if(status === 3) return <MdLocalShipping  className="text-indigo-700 text-lg"/>
-    if(status === 4) return <AiOutlineFileDone  className="text-green-700 text-lg"/>
+export const statusToComponentWord = ( status ) => {
+    if(status === -1) return <span>canceled</span>
+    if(status === 1) return <span>pending request</span>
+    if(status === 2) return <span>processing..</span>
+    if(status === 3) return <span>shipped</span>
+    if(status === 4) return <span>delivered</span>
     return "untracked"
 }
+
 
 export const getStatusColor = ( status ) => {
     if(status === -1) return "text-rose-600"

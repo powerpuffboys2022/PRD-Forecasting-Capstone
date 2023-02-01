@@ -2,7 +2,9 @@ import Head from "next/head";
 import { useState, useEffect } from "react";
 import HomeLayout from "../../layouts/HomeLayout";
 import axios from "axios";
+
 import { toast } from "react-toastify";
+import { Pagination } from "react-headless-pagination";
 
 import { MdPendingActions, MdLocalShipping } from "react-icons/md";
 import { TbTruckLoading } from "react-icons/tb";
@@ -13,10 +15,12 @@ import { AiOutlineFileDone, AiOutlineStop, AiFillDelete } from "react-icons/ai";
 import { BsSearch } from "react-icons/bs";
 import { VscLoading, VscError } from "react-icons/vsc";
 
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+
 import {
   scanVals,
-  statusToIcon,
   statusToWord,
+  statusToComponentWord,
   dateMomentBeautify,
   getDateAgo,
 } from "../../helpers";
@@ -30,6 +34,8 @@ const Orders = () => {
   const [modal, setModal] = useState(-1);
   const [search, setSearch] = useState("");
   const [reason, setReason] = useState("");
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageMax, setPageMax] = useState(10);
 
   const [orders, setOrders] = useState([]);
   const [cOrders, setCOrders] = useState([]);
@@ -77,6 +83,7 @@ const Orders = () => {
     );
     if (tab !== -2)
       candidates = candidates.filter((data) => data.status === tab);
+    setCurrentPage(0);
     setOrders(candidates);
   };
 
@@ -187,24 +194,112 @@ const Orders = () => {
     }
   };
 
+  const completed = async (order) => {
+    try {
+      let content = { ...order, status: 4 };
+      let completedw = dateMomentBeautify(
+        content.trackingDates.completed,
+        "YYYY-MM-DD"
+      );
+      console.log(completedw);
+      content.trackingDates.completed = new Date();
+      if (editorData) {
+        content.processedBy = editorData._id;
+        content.updatedBy = editorData._id;
+        content.completedDateWord = completedw;
+      }
+      const request = await axios.post("/api/prd/transaction", {
+        mode: 2,
+        _id: content._id,
+        content,
+        pushToForeCast: true,
+      });
+      init();
+      toast.success("Order Completed", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+    } catch (e) {
+      toast.error("Failed to update", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        icon: <VscError className="text-2xl text-red-500" />,
+      });
+    } finally {
+    }
+  };
+
   const getQty = (ords) => {
     let qty = 0;
     ords.rice.forEach((r) => (qty += r.qty));
     return `${qty}`;
   };
 
+  const statusToIcon = (status) => {
+    if (status === -1)
+      return <AiOutlineStop className="text-rose-400 text-sm" />;
+    if (status === 1)
+      return <MdPendingActions className="text-yellow-500 text-sm" />;
+    if (status === 2)
+      return <TbTruckLoading className="text-blue-700 text-sm" />;
+    if (status === 3)
+      return <MdLocalShipping className="text-indigo-700 text-sm" />;
+    if (status === 4)
+      return <AiOutlineFileDone className="text-green-700 text-sm" />;
+    return "untracked";
+  };
+
+  const statusToBadge = (status) => {
+    if (status === -1)
+      return (
+        <a className="bg-red-50 text-rose-400 text-xs font-medium mr-2 inline-flex items-center px-2 py-1 rounded-full space-x-2">
+          {statusToIcon(status)}
+          {statusToComponentWord(status)}
+        </a>
+      );
+    if (status === 1)
+      return (
+        <a className="bg-yellow-50 animate-pulse text-yellow-500 text-xs font-medium mr-2 inline-flex items-center px-2 py-1 rounded-full space-x-2">
+          {statusToIcon(status)}
+          {statusToComponentWord(status)}
+        </a>
+      );
+    if (status === 2)
+      return (
+        <a className="bg-blue-50 text-blue-700 text-xs font-medium mr-2 inline-flex items-center px-2 py-1 rounded-full space-x-2">
+          {statusToIcon(status)}
+          {statusToComponentWord(status)}
+        </a>
+      );
+    if (status === 3)
+      return (
+        <a className="bg-gray-100 text-gray-800 text-xs font-medium mr-2 inline-flex items-center px-2 py-1 rounded-full space-x-2">
+          {statusToIcon(status)}
+          {statusToComponentWord(status)}
+        </a>
+      );
+    if (status === 4)
+      return (
+        <a className="bg-green-100 text-green-700 text-xs font-medium mr-2 inline-flex items-center px-2 py-1 rounded-full space-x-2">
+          {statusToIcon(status)}
+          {statusToComponentWord(status)}
+        </a>
+      );
+    return "untracked";
+  };
+
   useEffect(() => {
     init();
     loadEditorData();
+    setCurrentPage(0);
   }, []);
 
   useEffect(() => {
+    setCurrentPage(0);
     setMarked([]);
     filterOrder();
   }, [tab, cOrders]);
 
   return (
-    <div className="font-poppins h-screen flex flex-col flex-grow bg-[#f2f5fa]">
+    <div className="font-poppins overflow-hidden h-screen flex flex-col flex-grow bg-[#f5f8fa]">
       <Head>
         <title>Orders</title>
         <meta
@@ -325,10 +420,10 @@ const Orders = () => {
         />
       )}
 
-      <main className="p-4 h-full bg-white relative">
+      <main className="p-4 h-full relative">
         <div
           onClick={() => setSelected(null)}
-          className=" h-1/6 flex mt-2 items-center justify-between text-sm shadow-md bg-white p-2 font-medium text-center text-gray-500"
+          className=" h-1/6 flex mt-2 items-center rounded-lg justify-between text-sm smooth-shadow-thin bg-white p-2 font-medium text-center text-gray-500"
         >
           <ul className="flex flex-wrap -mb-px">
             <li className="mr-2">
@@ -498,8 +593,8 @@ const Orders = () => {
         </div>
 
         <div className="pt-3 h-5/6 overflow-y-scroll">
-          <div className="mt-4 space-x-1 w-full p-2 text-xs bg-white ">
-            {(tab === -1 || tab === 4) && (
+          {(tab === -1 || tab === 4) && (
+            <div className="mt-4 rounded-md bg-white space-x-1 w-full p-2 text-xs ">
               <button
                 onClick={() => setModal(1)}
                 className={
@@ -510,54 +605,8 @@ const Orders = () => {
                 <AiFillDelete className="text-xl" />
                 Delete Selected
               </button>
-            )}
-            {/* {(tab === 1 || tab === 2) && (
-              <>
-                {tab === 1 && (
-                  <button
-                    className={
-                      "border rounded-lg border-transparent hover:border-yellow-700 hover:bg-gray-100 bg-white px-2 py-1 text-sm inline-flex gap-2 duration-150 ease-in-out " +
-                      `${marked.length === 0 ? "btn-disabled" : ""}`
-                    }
-                  >
-                    <AiFillCheckCircle className="text-xl" />
-                    Accept Selected
-                  </button>
-                )}
-                <button
-                  className={
-                    "border rounded-lg border-transparent hover:border-red-700 hover:bg-gray-100 bg-white px-2 py-1 text-sm inline-flex gap-2 duration-150 ease-in-out " +
-                    `${marked.length === 0 ? "btn-disabled" : ""}`
-                  }
-                >
-                  <AiOutlineStop className="text-xl" />
-                  Decline Selected
-                </button>
-              </>
-            )}
-            {tab === 2 && (
-              <button
-                className={
-                  "border rounded-lg border-transparent hover:border-indigo-700 hover:bg-gray-100 bg-white px-2 py-1 text-sm inline-flex gap-2 duration-150 ease-in-out " +
-                  `${marked.length === 0 ? "btn-disabled" : ""}`
-                }
-              >
-                <MdLocalShipping className="text-xl" />
-                Set Selected as shipped
-              </button>
-            )}
-            {tab === 3 && (
-              <button
-                className={
-                  "border rounded-lg border-transparent hover:border-green-700 hover:bg-gray-100 bg-white px-2 py-1 text-sm inline-flex gap-2 duration-150 ease-in-out " +
-                  `${marked.length === 0 ? "btn-disabled" : ""}`
-                }
-              >
-                <AiFillCheckCircle className="text-xl" />
-                Set Selected as Complete
-              </button>
-            )} */}
-          </div>
+            </div>
+          )}
 
           {loading ? (
             <>
@@ -576,11 +625,11 @@ const Orders = () => {
                   </p>
                 </div>
               ) : (
-                <div className="relative overflow-x-auto overflow-y-scroll shadow-md sm:rounded-lg">
+                <div className="relative mb-4 bg-white overflow-x-auto overflow-y-scroll shadow-md sm:rounded-lg" >
                   <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                       <tr>
-                        {(tab === 1 || tab === -1) && (
+                        {(tab === 1 || tab===4 || tab === -1) && (
                           <th scope="col" className="p-4">
                             <div className="flex items-center">
                               <input
@@ -618,118 +667,189 @@ const Orders = () => {
                     </thead>
                     <tbody>
                       {[...orders].map((ords, idx) => (
-                        <tr
-                          key={idx}
-                          className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                        >
-                          {(tab === 1 || tab === -1) && (
-                            <td className="w-4 p-4">
-                              <div className="flex items-center">
-                                <input
-                                  id="checkbox-table-search-2"
-                                  type="checkbox"
-                                  onChange={(e) => {
-                                    if (e.target.checked) {
-                                      setMarked([...marked, ords._id]);
-                                    } else {
-                                      setMarked(
-                                        marked.filter((ids) => ids !== ords._id)
-                                      );
-                                    }
-                                  }}
-                                  checked={
-                                    marked.filter((ids) => ids === ords._id)
-                                      .length > 0
-                                  }
-                                  className="checkbox"
-                                />
-                              </div>
-                            </td>
-                          )}
-                          <th
-                            scope="row"
-                            className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                          >
-                            {ords.datew}
-                            <span className="text-xs text-gray-500">
-                              (
-                              {getDateAgo(
-                                new Date(),
-                                new Date(ords.placedDate)
-                              )}{" "}
-                              days ago)
-                            </span>
-                          </th>
-                          <td className="px-6 py-4">
-                            {ords.totalPrice.toLocaleString("en-Us")}
-                          </td>
-                          <td className="px-6 py-4">{getQty(ords)}x</td>
-                          <td className="px-6 py-4 flex items-center justify-between">
-                            <p className="inline-flex space-x-2">
-                              <span>{statusToIcon(ords.status)}</span>
-                              <span>{statusToWord(ords.status)}</span>
-                            </p>
-                            {(ords.status === 1 ||
-                              ords.status === 3 ||
-                              ords.status === 2) && (
-                              <div className="flex justify-between items-center">
-                                {ords.status === 1 && (
-                                  <button
-                                    onClick={() => accept(ords)}
-                                    type="button"
-                                    className="text-sm text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg px-2 py-1 text-center inline-flex items-center mr-2 mb-2"
-                                  >
-                                    Accept{" "}
-                                    <IoMdCheckmark className="ml-2 text-sm" />
-                                  </button>
-                                )}
-                                {ords.status === 2 && (
-                                  <button
-                                    onClick={() => ship(ords)}
-                                    type="button"
-                                    className="text-sm text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg px-2 py-1 text-center inline-flex items-center mr-2 mb-2"
-                                  >
-                                    Mark as Shipped{" "}
-                                    <MdLocalShipping className="ml-2 text-sm" />
-                                  </button>
-                                )}
-                                <button
-                                  onClick={() => {
-                                    setModal(2);
-                                    setFocused(ords);
-                                  }}
-                                  type="button"
-                                  className="text-sm text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg px-2 py-1 text-center inline-flex items-center mr-2 mb-2"
-                                >
-                                  Decline{" "}
-                                  <AiOutlineStop className="ml-2 text-sm" />
-                                </button>
-                              </div>
-                            )}
-                          </td>
-                          <td className="px-6 py-4">
-                            <div
-                              className="tooltip tooltip-left"
-                              data-tip="View Order Details"
+                        <>
+                          {idx >= currentPage * pageMax &&
+                          idx + 1 <= currentPage * pageMax + pageMax ? (
+                            <tr
+                              key={idx}
+                              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                             >
-                              <CiReceipt
-                                onClick={() => setSelected(ords)}
-                                className="text-2xl ease-in-out duration-200 drop-shadow-md text-gray-500 cursor-pointer hover:text-gray-900"
-                              />
-                            </div>
-                          </td>
-                        </tr>
+                              {(tab === 1 || tab===4 || tab === -1) && (
+                                <td className="w-4 p-4">
+                                  <div className="flex items-center">
+                                    <input
+                                      id="checkbox-table-search-2"
+                                      type="checkbox"
+                                      onChange={(e) => {
+                                        if (e.target.checked) {
+                                          setMarked([...marked, ords._id]);
+                                        } else {
+                                          setMarked(
+                                            marked.filter(
+                                              (ids) => ids !== ords._id
+                                            )
+                                          );
+                                        }
+                                      }}
+                                      checked={
+                                        marked.filter((ids) => ids === ords._id)
+                                          .length > 0
+                                      }
+                                      className="checkbox"
+                                    />
+                                  </div>
+                                </td>
+                              )}
+                              <th
+                                scope="row"
+                                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                              >
+                                {ords.datew}
+                                <span className="text-xs text-gray-500">
+                                  (
+                                  {getDateAgo(
+                                    new Date(),
+                                    new Date(ords.placedDate)
+                                  )}{" "}
+                                  days ago)
+                                </span>
+                              </th>
+                              <td className="px-6 py-4">
+                                {ords.totalPrice.toLocaleString("en-Us")}
+                              </td>
+                              <td className="px-6 py-4">{getQty(ords)}x</td>
+                              <td className="px-6 py-4 flex items-center justify-between">
+                                {statusToBadge(ords.status)}
+                                {(ords.status === 1 ||
+                                  ords.status === 3 ||
+                                  ords.status === 2) ? 
+                                  <div className="flex justify-between items-center">
+                                    {ords.status === 1 && (
+                                      <button
+                                        onClick={() => accept(ords)}
+                                        type="button"
+                                        className="text-xs text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg px-2 py-1 text-center inline-flex items-center mr-2 mb-2"
+                                      >
+                                        Accept{" "}
+                                        <IoMdCheckmark className="ml-2 text-sm" />
+                                      </button>
+                                    )}
+                                    {ords.status === 2 && (
+                                      <button
+                                        onClick={() => ship(ords)}
+                                        type="button"
+                                        className="text-xs text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg px-2 py-1 text-center inline-flex items-center mr-2 mb-2"
+                                      >
+                                        Ship{" "}
+                                        <MdLocalShipping className="ml-2 text-sm" />
+                                      </button>
+                                    )}
+                                    {ords.status === 3 && (
+                                      <button
+                                        onClick={() => completed(ords)}
+                                        type="button"
+                                        className="text-xs text-green-800 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg px-2 py-1 text-center inline-flex items-center mr-2 mb-2"
+                                      >
+                                        Complete{" "}
+                                        <AiOutlineFileDone className="ml-2 text-sm" />
+                                      </button>
+                                    )}
+                                    <button
+                                      onClick={() => {
+                                        setModal(2);
+                                        setFocused(ords);
+                                      }}
+                                      type="button"
+                                      className="text-xs text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg px-2 py-1 text-center inline-flex items-center mr-2 mb-2"
+                                    >
+                                      Decline{" "}
+                                      <AiOutlineStop className="ml-2 text-sm" />
+                                    </button>
+                                  </div> : <div className="w-16"></div>
+                                }
+                              </td>
+                              <td className="px-6 py-4">
+                                <div
+                                  className="tooltip tooltip-left"
+                                  data-tip="View Order Details"
+                                >
+                                  <CiReceipt
+                                    onClick={() => setSelected(ords)}
+                                    className="text-2xl ease-in-out duration-200 drop-shadow-md text-gray-500 cursor-pointer hover:text-gray-900"
+                                  />
+                                </div>
+                              </td>
+                            </tr>
+                          ) : (
+                            <></>
+                          )}
+                        </>
                       ))}
                     </tbody>
                   </table>
+                  <div className="flex items-center mt-1 px-4 py-2 justify-between">
+                    {/* <p className="text-xs text-gray-500">
+                        Showing <span className="font-medium text-gray-700">{currentPage * pageMax}</span>-
+                        <span className="font-medium text-gray-700">{currentPage * pageMax + pageMax}</span> of <span className="font-medium text-gray-700">{orders.length}{" "}</span>
+                      </p>   */}
+                    <select
+                      id="countries"
+                      onChange={(e) => {
+                        setPageMax(parseInt(e.target.value));
+                      }}
+                      value={pageMax}
+                      className="bg-gray-50 hover:bg-gray-100 ease-in-out cursor-pointer text-gray-600 text-xs rounded-lg w-16 outline-none block p-2.5 px-3 "
+                    >
+                      <option value={10}>10</option>
+                      <option value={15}>15</option>
+                      <option value={20}>20</option>
+                      <option value={20}>25</option>
+                      <option value={20}>50</option>
+                    </select>
+                    {orders.length >= pageMax ? (
+                      <Pagination
+                        currentPage={currentPage}
+                        setCurrentPage={setCurrentPage}
+                        totalPages={Math.ceil(orders.length / pageMax)}
+                        edgePageCount={2}
+                        middlePagesSiblingCount={2}
+                        className="flex space-x-1 text-sm"
+                        truncableText="..."
+                        truncableClassName=""
+                      >
+                        <Pagination.PrevButton className="rounded-md cursor-pointer hover:bg-gray-100 px-2 py-1  ease-in text-gray-400 duration-200 hover:text-blue-700 hover:smooth-shadow-fade">
+                          <ChevronLeftIcon className="h-5 w-5" />
+                        </Pagination.PrevButton>
+
+                        <div className="flex items-center justify-center flex-grow">
+                          <Pagination.PageButton
+                            activeClassName="bg-[#009ef7] smooth-shadow-fade text-white"
+                            inactiveClassName=""
+                            className="px-3 py-1 rounded-md cursor-pointer ease-in duration-200 hover:bg-[#0f96e4]"
+                          />
+                        </div>
+
+                        <Pagination.NextButton className="rounded-md cursor-pointer hover:bg-gray-100 px-2 py-1 ease-in text-gray-400 duration-200 hover:text-blue-700  hover:smooth-shadow-fade">
+                          <ChevronRightIcon className="h-5 w-5" />
+                        </Pagination.NextButton>
+                      </Pagination>
+                    ) : (
+                      <div></div>
+                    )}
+                  </div>
                 </div>
               )}
             </>
           )}
         </div>
 
-        {selected && (
-          <div className="smooth-shadow2 p-4 flex duration-200 overflow-y-scroll ease-in-out w-1/2 h-full bg-white/80 absolute top-0 right-0 backdrop-blur-lg">
+        <div
+          className={
+            "smooth-shadow2 p-4 flex duration-500 overflow-y-scroll ease-in-out w-1/2 h-full bg-white/80 absolute top-0 backdrop-blur-lg " +
+            `${selected ? " right-0" : "  -right-full"}`
+          }
+        >
+          {selected && (
             <OrderComponent
               close={() => setSelected(null)}
               _id={selected._id}
@@ -742,8 +862,8 @@ const Orders = () => {
                 setModal(2);
               }}
             />
-          </div>
-        )}
+          )}
+        </div>
       </main>
     </div>
   );

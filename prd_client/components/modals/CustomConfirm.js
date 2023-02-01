@@ -1,5 +1,4 @@
 const CustomConfirm = ({ shown, title, content }) => {
-    console.log("YES")
   return (
     <>
       <input type="checkbox" className="modal-toggle" />

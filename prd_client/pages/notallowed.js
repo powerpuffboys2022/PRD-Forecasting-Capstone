@@ -40,7 +40,7 @@ const NotAllowed = () => {
           content="cover.png"
         />
 
-        <meta name="twitter:card" content="summary_large_image" />
+        <meta className="" name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Philip Rice Dealer" />
         <meta
           name="twitter:description"

@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const HomeLayout = ({ children }) => {
   return (
-    <div className="flex flex-row min-h-screen bg-[#f2f5fa] text-gray-800">
+    <div className="flex flex-row min-h-screen bg-[#f5f8fa] text-gray-800">
                       <ToastContainer
         position="top-right"
         autoClose={1000}

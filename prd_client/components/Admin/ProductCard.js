@@ -177,7 +177,7 @@ const ProductCard = ({ rice, isNew, onsave, ondelete, onupdate }) => {
                   className={
                     "stat-value " +
                     `${
-                      stock === 0
+                      stock <= 0
                         ? "text-red-500"
                         : `${
                             stock > 1 && stock <= 10
@@ -231,7 +231,7 @@ const ProductCard = ({ rice, isNew, onsave, ondelete, onupdate }) => {
             </div>
           </div>
         )}
-        {stock === 0 && !isNew && (
+        {stock <= 0 && !isNew && (
           <div
             className="flex animate-pulse items-center p-4 mt-6 text-sm text-red-700 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
             role="alert"
@@ -322,7 +322,7 @@ const ProductCard = ({ rice, isNew, onsave, ondelete, onupdate }) => {
             id="articleName"
             value={articleName}
             onChange={(e) => setArticleName(e.target.value)}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            className="outline-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           />
         </div>
 
@@ -338,7 +338,7 @@ const ProductCard = ({ rice, isNew, onsave, ondelete, onupdate }) => {
             id="articleCode"
             value={articleCode}
             onChange={(e) => setArticleCode(e.target.value)}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            className="outline-none  bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           />
         </div>
 
@@ -355,7 +355,7 @@ const ProductCard = ({ rice, isNew, onsave, ondelete, onupdate }) => {
               onChange={(e) => setPrice(e.target.value)}
               type="number"
               id="price"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="bg-gray-50 border outline-none  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Price per sack"
               required
             />
@@ -373,7 +373,7 @@ const ProductCard = ({ rice, isNew, onsave, ondelete, onupdate }) => {
               onChange={(e) => setPricePKg(e.target.value)}
               type="number"
               id="pkg"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="bg-gray-50 border outline-none  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Retail price per kg"
               required
             />
@@ -393,7 +393,7 @@ const ProductCard = ({ rice, isNew, onsave, ondelete, onupdate }) => {
               onChange={(e) => setNetWeight(e.target.value)}
               type="number"
               id="net"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="bg-gray-50 border outline-none  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Net Weight"
               required
             />
@@ -411,7 +411,7 @@ const ProductCard = ({ rice, isNew, onsave, ondelete, onupdate }) => {
               onChange={(e) => setStock(e.target.value)}
               type="number"
               id="stock"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="bg-gray-50 border outline-none  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Stock on hand"
               required
             />
@@ -430,7 +430,7 @@ const ProductCard = ({ rice, isNew, onsave, ondelete, onupdate }) => {
             rows="4"
             onChange={(e) => setDescription(e.target.value)}
             value={description}
-            className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            className="outline-none  block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="Write a short description about this product..."
           ></textarea>
         </div>

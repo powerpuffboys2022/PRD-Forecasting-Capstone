@@ -80,7 +80,7 @@ const Inventory = () => {
   }, []);
 
   return (
-    <div className="font-poppins  h-screen main-content flex flex-col flex-grow bg-[#f2f5fa]">
+    <div className="font-poppins  h-screen main-content flex flex-col flex-grow bg-[#f5f8fa]">
       <Head>
         <title>Inventory</title>
         <meta
@@ -142,7 +142,7 @@ const Inventory = () => {
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
                   id="default-input"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-gray-50 border outline-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 />
               </div>
               <div className="mt-6">
@@ -251,7 +251,7 @@ const Inventory = () => {
                     value={search}
                   type="search"
                   id="default-search"
-                  className="block w-full p-4 pl-10 text-sm text-stone-800 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="outline-none block w-full p-4 pl-10 text-sm text-stone-800 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="search by id, name, article code.."
                   required
                 />
@@ -296,7 +296,7 @@ const Inventory = () => {
                       setIsNew(false);
                       setSelected(rc);
                     }}
-                    className="flex duration-200 ease-in-out cursor-pointer bg-white hover:bg-gray-50 p-4 rounded-lg items-center smooth-shadow"
+                    className="flex overflow-hidden relative duration-200 ease-in-out cursor-pointer bg-white hover:bg-gray-50 p-4 rounded-lg items-center smooth-shadow"
                   >
                     {/* <BsDot
                       className={
@@ -313,6 +313,8 @@ const Inventory = () => {
                       }
                     /> */}
                     <img className="h-16 w-16 mr-3 drop-shadow-lg" src={rc.imgUrl} />
+                    {rc.stock <= 0 && <p className="font-medium absolute top-1/2 mt-4 left-0 -skew-x-12 -rotate-12 px-2 py-1 rounded-sm mr-3 drop-shadow-lg bg-rose-500/80 animate-pulse text-xs text-white"> out of stock </p>}
+                    {rc.stock <= 10 && <p className="font-medium absolute top-1/2 mt-4 left-0 -skew-x-12 -rotate-12 px-2 py-1 rounded-sm mr-3 drop-shadow-lg bg-amber-500/80 text-xs text-white"> getting low </p>}
                     <div className="grow mr-2">
                       <p className="">
                         <span className="text-[#1c232c]">
@@ -330,14 +332,16 @@ const Inventory = () => {
                     </div>
                     <div className="flex-none px-4">
                       <p className="font-medium text-[#3e4d65] text-sm">
-                        {rc.stock} in stock
+                        {
+                            rc.stock <= 0 ? "out of stock" : <>{rc.stock} in stock</>
+                        }
                       </p>
                       <div className=" bg-gray-200 rounded-full h-1.5 mt-2 dark:bg-gray-700">
                         <div
                           className={
                             " h-1.5 rounded-full mx-2 " +
                             `${
-                              rc.stock === 0
+                              rc.stock <= 0
                                 ? `bg-red-500 animate-pulse`
                                 : `${
                                     rc.stock <= 10

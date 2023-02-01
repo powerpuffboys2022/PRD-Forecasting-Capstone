@@ -12,17 +12,16 @@ import { HiTrash } from "react-icons/hi";
 import { scanVals } from "../../helpers";
 import axios from "axios";
 
-import Account from "../../components/Admin/AccountComponent"
+import Account from "../../components/Admin/AccountComponent";
 import CustomConfirm from "../../components/modals/CustomConfirm";
 import { toast } from "react-toastify";
-
 
 const Accounts = () => {
   const [tab, setTab] = useState(-1);
   const [loading, setLoading] = useState(false);
   const [isNew, setIsNew] = useState(false);
   const [modal, setModal] = useState(-1);
-  const [confirm, setConfirm] = useState("")
+  const [confirm, setConfirm] = useState("");
 
   const [user, setUser] = useState([]);
   const [c_user, setCUser] = useState([]);
@@ -57,9 +56,9 @@ const Accounts = () => {
 
   const _delete = async () => {
     try {
-        setLoading(true)
+      setLoading(true);
       const req = await axios.post("/api/prd/updateUser", {
-        _id : selected._id,
+        _id: selected._id,
         mode: -1,
       });
       toast.success("User Permanently Removed", {
@@ -67,16 +66,16 @@ const Accounts = () => {
         icon: <HiTrash className="text-2xl text-red-500" />,
       });
       setSelected(null);
-      setModal(-1)
-      setIsNew(false)
+      setModal(-1);
+      setIsNew(false);
       init();
     } catch (e) {
-        console.log(e)
+      console.log(e);
       toast.error("Failed to remove user", {
         position: toast.POSITION.BOTTOM_RIGHT,
       });
     } finally {
-        setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -85,7 +84,7 @@ const Accounts = () => {
   }, []);
 
   return (
-    <div className="relative font-poppins p-4 h-screen w-full main-content flex flex-col flex-grow bg-[#fcfcfc]">
+    <div className="relative overflow-hidden font-poppins p-4 h-screen w-full main-content flex flex-col flex-grow bg-[#fcfcfc]">
       <Head>
         <title>Accounts</title>
         <meta
@@ -130,8 +129,21 @@ const Accounts = () => {
           content={
             <div className="mt-6">
               <p>
-                You are about to delete <span className="font-medium">{selected.userName}</span> from the <span className="font-medium">{selected.userType > 0 ? "Admin" : "Partner"}</span> accounts. Doing this will
-                remove this user from the list of <span className="font-medium">{selected.userType > 0 ? "Admins" : "Partners"}</span> who can access the PRD. <span className="text-red-700"> This action cannot be undone</span>
+                You are about to delete{" "}
+                <span className="font-medium">{selected.userName}</span> from
+                the{" "}
+                <span className="font-medium">
+                  {selected.userType > 0 ? "Admin" : "Partner"}
+                </span>{" "}
+                accounts. Doing this will remove this user from the list of{" "}
+                <span className="font-medium">
+                  {selected.userType > 0 ? "Admins" : "Partners"}
+                </span>{" "}
+                who can access the PRD.{" "}
+                <span className="text-red-700">
+                  {" "}
+                  This action cannot be undone
+                </span>
               </p>
               <div className="mt-6">
                 <label
@@ -139,8 +151,8 @@ const Accounts = () => {
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   type{" "}
-                  <span className="font-semibold">{selected.userName}</span>{" "}
-                  to confirm.
+                  <span className="font-semibold">{selected.userName}</span> to
+                  confirm.
                 </label>
                 <input
                   type="text"
@@ -181,7 +193,7 @@ const Accounts = () => {
         />
       )}
 
-      <div className="flex items-center justify-between text-sm shadow-md bg-white p-2 font-medium text-center text-gray-500">
+      <div className="flex items-center justify-between text-sm smooth-shadow-thin bg-white p-2 font-medium rounded-lg text-center text-gray-500">
         <ul className="flex flex-wrap -mb-px">
           <li className="mr-2">
             <a
@@ -277,9 +289,9 @@ const Accounts = () => {
 
         <button
           type="button"
-          onClick={()=>{
-            setSelected({})
-            setIsNew(true)
+          onClick={() => {
+            setSelected({});
+            setIsNew(true);
           }}
           className="inline-flex focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:focus:ring-yellow-900"
         >
@@ -309,19 +321,31 @@ const Accounts = () => {
       <div className="w-full overflow-y-scroll shadow-md h-full mt-4 ">
         <div className="w-full rounded-md grid grid-cols-3">
           {user.map((u, idx) => (
-            <div onClick={()=>{ setIsNew(false); setSelected(u) }} key={idx} className="p-2 w-full cursor-pointer">
-              <div className="w-full border duration-200 hover:border-yellow-600 border-transparent shadow-sm hover:shadow-lg p-4 flex space-x-1 justify-between bg-white">
-                <div className="avatar mr-2 w-1/4">
-                  <div className="w-24 h-24 rounded-full">
+            <div
+              onClick={() => {
+                setIsNew(false);
+                setSelected(u);
+              }}
+              key={idx}
+              className="p-2 w-full cursor-pointer"
+            >
+              <div className="w-full border duration-200 hover:border-gray-300 border-transparent rounded-lg smooth-shadow-fade p-4 flex flex-col items-center text-center bg-white">
+                <div className="avatar mr-2">
+                  <div className="w-16 h-16 rounded-full">
                     <img src={u.imgUrl} alt={u.userName} />
                   </div>
                 </div>
-                <div className="font-helvetica break-words w-3/4">
-                  <p className="text-gray-800">{u.userName}</p>
-                  <p className="text-gray-500 mt-4">{u.email}</p>
-                  <p className="font-medium mt-4 flex items-center">
-                    { u.userType > 0 ? <MdAdminPanelSettings className="h-6 w-6 mr-2" /> : <FaHandshake className="h-6 w-6 mr-2" />}
-                    { u.userType > 0 ? "Admin" : "Partner" }
+                <div className="font-helvetica break-words">
+                  <p className="text-gray-600 mt-4 font-inter font-medium text-lg ">{u.userName}</p>
+                  <p className="text-gray-500 text-xs font-medium mt-2">{u.email}</p>
+                  <p className="font-medium mt-4 text-gray-600 inline-flex">
+                    {u.userType > 0 ? (
+                      <MdAdminPanelSettings className="h-6 w-6 mr-2" />
+                    ) : (
+                      <FaHandshake className="h-6 w-6 mr-2" />
+                    )}
+                    {u.userType > 0 ? "Admin" : "Partner"}
+
                   </p>
                 </div>
               </div>
@@ -330,12 +354,30 @@ const Accounts = () => {
         </div>
       </div>
 
-      {
-        selected && <div className="smooth-shadow2 p-4 flex duration-200 overflow-y-scroll ease-in-out w-1/2 h-full bg-white/80 absolute top-0 right-0 backdrop-blur-lg">
-            <Account isNew={isNew} role={tab} data={selected} close={()=>{ setIsNew(false); init(); setSelected(null); }} onUpdate={()=>{ init(); filterUser() }} onDelete={()=>setModal(1)}/>
-        </div>
-      }
-
+      <div
+        className={
+          "smooth-shadow2 p-4 flex duration-500 overflow-y-scroll ease-in-out w-1/2 h-full bg-white/80 absolute top-0 backdrop-blur-lg " +
+          `${selected ? " right-0" : "  -right-full"}`
+        }
+      >
+        {selected && (
+          <Account
+            isNew={isNew}
+            role={tab}
+            data={selected}
+            close={() => {
+              setIsNew(false);
+              init();
+              setSelected(null);
+            }}
+            onUpdate={() => {
+              init();
+              filterUser();
+            }}
+            onDelete={() => setModal(1)}
+          />
+        )}
+      </div>
     </div>
   );
 };

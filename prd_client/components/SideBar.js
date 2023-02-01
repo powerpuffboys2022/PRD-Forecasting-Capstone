@@ -110,41 +110,61 @@ const SideBar = () => {
         acceptText={"Yes"}
         declineText={"No"}
       />
-      <div className="bg-[#1e293b] sidebar w-1/6 md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in ">
+
+      <div className="bg-[#1e1e2d] relative sidebar w-1/6 md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in ">
+        <img
+          className="w-5/6 -z-10 mr-2 absolute bottom-0 left-0 opacity-10"
+          src="/prd_logo.png"
+        />
+
         <div className="sidebar-header flex items-center justify-center py-4 px-4">
           <div className="inline-flex">
             <Link href="/" className="inline-flex flex-row items-center">
-              <img className="w-16 mr-2" src="/prd_logo.png" />
-              <span className="leading-10 text-gray-100 text-2xl font-bold ml-1 uppercase">
+              <img className="w-8 mr-2" src="/prd_logo.png" />
+              <span className="leading-10 text-gray-100 text-lg font-medium ml-1 ">
                 Philip Rice Dealer
               </span>
             </Link>
           </div>
         </div>
-        <div className="sidebar-content px-4 py-6">
-          <ul className="flex flex-col w-full">
+        <div className="sidebar-content px-4 z-10 py-6">
+          <ul className="flex flex-col w-full text-sm">
             <li className="my-px">
               <a
-                onClick={()=>router.push("/admin/")}
-                className={"flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-300  hover:bg-gray-100 hover:text-gray-700 " + `${router.route === '/admin' ? "bg-gray-100 text-gray-700" : "text-gray-300 "}`}
+                onClick={() => router.push("/admin/")}
+                className={
+                  "flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-400  hover:bg-[#2a2a3c] hover:text-gray-300 " +
+                  `${
+                    router.route === "/admin"
+                      ? "bg-[#2a2a3c] text-gray-300 "
+                      : "text-gray-400 "
+                  }`
+                }
               >
-                <span className="flex items-center justify-center text-2xl text-yellow-500">
+                <span className="flex items-center justify-center text-sm">
                   <AiFillHome />
                 </span>
                 <span className="ml-3">Dashboard</span>
               </a>
             </li>
             <li className="my-px">
-              <span className="flex font-medium text-sm text-gray-300 px-4 my-4 uppercase">
+              <span className="flex font-medium text-sm text-gray-300 px-4 my-4 ">
                 Store Management
               </span>
             </li>
             <li className="my-px">
               <a
-                onClick={()=>router.push("/admin/orders")}
-                className={"flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-300 hover:bg-gray-100 hover:text-gray-700 " + `${router.route === '/admin/orders' ? "bg-gray-100 text-gray-700" : "text-gray-300 "}`}
+                onClick={() => router.push("/admin/orders")}
+                className={
+                  "flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-400  hover:bg-[#2a2a3c] hover:text-gray-300 " +
+                  `${
+                    router.route === "/admin/orders"
+                      ? "bg-[#2a2a3c] text-gray-300 "
+                      : "text-gray-400 "
+                  }`
+                }
               >
-                <span className="flex items-center justify-center text-2xl text-yellow-500">
+                <span className="flex items-center justify-center text-sm">
                   <HiOutlineClipboardList />
                 </span>
                 <span className="ml-3">Orders</span>
@@ -152,10 +172,17 @@ const SideBar = () => {
             </li>
             <li className="my-px">
               <a
-                onClick={()=>router.push("/admin/inventory")}
-                className={"flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-300  hover:bg-gray-100 hover:text-gray-700 " + `${router.route === '/admin/inventory' ? "bg-gray-100 text-gray-700" : "text-gray-300 "}`}
+                onClick={() => router.push("/admin/inventory")}
+                className={
+                  "flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-400  hover:bg-[#2a2a3c] hover:text-gray-300 " +
+                  `${
+                    router.route === "/admin/inventory"
+                      ? "bg-[#2a2a3c] text-gray-300 "
+                      : "text-gray-400 "
+                  }`
+                }
               >
-                <span className="flex items-center justify-center text-2xl text-yellow-500">
+                <span className="flex items-center justify-center text-sm">
                   <MdInventory />
                 </span>
                 <span className="ml-3">Inventory</span>
@@ -163,10 +190,17 @@ const SideBar = () => {
             </li>
             <li className="my-px">
               <a
-                onClick={()=>router.push("/admin/dailySales")}
-                className={"flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-300 hover:bg-gray-100 hover:text-gray-700 " + `${router.route === '/admin/dailySales' ? "bg-gray-100 text-gray-700" : "text-gray-300 "}`}
+                onClick={() => router.push("/admin/dailySales")}
+                className={
+                  "flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-400  hover:bg-[#2a2a3c] hover:text-gray-300 " +
+                  `${
+                    router.route === "/admin/dailySales"
+                      ? "bg-[#2a2a3c] text-gray-300 "
+                      : "text-gray-400 "
+                  }`
+                }
               >
-                <span className="flex items-center justify-center text-2xl text-yellow-500">
+                <span className="flex items-center justify-center text-sm">
                   <BsCurrencyDollar />
                 </span>
                 <span className="ml-3">Daily Sales</span>
@@ -176,16 +210,18 @@ const SideBar = () => {
               </a>
             </li>
             <li className="my-px">
-              <span className="flex font-medium text-sm text-gray-300 px-4 my-4 uppercase">
+              <span className="flex font-medium text-sm text-gray-300 px-4 my-4 ">
                 Account Management
               </span>
             </li>
             <li className="my-px">
               <a
-                onClick={()=>{router.push("/general/profile")}}
-                className="flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-300 hover:bg-gray-100 hover:text-gray-700"
+                onClick={() => {
+                  router.push("/general/profile");
+                }}
+                className="flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-400  hover:bg-[#2a2a3c] hover:text-gray-300 "
               >
-                <span className="flex items-center justify-center text-2xl text-yellow-500">
+                <span className="flex items-center justify-center text-sm">
                   <FaUser />
                 </span>
                 <span className="ml-3">Profile</span>
@@ -193,10 +229,17 @@ const SideBar = () => {
             </li>
             <li className="my-px">
               <a
-                onClick={()=>router.push("/admin/accounts")}
-                className={"flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-300 hover:bg-gray-100 hover:text-gray-700 " + `${router.route === '/admin/accounts' ? "bg-gray-100 text-gray-700" : "text-gray-300 "}`}
-                >
-                <span className="flex items-center justify-center text-2xl text-yellow-500">
+                onClick={() => router.push("/admin/accounts")}
+                className={
+                  "flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-400  hover:bg-[#2a2a3c] hover:text-gray-300 " +
+                  `${
+                    router.route === "/admin/accounts"
+                      ? "bg-[#2a2a3c] text-gray-300 "
+                      : "text-gray-400 "
+                  }`
+                }
+              >
+                <span className="flex items-center justify-center text-sm">
                   <FaUsers />
                 </span>
                 <span className="ml-3">Accounts</span>
@@ -208,9 +251,9 @@ const SideBar = () => {
             <li className="my-px">
               <button
                 onClick={() => setModalState(1)}
-                className="flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-300 hover:bg-gray-100 hover:text-gray-700 w-full"
+                className="flex flex-row items-center cursor-pointer h-10 px-3 rounded-lg text-gray-400  hover:bg-[#2a2a3c] hover:text-gray-300 w-full"
               >
-                <span className="flex items-center justify-center text-2xl text-yellow-500">
+                <span className="flex items-center justify-center text-sm">
                   <IoIosExit />
                 </span>
                 <span className="ml-3">Logout</span>
@@ -285,7 +328,7 @@ const SideBar = () => {
               </>
             )}
           </div>
-        </div> */} 
+        </div> */}
       </div>
       {/* <div className="w-64"></div> */}
     </>
