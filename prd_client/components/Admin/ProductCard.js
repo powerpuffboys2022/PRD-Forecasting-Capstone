@@ -131,7 +131,7 @@ const ProductCard = ({ rice, isNew, onsave, ondelete, onupdate }) => {
   }, [rice]);
 
   return (
-    <div className="pr-2 relative ">
+    <div className="pr-2 relative mountedanimater ">
       <div className="bg-white rounded-lg p-4">
         {!isNew && (
           <div className="mt-4 flex justify-center">

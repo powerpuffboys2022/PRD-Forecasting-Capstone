@@ -193,7 +193,7 @@ const Accounts = () => {
         />
       )}
 
-      <div className="flex items-center justify-between text-sm smooth-shadow-thin bg-white p-2 font-medium rounded-lg text-center text-gray-500">
+      <div className="flex items-center justify-between text-sm smooth-shadow-fine bg-white p-2 font-medium rounded-lg text-center text-gray-500">
         <ul className="flex flex-wrap -mb-px">
           <li className="mr-2">
             <a
@@ -318,7 +318,7 @@ const Accounts = () => {
         </>
       )}
 
-      <div className="w-full overflow-y-scroll shadow-md h-full mt-4 ">
+      <div className="w-full overflow-y-scroll h-full mt-4 ">
         <div className="w-full rounded-md grid grid-cols-3">
           {user.map((u, idx) => (
             <div

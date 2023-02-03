@@ -1,6 +1,8 @@
 import Head from "next/head";
 import { useState, useEffect } from "react";
 import HomeLayout from "../../layouts/HomeLayout";
+
+var XLSX = require("xlsx");
 import axios from "axios";
 
 import { toast } from "react-toastify";
@@ -14,6 +16,7 @@ import { HiTrash } from "react-icons/hi";
 import { AiOutlineFileDone, AiOutlineStop, AiFillDelete } from "react-icons/ai";
 import { BsSearch } from "react-icons/bs";
 import { VscLoading, VscError } from "react-icons/vsc";
+import { RiFileExcel2Fill } from "react-icons/ri";
 
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 
@@ -35,7 +38,7 @@ const Orders = () => {
   const [search, setSearch] = useState("");
   const [reason, setReason] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const [pageMax, setPageMax] = useState(10);
+  const [pageMax, setPageMax] = useState(5);
 
   const [orders, setOrders] = useState([]);
   const [cOrders, setCOrders] = useState([]);
@@ -284,6 +287,63 @@ const Orders = () => {
         </a>
       );
     return "untracked";
+  };
+
+  const ricesToString = (rices) => {
+    var items = "";
+    rices.forEach((r) => (items += `,${r.name}`));
+    return items.length === 0 ? "" : items.slice(1);
+  };
+
+  const exportData = (data) => {
+    var parsed = [];
+
+    console.log(data);
+
+    data.forEach((ob, idx) => {
+      let newObj = {
+        "Order Id": ob._id,
+        "Total Price": ob.totalPrice,
+        "Total Qty": getQty(ob),
+        "Items Ordered": ricesToString(ob.rice),
+        "Order Status": statusToWord(ob.status),
+        "Ordered By": ob.userId,
+        "Processed By": ob.processedBy,
+        "Updated By": ob.updatedBy,
+        "Placed On": dateMomentBeautify(new Date(ob.placedDate), "DD-MM-YYYY"),
+        "Processed On": dateMomentBeautify(
+          new Date(ob.trackingDates.processed),
+          "DD-MM-YYYY"
+        ),
+        "Shipped On": dateMomentBeautify(
+          new Date(ob.trackingDates.shipped),
+          "DD-MM-YYYY"
+        ),
+        "Completed On": dateMomentBeautify(
+          new Date(ob.trackingDates.shipped),
+          "DD-MM-YYYY"
+        ),
+      };
+      parsed.push(newObj);
+    });
+    var workbook = XLSX.utils.book_new(),
+      worksheet = XLSX.utils.json_to_sheet(parsed);
+
+    worksheet["!cols"] = [
+      { width: 14 },
+      { width: 14 },
+      { width: 12 },
+      { width: 12 },
+      { width: 20 },
+      { width: 15 },
+      { width: 20 },
+      { width: 20 },
+      { width: 150 },
+    ];
+
+    workbook.SheetNames.push("Orders");
+    workbook.Sheets["Orders"] = worksheet;
+    XLSX.writeFile(workbook, "Orders.xlsx");
   };
 
   useEffect(() => {
@@ -594,17 +654,53 @@ const Orders = () => {
 
         <div className="pt-3 h-5/6 overflow-y-scroll">
           {(tab === -1 || tab === 4) && (
-            <div className="mt-4 rounded-md bg-white space-x-1 w-full p-2 text-xs ">
+            <div className="mt-4 rounded-md bg-white flex justify-between space-x-1 w-full p-2 text-xs items-center">
               <button
                 onClick={() => setModal(1)}
                 className={
-                  "border rounded-lg border-transparent hover:border-red-700 hover:bg-gray-100 bg-white px-2 py-1 text-sm inline-flex gap-2 duration-150 ease-in-out " +
+                  "border rounded-lg border-gray-50 group hover:border-gray-200 hover:bg-gray-100 bg-white px-2 py-1 text-sm inline-flex gap-2 duration-150 ease-in-out " +
                   `${marked.length === 0 ? "btn-disabled" : ""}`
                 }
               >
-                <AiFillDelete className="text-xl" />
-                Delete Selected
+                <AiFillDelete className="group-hover:text-rose-400 text-gray-400 text-xl" />
+                Delete { marked.length === orders.length ? "All" : "Selected" }
               </button>
+              <div className="flex items-center justify-end">
+                {marked.length > 0 ? (
+                  <button
+                    onClick={() =>
+                      exportData(
+                        orders.filter((ord) => marked.includes(ord._id))
+                      )
+                    }
+                    type="button"
+                    className="border rounded-lg group border-gray-100 hover:border-gray-200 hover:bg-gray-100 bg-white px-2 py-1 text-sm inline-flex items-center gap-2 duration-150 ease-in-out "
+                  >
+                    <RiFileExcel2Fill className="text-lg duration-200 text-gray-500 group-hover:text-[#1c895a]" />
+                    Export Selected
+                    <span className="text-xs text-gray-500 font-medium">
+                      .xlsx
+                    </span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() =>
+                      exportData(
+                        orders.filter((ord) => ord.status === tab),
+                        true
+                      )
+                    }
+                    type="button"
+                    className="border group rounded-lg border-gray-100 hover:border-gray-200 hover:bg-gray-100 bg-white px-2 py-1 text-sm inline-flex items-center gap-2 duration-150 ease-in-out "
+                  >
+                    <RiFileExcel2Fill className="text-lg duration-200 text-gray-500 group-hover:text-[#1c895a]" />
+                    Export All
+                    <span className="text-xs text-gray-500 font-medium">
+                      .xlsx
+                    </span>
+                  </button>
+                )}
+              </div>
             </div>
           )}
 
@@ -625,11 +721,11 @@ const Orders = () => {
                   </p>
                 </div>
               ) : (
-                <div className="relative mb-4 bg-white overflow-x-auto overflow-y-scroll shadow-md sm:rounded-lg" >
+                <div className="relative bg-white overflow-x-auto min-h-full overflow-y-scroll smooth-shadow-fine sm:rounded-lg">
                   <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                       <tr>
-                        {(tab === 1 || tab===4 || tab === -1) && (
+                        {(tab === 1 || tab === 4 || tab === -1) && (
                           <th scope="col" className="p-4">
                             <div className="flex items-center">
                               <input
@@ -643,7 +739,7 @@ const Orders = () => {
                                   }
                                 }}
                                 checked={orders.length === marked.length}
-                                className="checkbox"
+                                className="checkbox  checkboxcustom"
                               />
                             </div>
                           </th>
@@ -672,9 +768,9 @@ const Orders = () => {
                           idx + 1 <= currentPage * pageMax + pageMax ? (
                             <tr
                               key={idx}
-                              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                              className="bg-white border-t border-dashed hover:bg-gray-50 py-4"
                             >
-                              {(tab === 1 || tab===4 || tab === -1) && (
+                              {(tab === 1 || tab === 4 || tab === -1) && (
                                 <td className="w-4 p-4">
                                   <div className="flex items-center">
                                     <input
@@ -695,7 +791,7 @@ const Orders = () => {
                                         marked.filter((ids) => ids === ords._id)
                                           .length > 0
                                       }
-                                      className="checkbox"
+                                      className="checkbox checkboxcustom"
                                     />
                                   </div>
                                 </td>
@@ -720,9 +816,9 @@ const Orders = () => {
                               <td className="px-6 py-4">{getQty(ords)}x</td>
                               <td className="px-6 py-4 flex items-center justify-between">
                                 {statusToBadge(ords.status)}
-                                {(ords.status === 1 ||
-                                  ords.status === 3 ||
-                                  ords.status === 2) ? 
+                                {ords.status === 1 ||
+                                ords.status === 3 ||
+                                ords.status === 2 ? (
                                   <div className="flex justify-between items-center">
                                     {ords.status === 1 && (
                                       <button
@@ -765,8 +861,10 @@ const Orders = () => {
                                       Decline{" "}
                                       <AiOutlineStop className="ml-2 text-sm" />
                                     </button>
-                                  </div> : <div className="w-16"></div>
-                                }
+                                  </div>
+                                ) : (
+                                  <div className="w-16"></div>
+                                )}
                               </td>
                               <td className="px-6 py-4">
                                 <div
@@ -788,24 +886,26 @@ const Orders = () => {
                     </tbody>
                   </table>
                   <div className="flex items-center mt-1 px-4 py-2 justify-between">
-                    {/* <p className="text-xs text-gray-500">
-                        Showing <span className="font-medium text-gray-700">{currentPage * pageMax}</span>-
-                        <span className="font-medium text-gray-700">{currentPage * pageMax + pageMax}</span> of <span className="font-medium text-gray-700">{orders.length}{" "}</span>
-                      </p>   */}
+                    <div className="flex justify-start items-center space-x-2">
                     <select
-                      id="countries"
                       onChange={(e) => {
                         setPageMax(parseInt(e.target.value));
                       }}
                       value={pageMax}
                       className="bg-gray-50 hover:bg-gray-100 ease-in-out cursor-pointer text-gray-600 text-xs rounded-lg w-16 outline-none block p-2.5 px-3 "
                     >
+                      <option value={5}>5</option>
                       <option value={10}>10</option>
                       <option value={15}>15</option>
                       <option value={20}>20</option>
                       <option value={20}>25</option>
                       <option value={20}>50</option>
                     </select>
+                    <p className="text-xs text-gray-500">
+                        Showing <span className="font-medium text-gray-700">{currentPage * pageMax + 1}</span>-
+                        <span className="font-medium text-gray-700">{(currentPage * pageMax + pageMax > orders.length ? orders.length : currentPage * pageMax + pageMax)}</span> of <span className="font-medium text-gray-700">{orders.length}{" "}</span>
+                      </p>  
+                    </div>
                     {orders.length >= pageMax ? (
                       <Pagination
                         currentPage={currentPage}
@@ -825,7 +925,7 @@ const Orders = () => {
                           <Pagination.PageButton
                             activeClassName="bg-[#009ef7] smooth-shadow-fade text-white"
                             inactiveClassName=""
-                            className="px-3 py-1 rounded-md cursor-pointer ease-in duration-200 hover:bg-[#0f96e4]"
+                            className="px-3 py-1 rounded-md cursor-pointer ease-in duration-200 hover:text-white hover:bg-[#0f96e4]"
                           />
                         </div>
 

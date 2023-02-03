@@ -41,7 +41,6 @@ const handler = async (req, res) => {
       // update transaction
 
       if (pushToForeCast) {
-        console.log(content.completedDateWord);
         const doesExist = await Forecast.findOne({
           datew: content.completedDateWord,
         });

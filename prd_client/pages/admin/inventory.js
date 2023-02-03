@@ -220,7 +220,7 @@ const Inventory = () => {
           </div>
         </div>
         <div className="w-2/6 h-full relative">
-          <div className="justify-between smooth-shadow absolute w-full bg-transparent backdrop-blur-md flex p-4 rounded-xl items-center">
+          <div className="justify-between smooth-shadow z-20 absolute w-full bg-white smooth-shadow-fine flex p-4 rounded-xl items-center">
             <form onSubmit={(e) => e.preventDefault()} className="grow mr-2">
               <label
                 htmlFor="default-search"

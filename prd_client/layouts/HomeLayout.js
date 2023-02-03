@@ -19,7 +19,7 @@ const HomeLayout = ({ children }) => {
         theme="dark"
       />
       <SideBar />
-      <main className="main  flex flex-col flex-grow -ml-64 md:ml-0 transition-all duration-150 ease-in">
+      <main className="main flex flex-col flex-grow -ml-64 md:ml-0 transition-all duration-150 ease-in">
         {children}
       </main>
     </div>
