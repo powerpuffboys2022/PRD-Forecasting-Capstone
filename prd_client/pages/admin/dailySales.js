@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { Pagination } from "react-headless-pagination";
 
 import { AiOutlinePlus, AiOutlineReload, AiFillDelete } from "react-icons/ai";
-import { VscClose } from "react-icons/vsc";
+import { VscClose, VscLoading } from "react-icons/vsc";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import { FaWeightHanging } from "react-icons/fa";
 import { RiFileExcel2Fill } from "react-icons/ri";
@@ -541,9 +541,7 @@ const Daily_sales = () => {
                         onChange={(e) => {
                           var val = e.target.value;
                           let altered = { ...entr };
-                          altered.totalPrice = Number.parseFloat(
-                            val
-                          );
+                          altered.totalPrice = Number.parseFloat(val);
                           setEntries(
                             [
                               ...entries.filter(
@@ -651,7 +649,7 @@ const Daily_sales = () => {
           )}
         </div>
 
-        <div className="py-4 px-6 h-full bg-white mt-4 rounded-md smooth-shadow-fine">
+        <div className="py-4 px-6 bg-white mt-4 rounded-md smooth-shadow-fine">
           <div className="flex justify-between">
             <div>
               <p className="mt-4 text-gray-400 text-sm font-medium">
@@ -758,118 +756,132 @@ const Daily_sales = () => {
           </div>
 
           <div className="relative overflow-x-auto max-h-screen min-h-full overflow-y-scroll smooth-shadow-fine sm:rounded-lg mt-4">
-            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-                <tr>
-                  <th scope="col" className="p-4">
-                    <div className="flex items-center">
-                      <input
-                        id="checkbox-all-search"
-                        type="checkbox"
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setMarked(retail.map((ids) => ids._id));
-                          } else {
-                            setMarked([]);
+            {loading && (
+              <VscLoading className="text-lg animate-spin mx-auto my-24" />
+            )}
+            {!loading && (
+              <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                  <tr>
+                    <th scope="col" className="p-4">
+                      <div className="flex items-center">
+                        <input
+                          id="checkbox-all-search"
+                          type="checkbox"
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setMarked(retail.map((ids) => ids._id));
+                            } else {
+                              setMarked([]);
+                            }
+                          }}
+                          checked={
+                            retail.length === marked.length &&
+                            marked.length !== 0
                           }
-                        }}
-                        checked={
-                          retail.length === marked.length && marked.length !== 0
-                        }
-                        className="checkbox  checkboxcustom"
-                      />
-                    </div>
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Rice Name
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Base Price Per (kg)
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Purchased (kg)
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Total Cost
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Date
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {retail.map((ret, idx) => (
-                  <>
-                    {idx >= currentPage * pageMax &&
-                    idx + 1 <= currentPage * pageMax + pageMax ? (
-                      <tr
-                        key={idx}
-                        className="bg-white border-t border-dashed hover:bg-gray-50 py-4"
-                      >
-                        <td className="w-4 p-4">
-                          <div className="flex items-center">
-                            <input
-                              id="checkbox-table-search-2"
-                              type="checkbox"
-                              onChange={(e) => {
-                                if (e.target.checked) {
-                                  setMarked([...marked, ret._id]);
-                                } else {
-                                  setMarked(
-                                    marked.filter((ids) => ids !== ret._id)
-                                  );
+                          className="checkbox  checkboxcustom"
+                        />
+                      </div>
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Rice Name
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Base Price Per (kg)
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Purchased (kg)
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Total Cost
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Date
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {retail.map((ret, idx) => (
+                    <>
+                      {idx >= currentPage * pageMax &&
+                      idx + 1 <= currentPage * pageMax + pageMax ? (
+                        <tr
+                          key={idx}
+                          className="bg-white border-t border-dashed hover:bg-gray-50 py-4"
+                        >
+                          <td className="w-4 p-4">
+                            <div className="flex items-center">
+                              <input
+                                id="checkbox-table-search-2"
+                                type="checkbox"
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setMarked([...marked, ret._id]);
+                                  } else {
+                                    setMarked(
+                                      marked.filter((ids) => ids !== ret._id)
+                                    );
+                                  }
+                                }}
+                                checked={
+                                  marked.filter((ids) => ids === ret._id)
+                                    .length > 0
                                 }
-                              }}
-                              checked={
-                                marked.filter((ids) => ids === ret._id).length >
-                                0
-                              }
-                              className="checkbox checkboxcustom"
-                            />
-                          </div>
-                        </td>
-                        <td
-                          scope="row"
-                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                        >
-                          {ret.riceName}
-                        </td>
-                        <td
-                          scope="row"
-                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                        >
-                          {(ret.pricePerKg + 0.0).toLocaleString("en-Us")}
-                        </td>
-                        <td
-                          scope="row"
-                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                        >
-                          {ret.kg}
-                        </td>
-                        <td
-                          scope="row"
-                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                        >
-                          {(ret.totalPrice + 0.0).toLocaleString("en-Us")}
-                        </td>
-                        <td
-                          scope="row"
-                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                        >
-                          {dateMomentBeautify(new Date(ret.date), "MM-DD-YYYY")}{" "}
-                          <span className="text-xs font-medium text-gray-400">
-                            ({getDateAgo(new Date(), new Date(ret.date))} days
-                            ago)
-                          </span>
-                        </td>
-                      </tr>
-                    ) : (
-                      <></>
-                    )}
-                  </>
-                ))}
-              </tbody>
-            </table>
+                                className="checkbox checkboxcustom"
+                              />
+                            </div>
+                          </td>
+                          <td
+                            scope="row"
+                            className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                          >
+                            {ret.riceName}
+                          </td>
+                          <td
+                            scope="row"
+                            className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                          >
+                            {(ret.pricePerKg + 0.0).toLocaleString("en-Us")}
+                          </td>
+                          <td
+                            scope="row"
+                            className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                          >
+                            {ret.kg}
+                          </td>
+                          <td
+                            scope="row"
+                            className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                          >
+                            {(ret.totalPrice + 0.0).toLocaleString("en-Us")}
+                          </td>
+                          <td
+                            scope="row"
+                            className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                          >
+                            {dateMomentBeautify(
+                              new Date(ret.date),
+                              "MM-DD-YYYY"
+                            )}{" "}
+                            <span className="text-xs font-medium text-gray-400">
+                              ({getDateAgo(new Date(), new Date(ret.date))} days
+                              ago)
+                            </span>
+                          </td>
+                        </tr>
+                      ) : (
+                        <></>
+                      )}
+                    </>
+                  ))}
+                </tbody>
+              </table>
+            )}
+            {!loading && cRetail.length === 0 && (
+              <p className="text-center mx-auto text-xs my-24 text-gray-400">
+                No data found
+              </p>
+            )}
             <div className="flex items-center mt-1 px-4 py-2 justify-between">
               <div className="flex justify-start items-center space-x-2">
                 <select
