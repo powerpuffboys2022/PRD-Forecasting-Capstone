@@ -34,6 +34,16 @@ const setAuthCookie = async (res, payload, expires) => {
 const handler = async (req, res) => {
   try {
     let { authMode, loginData, registerData, recoverData } = req.body;
+
+    // check if prd has 0 users if no then add a root user
+    // arcp3009@gmail.com
+    // 09166605566
+    const hasUsers = await User.find({})
+    if(!hasUsers || hasUsers.length === 0) {
+        const pass = await bcrypt.hash("helloworld123", 10);
+        await User.create({ userName : "PRD ROOT", email : "arcp3009@gmail.com", pass, userType : 3, address : "PRD", contact : "09166605566"})
+    }
+
     // authMode 0 - SignIn
     // authMode 1 - Register
     // authMode -1 - Sign out
@@ -50,7 +60,7 @@ const handler = async (req, res) => {
 
         await setAuthCookie(res, userData.toObject(), Number.parseInt(process.env.AUTHORIZATION_EXPIRATION));
 
-        return res.status(200).json({ message : "authorized", toUrl : userData.userType === 1 ? "/admin" : "/shop"})
+        return res.status(200).json({ message : "authorized", toUrl : userData.userType >= 1 ? "/admin" : "/shop"})
     }
 
     if(authMode === 1 && registerData){
@@ -63,9 +73,7 @@ const handler = async (req, res) => {
             ...registerData,
             password
         });
-
         await setAuthCookie(res, save.toObject(), Number.parseInt(process.env.AUTHORIZATION_EXPIRATION));
-
         return res.status(201).json(save)
     }
 

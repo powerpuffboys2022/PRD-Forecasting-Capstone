@@ -17,6 +17,7 @@ import { AiOutlineFileDone, AiOutlineStop, AiFillDelete } from "react-icons/ai";
 import { BsSearch } from "react-icons/bs";
 import { VscLoading, VscError } from "react-icons/vsc";
 import { RiFileExcel2Fill } from "react-icons/ri";
+import { SlEye } from "react-icons/sl";
 
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 
@@ -30,8 +31,10 @@ import {
 
 import OrderComponent from "../../components/Admin/OrderComponent";
 import CustomConfirm from "../../components/modals/CustomConfirm";
+import { useRouter } from "next/router";
 
 const Orders = () => {
+  const router = useRouter();
   const [tab, setTab] = useState(-2);
   const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState(-1);
@@ -663,7 +666,7 @@ const Orders = () => {
                 }
               >
                 <AiFillDelete className="group-hover:text-rose-400 text-gray-400 text-xl" />
-                Delete { marked.length === orders.length ? "All" : "Selected" }
+                Delete {marked.length === orders.length ? "All" : "Selected"}
               </button>
               <div className="flex items-center justify-end">
                 {marked.length > 0 ? (
@@ -867,14 +870,24 @@ const Orders = () => {
                                 )}
                               </td>
                               <td className="px-6 py-4">
-                                <div
-                                  className="tooltip tooltip-left"
-                                  data-tip="View Order Details"
-                                >
-                                  <CiReceipt
-                                    onClick={() => setSelected(ords)}
-                                    className="text-2xl ease-in-out duration-200 drop-shadow-md text-gray-500 cursor-pointer hover:text-gray-900"
-                                  />
+                                <div className="items-center flex">
+                                  <div
+                                    className="tooltip tooltip-left"
+                                    data-tip="View Order Details"
+                                  >
+                                    <SlEye
+                                      onClick={() => setSelected(ords)}
+                                      className="text-xl mr-2 ease-in-out duration-200 drop-shadow-md text-gray-500 cursor-pointer hover:text-gray-900"
+                                    />
+                                  </div>
+                                  <div
+                                    className="tooltip tooltip-left"
+                                    data-tip="View Invoice"
+                                  >
+                                    <a target="_blank" rel="noopener noreferrer" href={`/general/invoice?invoiceId=${ords._id}`}><CiReceipt
+                                      className="text-xl ease-in-out duration-200 drop-shadow-md text-gray-500 cursor-pointer hover:text-gray-900"
+                                    /></a>
+                                  </div>
                                 </div>
                               </td>
                             </tr>
@@ -887,24 +900,36 @@ const Orders = () => {
                   </table>
                   <div className="flex items-center mt-1 px-4 py-2 justify-between">
                     <div className="flex justify-start items-center space-x-2">
-                    <select
-                      onChange={(e) => {
-                        setPageMax(parseInt(e.target.value));
-                      }}
-                      value={pageMax}
-                      className="bg-gray-50 hover:bg-gray-100 ease-in-out cursor-pointer text-gray-600 text-xs rounded-lg w-16 outline-none block p-2.5 px-3 "
-                    >
-                      <option value={5}>5</option>
-                      <option value={10}>10</option>
-                      <option value={15}>15</option>
-                      <option value={20}>20</option>
-                      <option value={20}>25</option>
-                      <option value={20}>50</option>
-                    </select>
-                    <p className="text-xs text-gray-500">
-                        Showing <span className="font-medium text-gray-700">{currentPage * pageMax + 1}</span>-
-                        <span className="font-medium text-gray-700">{(currentPage * pageMax + pageMax > orders.length ? orders.length : currentPage * pageMax + pageMax)}</span> of <span className="font-medium text-gray-700">{orders.length}{" "}</span>
-                      </p>  
+                      <select
+                        onChange={(e) => {
+                          setPageMax(parseInt(e.target.value));
+                        }}
+                        value={pageMax}
+                        className="bg-gray-50 hover:bg-gray-100 ease-in-out cursor-pointer text-gray-600 text-xs rounded-lg w-16 outline-none block p-2.5 px-3 "
+                      >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={15}>15</option>
+                        <option value={20}>20</option>
+                        <option value={20}>25</option>
+                        <option value={20}>50</option>
+                      </select>
+                      <p className="text-xs text-gray-500">
+                        Showing{" "}
+                        <span className="font-medium text-gray-700">
+                          {currentPage * pageMax + 1}
+                        </span>
+                        -
+                        <span className="font-medium text-gray-700">
+                          {currentPage * pageMax + pageMax > orders.length
+                            ? orders.length
+                            : currentPage * pageMax + pageMax}
+                        </span>{" "}
+                        of{" "}
+                        <span className="font-medium text-gray-700">
+                          {orders.length}{" "}
+                        </span>
+                      </p>
                     </div>
                     {orders.length >= pageMax ? (
                       <Pagination
