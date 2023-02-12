@@ -121,3 +121,10 @@ body {
         @apply opacity-100
     }
 }
+
+
+@media print{
+    .printable{
+        print-color-adjust: exact;
+    }
+}
