@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import moment from "moment";
 
 import { AiFillCloseCircle, AiFillEye } from "react-icons/ai";
+import { CiReceipt } from "react-icons/ci";
 
 import {
   getDateAgo,
@@ -12,11 +13,9 @@ import {
   statusToWord,
 } from "../../helpers";
 
-import { toast } from "react-toastify";
-
 import CustomConfirm from "../../components/modals/CustomConfirm";
 import CancelConfirm from "../../components/modals/modalCustomContent/CancelConfirm";
-import Confirm from "../../components/modals/Confirm"
+import Confirm from "../../components/modals/Confirm";
 
 import { BsSearch } from "react-icons/bs";
 import Loading from "../../components/Loading";
@@ -57,9 +56,9 @@ const Transactions = () => {
 
   const loadTransactions = () => {
     setLoading(true);
-    if(!userData._id){
-        setLoading(false)
-        return
+    if (!userData._id) {
+      setLoading(false);
+      return;
     }
     let content = { userId: userData._id, isDeleted: false };
 
@@ -140,7 +139,7 @@ const Transactions = () => {
   };
 
   const softDelete = () => {
-    let content = { isDeleted : true };
+    let content = { isDeleted: true };
     const response = fetch("/api/prd/transaction", {
       method: "POST",
       mode: "cors",
@@ -150,7 +149,7 @@ const Transactions = () => {
       },
       body: JSON.stringify({
         mode: 2,
-        _id : focusedOrderId,
+        _id: focusedOrderId,
         content,
       }),
     })
@@ -164,7 +163,7 @@ const Transactions = () => {
         setFocusedOrderId(-1);
         setModalState(-1);
       });
-  }
+  };
 
   return (
     <div className="h-screen w-full flex justify-center">
@@ -180,10 +179,7 @@ const Transactions = () => {
           itemProp="description"
           content="Philip Rice Dealer Online store & forecasting"
         />
-        <meta
-          itemProp="image"
-          content="cover.png"
-        />
+        <meta itemProp="image" content="cover.png" />
 
         <meta
           property="og:url"
@@ -195,10 +191,7 @@ const Transactions = () => {
           property="og:description"
           content="Philip Rice Dealer Online store & forecasting"
         />
-        <meta
-          property="og:image"
-          content="cover.png"
-        />
+        <meta property="og:image" content="cover.png" />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Philip Rice Dealer" />
@@ -206,10 +199,7 @@ const Transactions = () => {
           name="twitter:description"
           content="Philip Rice Dealer Online store & forecasting"
         />
-        <meta
-          name="twitter:image"
-          content="cover.png"
-        />
+        <meta name="twitter:image" content="cover.png" />
 
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -227,7 +217,15 @@ const Transactions = () => {
         }
       />
 
-      <Confirm acceptText={"Proceed"} declineText={"No"} description={"Are you sure to delete this order record?"} onAccept={()=>softDelete()} onDecline={()=>setModalState(0)} title={"Delete Record"} shown={modalState === 2 }/>
+      <Confirm
+        acceptText={"Proceed"}
+        declineText={"No"}
+        description={"Are you sure to delete this order record?"}
+        onAccept={() => softDelete()}
+        onDecline={() => setModalState(0)}
+        title={"Delete Record"}
+        shown={modalState === 2}
+      />
 
       <div className="mt-14 w-full md:w-5/6 p-2 md:p-8 ">
         <div className="mt-8 w-full">
@@ -405,43 +403,43 @@ const Transactions = () => {
                       </td>
                       <td>
                         <div className="flex items-center justify-center space-x-2">
-                        <div className="tooltip tooltip-left" data-tip="Cancel Order">
-                          <button
-                            onClick={() => {
-                              setFocusedOrderId(trans._id);
-                              setModalState(1);
-                            }}
-                            disabled={trans.status !== 1}
-                            className="btn btn-sm bg-base-300 text-gray-800 hover:bg-rose-600 hover:text-white"
+                          <div
+                            className="tooltip tooltip-left"
+                            data-tip="Cancel Order"
                           >
-                            Cancel
-                          </button>
+                            <button
+                              onClick={() => {
+                                setFocusedOrderId(trans._id);
+                                setModalState(1);
+                              }}
+                              disabled={trans.status !== 1}
+                              className={"text-xs text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg px-2 py-1 text-center inline-flex items-center mr-2 mb-2 " + `${trans.status < 1 && trans.status !== -1 ? "cursor-pointer " : "opacity-50 cursor-not-allowed"}`}
+                            >
+                              Cancel
+                            </button>
                           </div>
-                        <div className="tooltip  tooltip-left" data-tip="View Order Details">
-
-                          <button
-                            onClick={() => {
-                              router.push(
-                                `/general/transaction?_id=${trans._id}`
-                              );
-                            }}
-                            className="btn btn-sm btn-square bg-base-300 text-gray-800 hover:bg-yellow-500 hover:text-white"
+                          <div
+                            className="tooltip tooltip-left"
+                            data-tip="View Invoice"
                           >
-                            <AiFillEye className="text-lg" />
-                          </button>
+                            <a
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              href={`/general/invoice?invoiceId=${trans._id}`}
+                            >
+                              <CiReceipt className="text-xl ease-in-out duration-200 drop-shadow-md text-gray-500 cursor-pointer hover:text-gray-900" />
+                            </a>
                           </div>
-                        <div className="tooltip tooltip-left" data-tip="Remove Record">
-
-                          <button
-                           onClick={()=>{
-                            setFocusedOrderId(trans._id);
-                            setModalState(2)
-                           }}
-                            disabled={trans.status > -1 && trans.status < 4}
-                            className="btn btn-sm btn-square"
-                          >
-                            <AiFillCloseCircle className="text-lg" />
-                          </button>
+                          <div
+                            className="tooltip tooltip-left"
+                            data-tip="Delete"
+                              onClick={() => {
+                                setFocusedOrderId(trans._id);
+                                setModalState(2);
+                              }}
+                              disabled={trans.status > -1 && trans.status < 4}
+                            >
+                              <AiFillCloseCircle className="text-xl ease-in-out duration-200 drop-shadow-md text-gray-500 cursor-pointer hover:text-gray-900" />
                           </div>
                         </div>
                       </td>

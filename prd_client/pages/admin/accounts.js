@@ -23,6 +23,8 @@ const Accounts = () => {
   const [modal, setModal] = useState(-1);
   const [confirm, setConfirm] = useState("");
 
+  const [you, setYou] = useState(""); 
+
   const [user, setUser] = useState([]);
   const [c_user, setCUser] = useState([]);
   const [selected, setSelected] = useState();
@@ -44,6 +46,9 @@ const Accounts = () => {
   const init = async () => {
     try {
       setLoading(true);
+      const y = await axios.post("/api/prd/userInfo")
+      if(!y)return
+      setYou(y.data)
       const users = await axios.post("/api/prd/updateUser", { mode: 2 });
       setSearch("");
       setUser(users.data);
@@ -320,7 +325,10 @@ const Accounts = () => {
 
       <div className="w-full overflow-y-scroll h-full mt-4 ">
         <div className="w-full rounded-md grid grid-cols-3">
-          {user.map((u, idx) => (
+          {user.filter((u) => { 
+            if(!you) return true
+            return you._id !== u._id
+           }).map((u, idx) => (
             <div
               onClick={() => {
                 setIsNew(false);

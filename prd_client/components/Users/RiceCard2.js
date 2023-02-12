@@ -18,16 +18,16 @@ const RiceCard2 = ({
 
   const updateUser = (nw) => {
     const response = fetch("/api/prd/updateUser", {
-      method: "POST",
+      method: "POST", 
       mode: "cors",
       headers: {
         Accept: "application/json, text/plain, */*",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        updateMode: 0,
-        _id: uid,
-        userData: {
+        mode: 0,
+        filter : { _id :uid },
+        content: {
           cart: [...gcart, nw],
         },
       }),

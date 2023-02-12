@@ -16,11 +16,10 @@ const handler = async (req, res) => {
     // 2 -> Retrieve
     // -1 -> Delete Account
     if( mode === 0 && filter ){
-        if(hasPass){
+        if(hasPass){ 
             const hashedPass = await bcrypt.hash(content.password, 10);
             content.password = hashedPass;
         }
-        
         const updateUser = await User.updateOne({ ...filter }, { $set : { ...content }});
         return res.status(200).json({ message : "Updated Info" })
     }

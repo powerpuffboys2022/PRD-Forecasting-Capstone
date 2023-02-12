@@ -38,9 +38,9 @@ const Cart = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        updateMode: 0,
-        _id: userData._id,
-        userData: {
+        mode : 0,
+        filter : { _id: userData._id },
+        content : {
           cart: cartState,
         },
       }),

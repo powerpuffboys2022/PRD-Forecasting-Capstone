@@ -2,9 +2,10 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-import { dateMomentBeautify } from "../../helpers";
+import { dateMomentBeautify, getDateAgo } from "../../helpers";
 
-import { SlPrinter } from "react-icons/sl"
+import { HiSpeakerphone } from "react-icons/hi"
+import { SlPrinter } from "react-icons/sl";
 
 const Invoice = () => {
   const router = useRouter();
@@ -186,7 +187,7 @@ const Invoice = () => {
                   className="print:hidden inline-flex gap-2 items-center px-4 py-2 duration-200 bg-blue-400 rounded-lg text-white hover:bg-blue-300"
                   onClick={() => printme()}
                 >
-                  <SlPrinter className="text-lg"/>
+                  <SlPrinter className="text-lg" />
                   Print Invoice
                 </button>
               </div>
@@ -221,30 +222,81 @@ const Invoice = () => {
                           Date Shipped
                         </p>
                         <p className="mt-2 text-xs font-inter font-medium text-gray-800">
-                          {transaction.trackingDates.shipped && (
+                          {transaction.trackingDates.shipped ? (
                             <>
                               {dateMomentBeautify(
                                 new Date(transaction.trackingDates.shipped),
                                 "DD MMM, YYYY"
                               )}
                             </>
+                          ) : (
+                            "-"
                           )}
                         </p>
                       </div>
 
-                      <div>
-                        <p className="text-xs font-inter font-medium text-gray-500 print:text-gray-500">
-                          Date Completed
-                        </p>
-                        <p className="mt-2 text-xs font-inter font-medium text-gray-800">
-                          {dateMomentBeautify(
-                            new Date(transaction.placedDate),
-                            "DD MMM, YYYY"
-                          )}
-                        </p>
-                      </div>
+                      {transaction.status === -1 ? (
+                        <>
+                          <div>
+                            <p className="text-xs font-inter font-medium text-rose-500 print:text-rose-500">
+                              Date Canceled
+                            </p>
+                            <p className="mt-2 text-xs font-inter font-medium text-rose-600">
+                              {transaction.trackingDates.canceledDate ? (
+                                <>
+                                  {dateMomentBeautify(
+                                    new Date(
+                                      transaction.trackingDates.canceledDate
+                                    ),
+                                    "DD MMM, YYYY"
+                                  )}  <span className="text-xs font-medium text-gray-400">
+                                  {" "}
+                                  {getDateAgo(
+                                    new Date(),
+                                    new Date(
+                                      transaction.trackingDates.canceledDate
+                                    )
+                                  )} days ago
+                                  </span>
+                                </>
+                              ) : (
+                                "-"
+                              )}
+                            </p>
+                          </div>
+                        </>
+                      ) : (
+                        <div>
+                          <p className="text-xs font-inter font-medium text-gray-500 print:text-gray-500">
+                            Date Completed
+                          </p>
+                          <p className="mt-2 text-xs font-inter font-medium text-gray-800">
+                            {transaction.trackingDates.completed
+                              ? dateMomentBeautify(
+                                  new Date(transaction.placedDate),
+                                  "DD MMM, YYYY"
+                                )
+                              : "-"}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
+
+                  {transaction.status === -1 && (
+                    <div className="mt-8 rounded-md bg-gray-50 smooth-shadow-fine p-5">
+                      <p className="text-rose-600 print:text-xs inline-flex gap-2 items-center">
+                        <HiSpeakerphone className=" animate-pulse -rotate-45 text-lg"/>We need to cancel your order becaue of the following
+                        reason
+                      </p>
+                      <p className="text-xs my-5 ">
+                        - {transaction.reason ? transaction.reason : "-"}
+                      </p>
+                      <p className="print:text-xs text-gray-500">
+                        Sorry for the inconvinience
+                      </p>
+                    </div>
+                  )}
 
                   <div className="mt-8">
                     <div className="flex justify-between items-center">
@@ -308,7 +360,9 @@ const Invoice = () => {
                           <td className="py-3 text-sm text-gray-600 font-inter">
                             {rc.price.toLocaleString()}
                           </td>
-                          <td className="py-3 text-sm text-gray-600">x{rc.qty}</td>
+                          <td className="py-3 text-sm text-gray-600">
+                            x{rc.qty}
+                          </td>
                           <td className="py-3 text-sm text-gray-700 font-inter font-medium">
                             {(rc.qty * rc.price).toLocaleString()}
                           </td>
@@ -343,22 +397,37 @@ const Invoice = () => {
                   Delivery Address
                 </p>
                 <p className="text-gray-600 text-sm">
-                { reseller ? reseller.address : "-" }
+                  {reseller ? reseller.address : "-"}
                 </p>
-                <p className="font-medium text-gray-800 mt-6 text-sm">Customer Contact</p>
-                <p className="text-gray-600 text-sm">{reseller ? reseller.contact : "-"}</p>
-                <p className="font-medium text-gray-800 mt-6 text-sm">Accepted By</p>
-                <p className="text-gray-600 text-sm">{admin ? admin.userName : "-"}</p>
-                <p className="text-gray-600 text-sm">{admin ? admin.contact : "-"}</p>
-                <p className="font-medium text-gray-800 mt-6 text-sm">Updated By</p>
-                <p className="text-gray-600 text-sm">{updater ? updater.userName : "-"}</p>
-                <p className="text-gray-600 text-sm">{updater ? updater.contact : "-"}</p>
-
+                <p className="font-medium text-gray-800 mt-6 text-sm">
+                  Customer Contact
+                </p>
+                <p className="text-gray-600 text-sm">
+                  {reseller ? reseller.contact : "-"}
+                </p>
+                <p className="font-medium text-gray-800 mt-6 text-sm">
+                  Accepted By
+                </p>
+                <p className="text-gray-600 text-sm">
+                  {admin ? admin.userName : "-"}
+                </p>
+                <p className="text-gray-600 text-sm">
+                  {admin ? admin.contact : "-"}
+                </p>
+                <p className="font-medium text-gray-800 mt-6 text-sm">
+                  Updated By
+                </p>
+                <p className="text-gray-600 text-sm">
+                  {updater ? updater.userName : "-"}
+                </p>
+                <p className="text-gray-600 text-sm">
+                  {updater ? updater.contact : "-"}
+                </p>
               </div>
             </div>
           </div>
           <p className="text-center w-full text-xs font-medium text-gray-400 mt-6">
-            Delivery Cost is not added, Trucker shipping cost varries depending
+            Delivery Cost is not added, Trucker shipping cost varies depending
             on delivery address.
           </p>
           <p className="text-gray-500 text-xs text-center font-inter mt-16">
