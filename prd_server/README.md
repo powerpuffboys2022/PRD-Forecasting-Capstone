@@ -13,3 +13,12 @@ cd prdrest
 
 # Start PRD Django Server
 python manage.py runserver
+
+# For requesting you can use 
+POST http://127.0.0.1:5000/xgboost-predict
+# Json Request Format
+```json
+{
+    "days":365
+}
+```
