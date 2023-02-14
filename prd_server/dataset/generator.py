@@ -104,7 +104,7 @@ plt.show()
 result = []
 for index, row in df_all_rows.iterrows():
     result.append({
-        "date":  index.strftime(date_time_format), "value":  row['totalSale']
+        "date":  index.strftime(date_time_format), "totalSale":  row['totalSale']
     })
 
 
