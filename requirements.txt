@@ -1,9 +1,0 @@
-Flask
-Flask-Cors
-xgboost
-pandas
-numpy
-sklearn
-scipy
-matplotlib
-seaborn

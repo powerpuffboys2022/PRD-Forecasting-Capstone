@@ -45,7 +45,7 @@ def helloWorld():
     result = []
     for index, row in df_preds_future.iterrows():
         result.append({
-            "date": index, "value":  row['Sale']
+            "date": index, "totalSale":  row['Sale']
         })
     response = app.response_class(
         response=json.dumps(result),
@@ -77,7 +77,8 @@ def create_features(df, target_variable):
     df['dayofyear'] = df['date'].dt.dayofyear
     df['dayofmonth'] = df['date'].dt.day
     df['weekofyear'] = df['date'].dt.weekofyear
-    X = df[['hour', 'dayofweek', 'quarter', 'month', 'year','dayofyear', 'dayofmonth', 'weekofyear']]
+    X = df[['hour', 'dayofweek', 'quarter', 'month',
+            'year', 'dayofyear', 'dayofmonth', 'weekofyear']]
     if target_variable:
         y = df[target_variable]
         return X, y
