@@ -19,12 +19,12 @@ body {
 }
 
 ::-webkit-scrollbar {
-    @apply w-1 h-1;
+    width: 0.5rem;
     background-color: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    @apply bg-slate-500 rounded-md;
+    @apply bg-gray-300 rounded-md;
 }
 
 .font-helvetica {
@@ -133,4 +133,21 @@ body {
     .printable{
         print-color-adjust: exact;
     }
+}
+
+
+.h-1_12{
+    height: 4%;
+}
+
+.h-10_12{
+    height: 90%;
+}
+
+.h-11_12{
+    height: 95%;
+}
+
+.midall{
+    @apply flex h-full items-center justify-center;
 }

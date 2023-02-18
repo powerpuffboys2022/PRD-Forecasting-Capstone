@@ -1,7 +1,7 @@
 import React from "react";
 import ChatContent from "../ChatContent";
 import { motion, AnimatePresence } from "framer-motion";
-const UserChat = ({ visible, onClose }) => {
+const UserChat = ({ visible, onClose, trigger }) => {
   return (
     <AnimatePresence>
       {visible && (
@@ -12,7 +12,7 @@ const UserChat = ({ visible, onClose }) => {
           exit={{ opacity: 0 }}
           className="absolute z-40 smooth-shadow-fade right-0 py-5 px-0 h-screen w-full md:w-1/3 bg-white"
         >
-          <ChatContent onClose={onClose} />
+          <ChatContent onClose={onClose} trigger={trigger} />
         </motion.div>
       )}
     </AnimatePresence>

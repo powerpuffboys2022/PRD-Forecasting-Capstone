@@ -1,7 +1,10 @@
+import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Loading from "../Loading";
 import UserChat from "../Users/UserChat";
+
+import { BsDot } from "react-icons/bs";
 
 const UserNav = () => {
   const router = useRouter();
@@ -9,6 +12,12 @@ const UserNav = () => {
   const [userData, setUserData] = useState();
   const [loading, setLoading] = useState(false);
   const [showChat, setShowChat] = useState(false);
+
+  const [trigger, setTrigger] = useState(0);
+  const [requesting, setRequesting] = useState(false);
+
+  const [minichatInfo, setMiniChatInfo] = useState({ userUnread : false });
+
   const loadUser = () => {
     const response = fetch("/api/prd/userInfo", {
       method: "POST",
@@ -44,14 +53,39 @@ const UserNav = () => {
     });
   };
 
+  const loadChat = async () => {
+    try {
+      setRequesting(true);
+      const chats = await axios.post("/api/prd/chat", {
+        mode: 0,
+        filter: { isDeleted : false, ownerId : userData._id },
+        create_on_null : false,
+        project: { userUnread: 1 },
+      });
+      setMiniChatInfo(chats.data);
+      setLoading(false);
+      setRequesting(false);
+      setTrigger(Date.now());
+    } catch (e) {console.log('cant', e)}
+  };
+
   useEffect(() => {
     setLoading(true);
     loadUser();
   }, []);
 
+  useEffect(() => {
+    if(!userData)return
+    const interval = setInterval(async () => {
+      if (requesting) return;
+      await loadChat();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [userData]);
+
   return (
     <>
-      <nav className="fixed smooth-shadow-fade z-10 backdrop-blur-md bg-white flex w-full justify-between px-5 md:px-20 font-inter font-medium ">
+      <nav className="fixed smooth-shadow-fade z-10 backdrop-blur-md bg-white flex w-full justify-between px-5 md:px-20 font-inter font-medium">
         {/* Same as */}
         <div className="flex items-center w-1/3 md:w-1/4">
           {/* <a href="/">Philip Rice Dealer</a> */}
@@ -117,8 +151,13 @@ const UserNav = () => {
             <>
               <div
                 onClick={() => setShowChat(true)}
-                className="p-2 group rounded-md cursor-pointer bg-transparent hover:bg-gray-100 duration-200 ease-in-out"
+                className="relative p-2 group rounded-md cursor-pointer bg-transparent hover:bg-gray-100 duration-200 ease-in-out"
               >
+                {
+                    minichatInfo && minichatInfo.userUnread && <BsDot
+                    className="text-blue-400 absolute text-2xl top-0 -right-1 animate-ping"
+                    />
+                }
                 <svg
                   fill="currentColor"
                   viewBox="0 0 24 24"
@@ -150,7 +189,7 @@ const UserNav = () => {
           )}
           {loading && <Loading loading={loading} />}
         </div>
-        <UserChat visible={showChat} onClose={setShowChat} />
+        <UserChat visible={showChat} trigger={trigger} onClose={setShowChat} />
       </nav>
     </>
   );

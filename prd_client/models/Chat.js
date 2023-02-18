@@ -14,6 +14,7 @@ const ChatSchema = new Schema({
 //     type, // 0 - text, 1 - url/link
 //     message
 //   }
+  lastChat : { type : Date, default : Date.now },
   isDeleted : { type : Boolean, default : false } // for soft delete
 });
 const Chat = models.Chat || model('Chat', ChatSchema);

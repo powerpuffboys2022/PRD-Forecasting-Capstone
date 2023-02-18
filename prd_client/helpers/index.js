@@ -89,25 +89,15 @@ export const getCustomAgo = (current, given, measurement) => {
 };
 
 export const getago = (a, b) => {
-    var val = getCustomAgo(a,b,"seconds")
-    var finalResult = `${val} seconds`
-    var units = 'seconds'
-    // min
-    if(val >= 60 && units==='seconds') { val = getCustomAgo(a, b, "minutes"); finalResult = `${val} minutes ago`}
-
-    if(val >= 60 && units ==='minutes' ) { val = getCustomAgo(a, b, "hours"); finalResult = `${val} hours ago`}
-
-    if(val >= 24 && units ==='hours') { val = getCustomAgo(a, b, "days"); finalResult = `${val} days ago`}
-
-    if(val >= 7 && units ==='days') { val = getCustomAgo(a, b, "weeks"); finalResult = `${val} weeks ago`}
-
-    if(val >= 4 && units ==='weeks') { val = getCustomAgo(a, b, "months"); finalResult = `${val} months ago`}
-
-    if(val >= 12 && units ==='months') { val = getCustomAgo(a, b, "years"); finalResult = `${val} years ago`}
-
-    return { val, finalResult }
+    var finalResult = `${moment(b).fromNow()}`
+    return { finalResult }
 }
 
+export const roleToWord = (role) => {
+    if(role === 1) return 'admin'
+    if(role === 2) return 'root'
+    return 'partner'
+}
 
 export const dateMomentBeautify = (date, format) => {
   //"MMMM Do YYYY, h:mm a"

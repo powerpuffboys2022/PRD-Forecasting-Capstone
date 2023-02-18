@@ -4,15 +4,21 @@ import axios from "axios";
 
 import { dateMomentBeautify, getago } from "../helpers";
 
-import Loading from "./Loading"
+import Loading from "./Loading";
 
-const ChatContent = ({ onClose, resellerId }) => {
-  const [loading, setLoading] = useState(true)
+import CustomConfirm from "../components/modals/CustomConfirm";
+
+const ChatContent = ({ onClose, resellerId, chatWith, trigger }) => {
+  const [requesting, setRequesting] = useState(false);
+
+  const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
   const msgRef = useRef();
   const [chat, setChat] = useState();
   const [contentMode, setContentMode] = useState(0); // 0 - text, 1 - link
   const [write, setWrite] = useState("");
+
+  const [deleting, setDeleting] = useState(false);
 
   const loadMe = async () => {
     try {
@@ -23,20 +29,27 @@ const ChatContent = ({ onClose, resellerId }) => {
 
   const loadChats = async () => {
     try {
+      setRequesting(true);
+      if (!currentUser) return;
       const chats = await axios.post("/api/prd/chat", {
         mode: 0,
         filter: {
           ownerId: currentUser.userType < 1 ? currentUser._id : resellerId,
           isDeleted: false,
         },
+        create_on_null : true
       });
       setChat(chats.data);
-      setLoading(false)
-    } catch (e) {}
+      setLoading(false);
+      setRequesting(false);
+    } catch (e) {
+      console.log("Wont ", e);
+      if (e.response && e.response.status === 500) setChat(null);
+    }
   };
 
   const send = async (message) => {
-    if(message.length === 0 ) return
+    if (message.length === 0) return;
     try {
       const snd = await axios.post("/api/prd/chat", {
         mode: 2,
@@ -45,6 +58,11 @@ const ChatContent = ({ onClose, resellerId }) => {
           isDeleted: false,
         },
         content: {
+          $set: {
+            ...(currentUser.userType > 0
+              ? { adminUnread: false, userUnread: true }
+              : { userUnread: false, adminUnread: true }),
+          },
           $push: {
             chats: {
               _id: currentUser._id,
@@ -54,7 +72,7 @@ const ChatContent = ({ onClose, resellerId }) => {
               userType: currentUser.userType,
               type: contentMode, // 0 - text, 1 - url/link
               message: write,
-              date : new Date()
+              date: new Date(),
             },
           },
         },
@@ -64,27 +82,74 @@ const ChatContent = ({ onClose, resellerId }) => {
     } catch (e) {}
   };
 
-  const parseIfUrl = (str) => {
-    var inputElement = document.createElement('input');
+  const deleteCht = async () => {
+    try {
+      const snd = await axios.post("/api/prd/chat", {
+        mode: -1,
+        filter: {
+          _id: chat._id,
+          isDeleted: false,
+        },
+        content: { $set: { isDeleted: true,  adminUnread : false, userUnread : false } },
+      });
+      setWrite("");
+      onClose();
+    } catch (e) {
+      console.log("Wont ", e);
+    }
+  };
 
-    const isValidUrl = urlString =>{
-        inputElement.type = 'url';
-        inputElement.value = urlString;
-  
-        if (!inputElement.checkValidity()) {
-          return false;
-        } else {
-          return true;
-        }
-      } 
-    let toTest = str.split(" ")
-    return <>{toTest.map((msg, i)=><span key={i}>{isValidUrl(msg) ? <a key={i} className="hover:text-blue-500 duration-200 hover:underline" target="_blank" rel="noopener noreferrer" href={msg}>{msg}</a> : msg}{i < toTest.length - 1 ? " " : ""}</span>)}</>
-  }
+  const parseIfUrl = (str) => {
+    var inputElement = document.createElement("input");
+
+    const isValidUrl = (urlString) => {
+      inputElement.type = "url";
+      inputElement.value = urlString;
+
+      if (!inputElement.checkValidity()) {
+        return false;
+      } else {
+        return true;
+      }
+    };
+    let toTest = str.split(" ");
+    return (
+      <>
+        {toTest.map((msg, i) => (
+          <span key={i}>
+            {isValidUrl(msg) ? (
+              <a
+                key={i}
+                className="hover:text-blue-500 duration-200 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+                href={msg}
+              >
+                {msg}
+              </a>
+            ) : (
+              msg
+            )}
+            {i < toTest.length - 1 ? " " : ""}
+          </span>
+        ))}
+      </>
+    );
+  };
 
   const renderMsg = (strs) => {
-    let str = strs.replaceAll("\n","<~>").split("<~>")
-    return <>{str.map((msg, i) => <span key={i}>{parseIfUrl(msg)}{i <= str.length && <br/>}</span>)}</>
-  }
+    let str = strs.replaceAll("\n", "<~>").split("<~>");
+    return (
+      <>
+        {str.map((msg, i) => (
+          <span key={i}>
+            {parseIfUrl(msg)}
+            {i <= str.length && <br />}
+          </span>
+        ))}
+      </>
+    );
+  };
 
   useEffect(() => {
     if (msgRef.current) msgRef.current.scrollTop = msgRef.current.scrollHeight;
@@ -99,12 +164,17 @@ const ChatContent = ({ onClose, resellerId }) => {
     loadMe();
   }, []);
 
+  useEffect(() => {
+    if (!currentUser) return;
+    loadChats();
+  }, [trigger]);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="h-full"
+      className="h-full relative"
     >
       <div className="w-full max-h-fit py-4 px-4 border-b border-gray-100 bg-white">
         <div className="flex font-inter justify-between items-center ">
@@ -113,6 +183,8 @@ const ChatContent = ({ onClose, resellerId }) => {
               {currentUser
                 ? currentUser.userType < 1
                   ? "Chat PRD Admins"
+                  : chatWith
+                  ? chatWith
                   : "Chat User"
                 : "Chat PRD Admins"}
             </p>
@@ -147,9 +219,34 @@ const ChatContent = ({ onClose, resellerId }) => {
                 <p className="text-sm font-medium text-gray-400">
                   Chat Options
                 </p>
-                <button className="rounded-md hover:bg-gray-100 hover:text-rose-400 text-gray-400 bg-gray-50 px-4 py-2 text-sm mt-4">
-                  Delete Conversation
-                </button>
+                {chat && (
+                  <button
+                    onClick={() => setDeleting(true)}
+                    className="rounded-md hover:bg-gray-100 hover:text-rose-400 text-gray-400 bg-gray-50 px-4 py-2 text-sm mt-4"
+                  >
+                    Delete Conversation
+                  </button>
+                )}
+                {chat && deleting && (
+                  <>
+                    <p className="text-center text-xs mt-4">
+                      {" "}
+                      Are you sure you want to delete this conversation?
+                      <span
+                        className="underline cursor-pointer text-gray-400 hover:text-gray-800"
+                        onClick={() => deleteCht()}
+                      >
+                        Yes
+                      </span>
+                      <span
+                        className="underline cursor-pointer text-gray-400 hover:text-gray-800 ml-2"
+                        onClick={() => setDeleting(false)}
+                      >
+                        No
+                      </span>
+                    </p>
+                  </>
+                )}
               </div>
             </div>
             <div
@@ -174,27 +271,32 @@ const ChatContent = ({ onClose, resellerId }) => {
           </div>
         </div>
       </div>
-      <div ref={msgRef} className="h-4/6 w-full px-2 min-h-max overflow-y-scroll">
-        { loading &&
-            <div className="mx-auto mountedanimater flex w-full mt-16 justify-center"><Loading loading={loading} /></div>
-        }
+      <div
+        ref={msgRef}
+        className="h-4/6 w-full px-2 min-h-max overflow-y-scroll"
+      >
+        {loading && (
+          <div className="mx-auto mountedanimater flex w-full mt-16 justify-center">
+            <Loading loading={loading} />
+          </div>
+        )}
         {chat && !loading ? (
           <>
             {chat && (
               <div className="my-24">
-                  <svg
-                    fill="currentColor"
-                    className="h-8 text-blue-400 mx-auto"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <path
-                      clipRule="evenodd"
-                      fillRule="evenodd"
-                      d="M12 1.5a.75.75 0 01.75.75V4.5a.75.75 0 01-1.5 0V2.25A.75.75 0 0112 1.5zM5.636 4.136a.75.75 0 011.06 0l1.592 1.591a.75.75 0 01-1.061 1.06l-1.591-1.59a.75.75 0 010-1.061zm12.728 0a.75.75 0 010 1.06l-1.591 1.592a.75.75 0 01-1.06-1.061l1.59-1.591a.75.75 0 011.061 0zm-6.816 4.496a.75.75 0 01.82.311l5.228 7.917a.75.75 0 01-.777 1.148l-2.097-.43 1.045 3.9a.75.75 0 01-1.45.388l-1.044-3.899-1.601 1.42a.75.75 0 01-1.247-.606l.569-9.47a.75.75 0 01.554-.68zM3 10.5a.75.75 0 01.75-.75H6a.75.75 0 010 1.5H3.75A.75.75 0 013 10.5zm14.25 0a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H18a.75.75 0 01-.75-.75zm-8.962 3.712a.75.75 0 010 1.061l-1.591 1.591a.75.75 0 11-1.061-1.06l1.591-1.592a.75.75 0 011.06 0z"
-                    />
-                  </svg>
+                <svg
+                  fill="currentColor"
+                  className="h-8 text-blue-400 mx-auto"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    clipRule="evenodd"
+                    fillRule="evenodd"
+                    d="M12 1.5a.75.75 0 01.75.75V4.5a.75.75 0 01-1.5 0V2.25A.75.75 0 0112 1.5zM5.636 4.136a.75.75 0 011.06 0l1.592 1.591a.75.75 0 01-1.061 1.06l-1.591-1.59a.75.75 0 010-1.061zm12.728 0a.75.75 0 010 1.06l-1.591 1.592a.75.75 0 01-1.06-1.061l1.59-1.591a.75.75 0 011.061 0zm-6.816 4.496a.75.75 0 01.82.311l5.228 7.917a.75.75 0 01-.777 1.148l-2.097-.43 1.045 3.9a.75.75 0 01-1.45.388l-1.044-3.899-1.601 1.42a.75.75 0 01-1.247-.606l.569-9.47a.75.75 0 01.554-.68zM3 10.5a.75.75 0 01.75-.75H6a.75.75 0 010 1.5H3.75A.75.75 0 013 10.5zm14.25 0a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H18a.75.75 0 01-.75-.75zm-8.962 3.712a.75.75 0 010 1.061l-1.591 1.591a.75.75 0 11-1.061-1.06l1.591-1.592a.75.75 0 011.06 0z"
+                  />
+                </svg>
                 <p className="text-gray-400 mt-8 text-center text-xs">
                   Chat created on{" "}
                   {dateMomentBeautify(
@@ -229,13 +331,33 @@ const ChatContent = ({ onClose, resellerId }) => {
                       }`
                     }
                   >
-                    <p className="text-xs text-gray-400">{getago(new Date(), new Date(cht.date)).finalResult}</p>
-                    <p className="text-sm font-semibold text-gray-900 mx-2">
+                    <p
+                      className={`text-xs text-gray-400 ${
+                        cht._id === currentUser._id ||
+                        cht.userType === currentUser.userType
+                          ? "mr-2"
+                          : "order-last ml-2"
+                      }`}
+                    >
+                      {getago(new Date(), new Date(cht.date)).finalResult}
+                    </p>
+                    <p
+                      className={`text-sm font-semibold text-gray-900 mx-2 ${
+                        cht._id === currentUser._id ||
+                        cht.userType === currentUser.userType
+                          ? ""
+                          : "order-2 ml-2"
+                      }`}
+                    >
                       {cht._id === currentUser._id ? "You" : cht.userName}
                     </p>
                     <div
-                      className="avatar cursor-pointer "
-                      onClick={() => router.push("/general/profile")}
+                      className={`avatar cursor-pointer ${
+                        cht._id === currentUser._id ||
+                        cht.userType === currentUser.userType
+                          ? ""
+                          : "order-1 ml-2"
+                      }`}
                     >
                       <div className="w-8 rounded-full">
                         <img className="h-8" src={cht.imgUrl} />
@@ -244,27 +366,19 @@ const ChatContent = ({ onClose, resellerId }) => {
                   </div>
 
                   <div className="px-6 py-4 text-sm bg-gray-50 rounded-md mt-2">
-                    <p className={"text-sm "+`${
-                        cht._id === currentUser._id ||
-                        cht.userType === currentUser.userType
-                          ? "text-right"
-                          : "text-left"
-                      }`}>{renderMsg(cht.message)}</p>
-                    {/* <pre>
-                      <span
-                        className={
-                          "font-inter " +
-                          `${
-                            cht._id === currentUser._id ||
-                            cht.userType === currentUser.userType
-                              ? "text-right"
-                              : "text-left"
-                          }`
-                        }
-                      >
-                        {msg}
-                      </span>
-                    </pre> */}
+                    <p
+                      className={
+                        "text-sm " +
+                        `${
+                          cht._id === currentUser._id ||
+                          cht.userType === currentUser.userType
+                            ? "text-right"
+                            : "text-left"
+                        }`
+                      }
+                    >
+                      {renderMsg(cht.message)}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -323,7 +437,10 @@ const ChatContent = ({ onClose, resellerId }) => {
             </svg>
           </div>
           <div
-            onClick={() => send(write)}
+            onClick={() => {
+              if (!chat) return;
+              send(write);
+            }}
             className="smooth-shadow-fine w-max inline-flex items-center text-white text-sm gap-2 rounded-md group cursor-pointer py-2 px-3 bg-blue-400"
           >
             <span>Send</span>
