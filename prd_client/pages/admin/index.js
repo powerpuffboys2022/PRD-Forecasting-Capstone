@@ -164,20 +164,20 @@ const ForecastDashboard = ({ forecast, prediction }) => {
             <Chart
                 id="zoomedChart"
                 dataSource={estimate}
-                title="PRD Forcasting"
+                title="PRD Daily Forcasting"
             >
                 <CommonSeriesSettings
                     argumentField="datew"
                     type={"line"}
                 />
                 <Series
-                    name="Total Sales"
+                    name="Daily Sales"
                     valueField="totalSale"
                 >
 
                 </Series>
                 <Series
-                    name="Prediction"
+                    name="Forecasting"
                     valueField="prediction"
                 ></Series>
                 <Margin bottom={20} />
