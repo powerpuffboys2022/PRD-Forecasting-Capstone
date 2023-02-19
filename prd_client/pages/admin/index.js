@@ -1,63 +1,106 @@
 import Head from "next/head";
 import HomeLayout from "../../layouts/HomeLayout"
+import { useEffect, useState } from "react";
+
 
 export default function Home() {
-  return (
-    <div>
-      <Head>
-        <title>Dashboard</title>
-        <meta
-          name="description"
-          content="Philip Rice Dealer Online store & forecasting"
-        />
-        <link itemProp="image" href="cover.png" />
-        <meta itemProp="name" content="Philip Rice Dealer" />
-        <meta
-          itemProp="description"
-          content="Philip Rice Dealer Online store & forecasting"
-        />
-        <meta
-          itemProp="image"
-          content="cover.png"
-        />
 
-        <meta
-          property="og:url"
-          content="https://prd-forecasting-capstone.vercel.app"
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Philip Rice Dealer" />
-        <meta
-          property="og:description"
-          content="Philip Rice Dealer Online store & forecasting"
-        />
-        <meta
-          property="og:image"
-          content="cover.png"
-        />
+    const getForcasts = async () => {
+        const response = await fetch("api/prd/forecast", {
+            method: "POST",
+            mode: "cors",
+        })
+        const data = await response.json()
+        console.log(data);
+    }
 
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Philip Rice Dealer" />
-        <meta
-          name="twitter:description"
-          content="Philip Rice Dealer Online store & forecasting"
-        />
-        <meta
-          name="twitter:image"
-          content="cover.png"
-        />
+    const resetForecast = async () => {
+        const response = await fetch("api/prd/forecast", {
+            method: "DELETE",
+            mode: "cors",
+        })
+        const data = await response.json()
+    }
 
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <main>
-        <h1 className="">
-          <span className="font-mono">Dashboard</span>
-        </h1>
-      </main>
-    </div>
-  );
+    const getPredictionForecasts = async () => {
+        const response = await fetch("http://forecastprd-env-1.eba-jutzyivj.ap-southeast-1.elasticbeanstalk.com/xgboost-predict", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ "days": 365 }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data)
+            })
+
+    }
+    useEffect(() => {
+
+        // resetForecast();
+        getForcasts();
+        getPredictionForecasts();
+
+    }, []);
+    return (
+        <div>
+            <Head>
+                <title>Dashboard</title>
+                <meta
+                    name="description"
+                    content="Philip Rice Dealer Online store & forecasting"
+                />
+                <link itemProp="image" href="cover.png" />
+                <meta itemProp="name" content="Philip Rice Dealer" />
+                <meta
+                    itemProp="description"
+                    content="Philip Rice Dealer Online store & forecasting"
+                />
+                <meta
+                    itemProp="image"
+                    content="cover.png"
+                />
+
+                <meta
+                    property="og:url"
+                    content="https://prd-forecasting-capstone.vercel.app"
+                />
+                <meta property="og:type" content="website" />
+                <meta property="og:title" content="Philip Rice Dealer" />
+                <meta
+                    property="og:description"
+                    content="Philip Rice Dealer Online store & forecasting"
+                />
+                <meta
+                    property="og:image"
+                    content="cover.png"
+                />
+
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="Philip Rice Dealer" />
+                <meta
+                    name="twitter:description"
+                    content="Philip Rice Dealer Online store & forecasting"
+                />
+                <meta
+                    name="twitter:image"
+                    content="cover.png"
+                />
+
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+            <main>
+                <h1 className="">
+                    <span className="font-mono">Dashboard</span>
+                </h1>
+            </main>
+        </div>
+    );
 }
 
 Home.getLayout = function getLayout(page) {
-  return <HomeLayout>{page}</HomeLayout>;
+    return <HomeLayout>{page}</HomeLayout>;
 };
