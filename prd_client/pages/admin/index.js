@@ -2,6 +2,33 @@ import Head from "next/head";
 import HomeLayout from "../../layouts/HomeLayout"
 import { useEffect, useState } from "react";
 
+import Chart, {
+    Series,
+    Aggregation,
+    ArgumentAxis,
+    Grid,
+    Label,
+    Reduction,
+    ValueAxis,
+    Margin,
+    Legend,
+    Tooltip,
+    Export,
+    Title,
+    Subtitle,
+    CommonSeriesSettings,
+} from 'devextreme-react/chart';
+
+import RangeSelector, {
+    Size,
+    Scale,
+    Chart as RsChart,
+    ValueAxis as RsValueAxis,
+    Series as RsSeries,
+    Aggregation as RsAggregation,
+    Behavior,
+} from 'devextreme-react/range-selector';
+
 
 export default function Home() {
     const [forecast, setForecast] = useState([])
@@ -12,7 +39,7 @@ export default function Home() {
             mode: "cors",
         })
         const data = await response.json()
-        setForecast(data);
+        setForecast(data.forecasts);
     }
 
     const resetForecast = async () => {
@@ -38,7 +65,7 @@ export default function Home() {
                 data = data.map((value) => {
                     const date = new Date(value['date'])
                     const datew = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
-                    value = { ...value, datew: datew }
+                    value = { ...value, datew: datew, prediction: value.totalSale }
                     return value;
                 })
                 setPrediction(data)
@@ -47,6 +74,7 @@ export default function Home() {
 
     }
     useEffect(() => {
+        // resetForecast();
         getForcasts();
         getPredictionForecasts();
         return;
@@ -116,9 +144,106 @@ const crosshairFormat = {
 };
 const ForecastDashboard = ({ forecast, prediction }) => {
     if (!prediction && !forecast) return <></>;
+    const [forecastEstimation, setForcastEstimation] = useState([])
+    const [visualRange, setVisualRange] = useState({});
+    const updateVisualRange = (e) => {
+        setVisualRange(e.value)
+    }
+    useEffect(() => {
+        setForcastEstimation(forecast.concat(prediction))
+        return;
+    }, [])
     return (
         <div className="">
 
+            <Chart
+                id="zoomedChart"
+                dataSource={forecastEstimation}
+                title="PRD Forcasting"
+            >
+                <CommonSeriesSettings
+                    argumentField="datew"
+                    type={"line"}
+                />
+                <Series
+                    name="Total Sales"
+                    valueField="totalSale"
+                >
+
+                </Series>
+                <Series
+                    name="Prediction"
+                    valueField="prediction"
+                ></Series>
+                <Margin bottom={20} />
+                <ArgumentAxis
+                    valueMarginsEnabled={false}
+                    discreteAxisDivisionMode="crossLabels"
+                >
+                    <Grid visible={true} />
+                </ArgumentAxis>
+                <ArgumentAxis
+                    visualRange={visualRange}
+                    valueMarginsEnabled={false}
+                    argumentType="datetime"
+                >
+                    <Grid visible={true} />
+                    <Label visible={false} />
+                </ArgumentAxis>
+                <Legend
+                    verticalAlignment="bottom"
+                    horizontalAlignment="center"
+                    itemTextPosition="bottom"
+                />
+                <Export enabled={true} />
+                <Title text="Energy Consumption in 2004">
+                    <Subtitle text="(Millions of Tons, Oil Equivalent)" />
+                </Title>
+                <Tooltip enabled={true} contentRender={(info) => {
+                    const date = new Date(info.argumentText)
+                    const value = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
+                    return (
+                        <div>
+                            <span className="text-xs text-gray-600">{value}</span>
+                            <p className="font-bold text-sm">{parseFloat(info.valueText).toFixed(2)}</p>
+                        </div>
+                    )
+                }} />
+            </Chart>
+            <RangeSelector
+                dataSource={forecastEstimation}
+                onValueChanged={updateVisualRange}
+            >
+                <Size height={120} />
+                <RsChart>
+                    <RsValueAxis valueType="numeric" />
+                    <RsSeries
+                        type="line"
+                        valueField="totalSale"
+                        argumentField="date"
+                    >
+                        <RsAggregation enabled="true" />
+                    </RsSeries>
+                    <RsSeries
+                        type="line"
+                        valueField="prediction"
+                        argumentField="date"
+                    >
+                        <RsAggregation enabled="true" />
+                    </RsSeries>
+                </RsChart>
+                <Scale
+                    placeholderHeight={30}
+                    minorTickInterval="month"
+                    tickInterval="year"
+                    valueType="datetime"
+                    aggregationInterval="week"
+                />
+                <Behavior
+                    snapToTicks={true}
+                    callValueChanged="onMoving"
+                />
+            </RangeSelector>
         </div>
     )
 }

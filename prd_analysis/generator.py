@@ -30,6 +30,7 @@ df.index = pd.to_datetime(df.index)
 
 # Sort the value by Date
 df = df.sort_values(by="Date")
+re = df
 
 
 def predict_future(model, begin_date, days=7):
@@ -92,6 +93,7 @@ for index, row in df_preds_future.iterrows():
     res = random.randint(value-100, value+300)
     totalSale.append(res)
 
+
 new_value = {
     'totalSale': totalSale
 }
@@ -100,7 +102,12 @@ df_all_rows = pd.concat([df, df_res])
 plt.show()
 
 result = []
+x = False
 for index, row in df_all_rows.iterrows():
+
+    if (re.index[-1] == index) and x == False:
+        x = True
+        continue
     result.append({
         "datew":  index.strftime(datew_time_format),
         "date":  index.strftime(date_time_format),
