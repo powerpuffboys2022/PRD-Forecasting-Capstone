@@ -4,14 +4,15 @@ import { useEffect, useState } from "react";
 
 
 export default function Home() {
-
+    const [forecast, setForecast] = useState([])
+    const [prediction, setPrediction] = useState([])
     const getForcasts = async () => {
         const response = await fetch("api/prd/forecast", {
             method: "POST",
             mode: "cors",
         })
         const data = await response.json()
-        console.log(data);
+        setForecast(data);
     }
 
     const resetForecast = async () => {
@@ -19,7 +20,7 @@ export default function Home() {
             method: "DELETE",
             mode: "cors",
         })
-        const data = await response.json()
+        const data = await response.json();
     }
 
     const getPredictionForecasts = async () => {
@@ -34,16 +35,21 @@ export default function Home() {
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data)
+                data = data.map((value) => {
+                    const date = new Date(value['date'])
+                    const datew = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
+                    value = { ...value, datew: datew }
+                    return value;
+                })
+                setPrediction(data)
             })
+
 
     }
     useEffect(() => {
-
-        // resetForecast();
         getForcasts();
         getPredictionForecasts();
-
+        return;
     }, []);
     return (
         <div>
