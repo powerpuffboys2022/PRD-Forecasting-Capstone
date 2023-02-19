@@ -69,6 +69,8 @@ def days_between(d1, d2):
 
 
 date_time_format = "%Y-%m-%d %H:%M:%S"
+datew_time_format = "%Y-%m-%d"
+
 csv_date = df.index.date.max().strftime(date_time_format)
 date_now = datetime.now().strftime(date_time_format)
 oldest_date = csv_date if parse(csv_date) < parse(date_now) else date_now
@@ -95,16 +97,14 @@ new_value = {
 }
 df_res = pd.DataFrame(new_value, index=dates)
 df_all_rows = pd.concat([df, df_res])
-# df_all_rows['Sale'].plot(style='.',
-#                          figsize=(15, 5),
-#                          color=color_pal[0],
-#                          title='Daily Sales')
 plt.show()
 
 result = []
 for index, row in df_all_rows.iterrows():
     result.append({
-        "date":  index.strftime(date_time_format), "totalSale":  row['totalSale']
+        "datew":  index.strftime(datew_time_format),
+        "date":  index.strftime(date_time_format),
+        "totalSale":  row['totalSale']
     })
 
 
