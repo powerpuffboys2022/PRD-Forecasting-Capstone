@@ -21,6 +21,7 @@ const getForcasts = async (req, res) => {
     const forecasts = await Forecast.find();
     return res.status(200).json({ success: true, forecasts: forecasts })
 }
+
 export default async function handler(req, res) {
     switch (req.method) {
         case "POST": {
@@ -28,7 +29,6 @@ export default async function handler(req, res) {
         }
         case "DELETE": {
             return resetForecast(req, res);
-
         }
     }
 }

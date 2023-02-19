@@ -1,6 +1,7 @@
 import Head from "next/head";
 import HomeLayout from "../../layouts/HomeLayout"
 import { useEffect, useState } from "react";
+import Loading from "../../components/Loading2";
 
 import Chart, {
     Series,
@@ -33,13 +34,15 @@ import RangeSelector, {
 export default function Home() {
     const [forecast, setForecast] = useState([])
     const [prediction, setPrediction] = useState([])
+
+
     const getForcasts = async () => {
         const response = await fetch("api/prd/forecast", {
             method: "POST",
             mode: "cors",
         })
         const data = await response.json()
-        setForecast(data.forecasts);
+        setForecast(data.forecasts)
     }
 
     const resetForecast = async () => {
@@ -70,15 +73,20 @@ export default function Home() {
                 })
                 setPrediction(data)
             })
+    }
 
+
+
+    const initalize = async () => {
+        await getForcasts();
+        await getPredictionForecasts();
 
     }
     useEffect(() => {
-        // resetForecast();
-        getForcasts();
-        getPredictionForecasts();
-        return;
+        initalize()
     }, []);
+
+
     return (
         <div>
             <Head>
@@ -126,39 +134,36 @@ export default function Home() {
 
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <main>
+            <main className="w-full flex-col flex items-center">
                 <h1 className="">
                     <span className="font-mono">Dashboard</span>
                 </h1>
                 <ForecastDashboard forecast={forecast} prediction={prediction} />
-
             </main>
         </div>
     );
 }
 
 
-const crosshairFormat = {
-    type: 'fixedPoint',
-    precision: 2,
-};
 const ForecastDashboard = ({ forecast, prediction }) => {
-    if (!prediction && !forecast) return <></>;
-    const [forecastEstimation, setForcastEstimation] = useState([])
+    if (prediction.length == 0 || forecast.length == 0) return (
+        <div className="w-full flex justify-center content-center h-24">
+            <Loading loading={true} />
+        </div>
+    )
+    const [estimate, setEstimate] = useState(forecast.concat(prediction))
     const [visualRange, setVisualRange] = useState({});
     const updateVisualRange = (e) => {
         setVisualRange(e.value)
+
     }
-    useEffect(() => {
-        setForcastEstimation(forecast.concat(prediction))
-        return;
-    }, [])
+
     return (
-        <div className="">
+        <div className="w-full">
 
             <Chart
                 id="zoomedChart"
-                dataSource={forecastEstimation}
+                dataSource={estimate}
                 title="PRD Forcasting"
             >
                 <CommonSeriesSettings
@@ -211,7 +216,7 @@ const ForecastDashboard = ({ forecast, prediction }) => {
                 }} />
             </Chart>
             <RangeSelector
-                dataSource={forecastEstimation}
+                dataSource={estimate}
                 onValueChanged={updateVisualRange}
             >
                 <Size height={120} />
