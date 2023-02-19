@@ -8,7 +8,6 @@ import { BsSearch } from "react-icons/bs";
 import { toast } from "react-toastify";
 
 import RiceCard2 from "../../components/Users/RiceCard2";
-import Loading2 from "../../components/Loading2";
 import Loading from "../../components/Loading";
 
 const Store = () => {
@@ -164,10 +163,7 @@ const Store = () => {
           itemProp="description"
           content="Philip Rice Dealer Online store & forecasting"
         />
-        <meta
-          itemProp="image"
-          content="cover.png"
-        />
+        <meta itemProp="image" content="cover.png" />
 
         <meta
           property="og:url"
@@ -179,10 +175,7 @@ const Store = () => {
           property="og:description"
           content="Philip Rice Dealer Online store & forecasting"
         />
-        <meta
-          property="og:image"
-          content="cover.png"
-        />
+        <meta property="og:image" content="cover.png" />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Philip Rice Dealer" />
@@ -190,10 +183,7 @@ const Store = () => {
           name="twitter:description"
           content="Philip Rice Dealer Online store & forecasting"
         />
-        <meta
-          name="twitter:image"
-          content="cover.png"
-        />
+        <meta name="twitter:image" content="cover.png" />
 
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -201,124 +191,6 @@ const Store = () => {
         <section className="py-24 w-full bg-rice-pattern flex justify-center items-center">
           <div className="mx-4 md:mx-0 md:w-1/3">
             <img className="mx-auto h-40" src="/logo_big.png" />
-            {/* <div className="flex items-center space-x-2 mt-4">
-              <label htmlFor="simple-search" className="sr-only">
-                Search
-              </label>
-              <div className="relative w-full">
-                <div className="flex absolute inset-y-0 -left-8 items-center pl-3 pointer-events-none"></div>
-                <input
-                  type="text"
-                  id="simple-search"
-                  onChange={(e) => {
-                    setSearch(e.target.value);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter")
-                      if (search.length > 0) {
-                        setLoading(true);
-                        searchFunc();
-                      } else init();
-                  }}
-                  value={search}
-                  className="input w-full"
-                  placeholder="Search Product"
-                  required
-                />
-              </div>
-              <div className="dropdown">
-                <label
-                  tabIndex={0}
-                  className="btn btn-ghost bg-base-100 hover:bg-base-200 text-black m-1"
-                >
-                  <BiFilter className="text-2xl" />
-                </label>
-                <div
-                  tabIndex={0}
-                  className="dropdown-content menu p-4 shadow bg-base-100/70 backdrop-blur-md  w-52"
-                >
-                  <p className="text-lg font-medium">Filters</p>
-                  <div className="divider my-2 py-2" />
-                  <div className="form-control">
-                    <label className="label cursor-pointer">
-                      <span className="label-text">High to Low</span>
-                      <input
-                        checked={sort === 0}
-                        onChange={(e) => {
-                          setSort(e.target.checked ? 0 : 1);
-                        }}
-                        type="radio"
-                        name="radio-10"
-                        className="radio checked:bg-red-500"
-                      />
-                    </label>
-                  </div>
-                  <div className="form-control">
-                    <label className="label cursor-pointer">
-                      <span className="label-text">Low to High</span>
-                      <input
-                        type="radio"
-                        onChange={(e) => {
-                          setSort(e.target.checked ? 1 : 0);
-                        }}
-                        checked={sort === 1}
-                        name="radio-10"
-                        className="radio checked:bg-blue-500"
-                      />
-                    </label>
-                  </div>
-                  <div className="divider my-2 py-2" />
-
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="font-medium text-lg">Price Range</span>
-                    </label>
-                    <label className="input-group">
-                      <input
-                        type="text"
-                        placeholder="min"
-                        value={min}
-                        onChange={(e) => {
-                          let parsed = e.target.value;
-                          var regex = /^[0-9\b]+$/;
-                          if (parsed.length === 0) setMin(parsed);
-                          if (!parsed.includes(".") && !regex.test(parsed))
-                            return;
-                          setMin(parsed);
-                        }}
-                        className="input input-bordered w-1/2"
-                      />
-                      <input
-                        type="text"
-                        placeholder="max"
-                        value={max}
-                        onChange={(e) => {
-                          let parsed = e.target.value;
-                          var regex = /^[0-9\b]+$/;
-                          if (parsed.length === 0) setMax(parsed);
-                          if (!parsed.includes(".") && !regex.test(parsed))
-                            return;
-                          setMax(parsed);
-                        }}
-                        className="input input-bordered w-1/2"
-                      />
-                    </label>
-                  </div>
-
-                  <button
-                    className="mt-4 btn btn-sm w-full"
-                    onClick={() => {
-                      toast.success("Filter Applied", {
-                        position: toast.POSITION.TOP_LEFT,
-                      });
-                      init();
-                    }}
-                  >
-                    apply
-                  </button>
-                </div>
-              </div>
-            </div> */}
             <div className="mt-8">
               <label
                 htmlFor="default-search"
@@ -348,19 +220,10 @@ const Store = () => {
                   placeholder="Search"
                   required
                 />
-                {/* <button
-                  type="submit"
-                  className="text-black absolute right-2.5 bottom-2.5 bg-yellow-400 hover:bg-yellow-500 duration-200 ease-in-out focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-4 py-2 "
-                >
-                  Search
-                </button> */}
-
-                {/* TEST */}
-
                 <div className="dropdown absolute right-2 top-1">
                   <label
                     tabIndex={0}
-                    className="btn btn-sm bg-transparent hover:bg-gray-100 outline-none text-gray-800 m-1"
+                    className="btn btn-sm bg-transparent hover:bg-gray-100 outline-none text-gray-800 m-1 border-none smooth-shadow-fade"
                   >
                     <BiFilter className="text-2xl" />
                   </label>

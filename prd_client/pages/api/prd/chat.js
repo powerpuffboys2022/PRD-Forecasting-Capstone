@@ -1,4 +1,3 @@
-import { m } from "framer-motion";
 import dbConnect from "../../../services/MongoDb_Service";
 const Chat = require("../../../models/Chat");
 

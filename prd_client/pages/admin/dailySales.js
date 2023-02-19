@@ -274,7 +274,7 @@ const Daily_sales = () => {
   useEffect(() => {}, [selected]);
 
   return (
-    <div className="font-poppins overflow-y-scroll h-screen bg-[#f5f8fa]">
+    <div className="font-inter overflow-y-scroll h-screen bg-[#f5f8fa]">
       <Head>
         <title>Daily Sales</title>
         <meta

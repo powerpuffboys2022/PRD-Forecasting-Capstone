@@ -339,7 +339,7 @@ const ChatContent = ({ onClose, resellerId, chatWith, trigger }) => {
                           : "order-last ml-2"
                       }`}
                     >
-                      {getago(new Date(), new Date(cht.date)).finalResult}
+                      {getago(new Date(cht.date)).finalResult}
                     </p>
                     <p
                       className={`text-sm font-semibold text-gray-900 mx-2 ${

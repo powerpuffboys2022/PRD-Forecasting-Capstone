@@ -362,7 +362,7 @@ const Orders = () => {
   }, [tab, cOrders]);
 
   return (
-    <div className="font-poppins overflow-hidden h-screen flex flex-col flex-grow bg-[#f5f8fa]">
+    <div className="font-inter overflow-hidden h-screen flex flex-col flex-grow bg-[#f5f8fa]">
       <Head>
         <title>Orders</title>
         <meta
@@ -486,7 +486,7 @@ const Orders = () => {
       <main className="p-4 h-full relative">
         <div
           onClick={() => setSelected(null)}
-          className=" h-1/6 flex mt-2 items-center rounded-lg justify-between text-sm smooth-shadow-thin bg-white p-2 font-medium text-center text-gray-500"
+          className="h-3_12 flex mt-2 items-center rounded-lg justify-between text-sm smooth-shadow-thin bg-white p-2 font-medium text-center text-gray-500"
         >
           <ul className="flex flex-wrap -mb-px">
             <li className="mr-2">
@@ -644,18 +644,11 @@ const Orders = () => {
                 placeholder="search by Order ID, Customer ID, Status"
                 required
               />
-              {/* <button
-                  type="submit"
-                  onClick={(e)=>{ }}
-                  className="text-gray-700 border hover:text-white absolute right-3 bottom-2.5 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-2xl text-sm px-4 py-2 "
-                >
-                  Search
-                </button> */}
             </div>
           </form>
         </div>
 
-        <div className="pt-3 h-5/6 overflow-y-scroll">
+        <div className="pt-3 h-10_12 overflow-y-scroll">
           {(tab === -1 || tab === 4) && (
             <div className="mt-4 rounded-md bg-white flex justify-between space-x-1 w-full p-2 text-xs items-center">
               <button
@@ -728,7 +721,7 @@ const Orders = () => {
                   <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                       <tr>
-                        {(tab === 1 || tab === 4 || tab === -1) && (
+                        {( tab === 4 || tab === -1) && (
                           <th scope="col" className="p-4">
                             <div className="flex items-center">
                               <input
@@ -773,7 +766,7 @@ const Orders = () => {
                               key={idx}
                               className="bg-white border-t border-dashed hover:bg-gray-50 py-4"
                             >
-                              {(tab === 1 || tab === 4 || tab === -1) && (
+                              {( tab === 4 || tab === -1) && (
                                 <td className="w-4 p-4">
                                   <div className="flex items-center">
                                     <input

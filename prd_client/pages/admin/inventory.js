@@ -80,7 +80,7 @@ const Inventory = () => {
   }, []);
 
   return (
-    <div className="font-poppins  h-screen main-content flex flex-col flex-grow bg-[#f5f8fa]">
+    <div className="font-inter  h-screen main-content flex flex-col flex-grow bg-[#f5f8fa]">
       <Head>
         <title>Inventory</title>
         <meta

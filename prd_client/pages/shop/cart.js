@@ -307,11 +307,16 @@ const Cart = () => {
                     <tr key={i} className="">
                       <td>
                         <div className="flex items-center space-x-3">
-                          <img
-                            className="h-24 w-16"
+                          {/* <img
+                            className="h-24 "
                             src={prod.imgUrl}
                             alt="Avatar Tailwind CSS Component"
-                          />
+                          /> */}
+                          <div
+                            className="h-24 w-24 bg-cover bg-transparent bg-center duration-300 rounded-lg "
+                            style={{ backgroundImage: `url(${prod.imgUrl})` }}
+                            alt="Shoes"
+                            />
                           <div>
                             <div className="font-bold">{prod.articleName}</div>
                             <div className="text-sm opacity-50">
@@ -364,7 +369,7 @@ const Cart = () => {
                         </div>
                       </td>
                       <td>
-                        <p>{(prod.price * prod.qty).toFixed(2)}</p>
+                        <p>{(prod.price * prod.qty).toLocaleString()}</p>
                       </td>
                       <td>
                         <div className="tooltip" data-tip="Remove Item">
@@ -402,7 +407,7 @@ const Cart = () => {
         </div>
         <div className="font-inter mx-5 md:mx-16 flex items-center justify-between">
           <p className="text-2xl font-bold">Total</p>
-          <p className="text-2xl font-medium">{beautifyMoney(total, 2)}</p>
+          <p className="text-2xl font-medium">{total.toLocaleString()}</p>
         </div>
       </div>
     </div>

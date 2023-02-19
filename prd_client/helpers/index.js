@@ -82,13 +82,7 @@ export const getDateAgo = (current, given) => {
   return a.diff(b, "days");
 };
 
-export const getCustomAgo = (current, given, measurement) => {
-  let a = moment(current);
-  let b = moment(given);
-  return a.diff(b, measurement);
-};
-
-export const getago = (a, b) => {
+export const getago = (b) => {
     var finalResult = `${moment(b).fromNow()}`
     return { finalResult }
 }
@@ -96,7 +90,8 @@ export const getago = (a, b) => {
 export const roleToWord = (role) => {
     if(role === 1) return 'admin'
     if(role === 2) return 'root'
-    return 'partner'
+    if(role === 0) return 'partner'
+    return 'unknown user type'
 }
 
 export const dateMomentBeautify = (date, format) => {

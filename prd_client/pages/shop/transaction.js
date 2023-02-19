@@ -409,11 +409,12 @@ const Transactions = () => {
                           >
                             <button
                               onClick={() => {
+                                console.log(trans.status)
                                 setFocusedOrderId(trans._id);
                                 setModalState(1);
                               }}
-                              disabled={trans.status !== 1}
-                              className={"text-xs text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg px-2 py-1 text-center inline-flex items-center mr-2 mb-2 " + `${trans.status < 1 && trans.status !== -1 ? "cursor-pointer " : "opacity-50 cursor-not-allowed"}`}
+                              disabled={trans.status > 2 || trans.status === -1}
+                              className={"text-xs text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg px-2 py-1 text-center inline-flex items-center mr-2 mb-2 " + `${trans.status < 2 && trans.status !== -1 ? "cursor-pointer " : "opacity-50 cursor-not-allowed"}`}
                             >
                               Cancel
                             </button>

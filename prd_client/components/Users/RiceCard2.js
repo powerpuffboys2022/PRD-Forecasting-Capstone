@@ -52,10 +52,10 @@ const RiceCard2 = ({
   };
 
   return (
-    <div className="relative p-4 group hover:scale-105 bg-white/90 duration-300 hover:bg-yellow-500 hover:drop-shadow-2xl hover:z-20">
+    <div className="mountedanimater relative p-4 group hover:scale-105 bg-white/90 duration-300 hover:bg-yellow-500 hover:drop-shadow-2xl hover:z-0">
       <div className="flex justify-center">
         <div
-          className="h-72 w-5/6 bg-cover bg-transparent duration-300 rounded-lg "
+          className="h-72 w-5/6 bg-cover bg-transparent bg-center duration-300 rounded-lg "
           style={{ backgroundImage: `url(${imgUrl})` }}
           alt="Shoes"
         />
@@ -87,19 +87,5 @@ const RiceCard2 = ({
   );
 };
 
-/**
- * <button 
-      disabled = {isPresent()}
-       onClick={() => { 
-            const newR = { _id,  qty : 1 }
-            
-            if(isPresent()) return;
-
-            updateUser(newR)
-            onAddToCart();
-        }} className={`btn mt-4 btn-wide btn-sm bg-rose-500 text-white ${isPresent() ? 'btn-disabled' : ''}` }>
-        {isPresent() ? 'Already On Cart' : 'Add To Cart' }
-      </button>
- */
 
 export default RiceCard2;

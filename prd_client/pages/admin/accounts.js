@@ -89,7 +89,7 @@ const Accounts = () => {
   }, []);
 
   return (
-    <div className="relative overflow-hidden font-poppins p-4 h-screen w-full main-content flex flex-col flex-grow bg-[#fcfcfc]">
+    <div className="relative overflow-hidden font-inter p-4 h-screen w-full main-content flex flex-col flex-grow bg-[#fcfcfc]">
       <Head>
         <title>Accounts</title>
         <meta

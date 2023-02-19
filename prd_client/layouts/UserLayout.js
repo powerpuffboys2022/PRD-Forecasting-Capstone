@@ -2,6 +2,7 @@ import UserNav from "../components/Navbar/UserNav";
 
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import Footer from "../components/Users/Footer";
 
 const HomeLayout = ({ children }) => {
   return (
@@ -22,6 +23,7 @@ const HomeLayout = ({ children }) => {
       <UserNav />
       <main className="pt-8">
         <div className="">{children}</div>
+        <Footer />
       </main>
     </div>
   );

@@ -43,7 +43,7 @@ const ChatSupport = () => {
   }, []);
 
   return (
-    <div className="font-inter overflow-y-scroll h-screen bg-[#f5f8fa]">
+    <div className="font-inter h-screen bg-[#f5f8fa]">
       <Head>
         <title>Daily Sales</title>
         <meta
@@ -80,11 +80,13 @@ const ChatSupport = () => {
 
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="m-4 py-4 px-6 h-full">
-        <p className="text-lg text-gray-800">Chat With Customer</p>
-        <p className="text-xs text-gray-500">Customer Support</p>
-        <div className="flex items-center justify-start h-5/6 bg-gray-100 mt-4">
-          <div className="bg-white rounded-lg mr-2 p-4 w-3/6 max-w-lg h-full ">
+      <div className="py-4 px-6 h-full">
+        <div className="h-3_12">
+            <p className="text-lg text-gray-800">Chat With Customer</p>
+            <p className="text-xs text-gray-500">Customer Support</p>
+        </div>
+        <div className="flex items-center justify-start h-9_12 mt-4">
+          <div className="bg-white smooth-shadow-fine rounded-lg mr-2 p-4 w-3/6 max-w-lg h-full ">
             <p className="h-1_12">Customers</p>
             <div className="w-full h-10_12 mt-4 overflow-y-scroll">
               {list.map((cht, i) => (
@@ -142,7 +144,7 @@ const ChatSupport = () => {
               ))}
             </div>
           </div>
-          <div className="ml-2 bg-white rounded-lg w-full h-full overflow-hidden">
+          <div className="ml-2 smooth-shadow-fine bg-white rounded-lg w-full h-full overflow-hidden">
             {!focusedChat ? (
               <div className="midall">
                 <p className="text-center inline-flex gap-1 items-center text-xs text-gray-500">
