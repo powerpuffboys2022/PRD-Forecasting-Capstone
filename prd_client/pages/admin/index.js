@@ -102,11 +102,26 @@ export default function Home() {
                 <h1 className="">
                     <span className="font-mono">Dashboard</span>
                 </h1>
+                <ForecastDashboard forecast={forecast} prediction={prediction} />
+
             </main>
         </div>
     );
 }
 
+
+const crosshairFormat = {
+    type: 'fixedPoint',
+    precision: 2,
+};
+const ForecastDashboard = ({ forecast, prediction }) => {
+    if (!prediction && !forecast) return <></>;
+    return (
+        <div className="">
+
+        </div>
+    )
+}
 Home.getLayout = function getLayout(page) {
     return <HomeLayout>{page}</HomeLayout>;
 };
