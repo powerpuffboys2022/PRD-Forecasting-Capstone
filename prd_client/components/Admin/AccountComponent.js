@@ -39,7 +39,7 @@ const AccountComponent = ({ isNew, role, data, onUpdate, onDelete, close }) => {
 
     if (isNew) {
       setImgUrl(
-        "https://cdn.discordapp.com/attachments/955281529481883729/1042486237413519440/propertyCat.png"
+        "https://cdn.discordapp.com/attachments/1040843356441423882/1076767514501058620/blank-profile-picture-973460_640.png"
       );
       setUserType(0);
       setUserName("");
