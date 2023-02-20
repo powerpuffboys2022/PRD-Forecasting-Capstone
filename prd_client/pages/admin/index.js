@@ -146,12 +146,17 @@ export default function Home() {
 
 
 const ForecastDashboard = ({ forecast, prediction }) => {
-    const [estimate, setEstimate] = useState(forecast.concat(prediction))
+    const [estimate, setEstimate] = useState([])
     const [visualRange, setVisualRange] = useState({});
     const updateVisualRange = (e) => {
         setVisualRange(e.value)
 
     }
+    useEffect(() => {
+        if (prediction.length != 0 && forecast.length != 0 && estimate.length != forecast.length + prediction.length) {
+            setEstimate(forecast.concat(prediction))
+        }
+    },)
     if (prediction.length == 0 || forecast.length == 0) return (
         <div className="w-full flex justify-center content-center h-24">
             <Loading loading={true} />
