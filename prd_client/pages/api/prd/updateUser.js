@@ -27,6 +27,12 @@ const handler = async (req, res) => {
     if(mode === 1 ){
         const isConflict = await User.findOne({ email : content.email })
         if( isConflict ) return res.status(409).json({ message : "Email already registered"})
+
+        if(hasPass){ 
+            const hashedPass = await bcrypt.hash(content.password, 10);
+            content.password = hashedPass;
+        }
+
         const create = await User.create({ ...content })
         return res.status(200).json({ message : "Created!"})
     }

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import HomeLayout from "../../layouts/HomeLayout";
 import ChatContent from "../../components/ChatContent";
 import axios from "axios";
+import { getago } from "../../helpers";
 
 const ChatSupport = () => {
   const [list, setList] = useState([]);
@@ -22,6 +23,8 @@ const ChatSupport = () => {
           _id: 1,
           ownerId: 1,
           adminUnread: 1,
+          lastChat : 1,
+          "ownerInfo._id" : 1,
           "ownerInfo.userName": 1,
           "ownerInfo.imgUrl": 1,
           "ownerInfo.email": 1,
@@ -89,11 +92,11 @@ const ChatSupport = () => {
           <div className="bg-white smooth-shadow-fine rounded-lg mr-2 p-4 w-3/6 max-w-lg h-full ">
             <p className="h-1_12">Customers</p>
             <div className="w-full h-10_12 mt-4 overflow-y-scroll">
-              {list.map((cht, i) => (
+              {list.sort((a,b)=>{return new Date(b.lastChat) - new Date(a.lastChat);}).map((cht, i) => (
                 <div
                   key={i}
-                  onClick={(e) => setFocusedChat(cht.ownerInfo[0])}
-                  className="py-3 cursor-pointer group items-center flex justify-start space-x-3"
+                  onClick={(e) => setFocusedChat(cht.ownerInfo[0]) }
+                  className="py-3 cursor-pointer group items-center flex justify-start space-x-3 relative"
                 >
                   <div className="avatar cursor-pointer">
                     <div className="w-10 rounded-full">
@@ -101,7 +104,7 @@ const ChatSupport = () => {
                     </div>
                   </div>
                   <div>
-                    <p className="font-medium group-hover:text-blue-300 duration-200 ease-in text-gray-700">
+                    <p className="font-medium group-hover:text-blue-400 duration-200 ease-in text-gray-700">
                       {cht.ownerInfo[0].userName}
                     </p>
                     <p className="text-xs text-gray-400">
@@ -140,6 +143,7 @@ const ChatSupport = () => {
                       </svg>
                     </div>
                   )}
+                    <p className="text-[0.7rem] text-right absolute bottom-0 right-0 text-gray-400 mt-2">{getago(new Date(cht.lastChat)).finalResult}</p>
                 </div>
               ))}
             </div>
@@ -171,7 +175,7 @@ const ChatSupport = () => {
               <ChatContent
                 chatWith={focusedChat.userName}
                 onClose={() => setFocusedChat(null)}
-                resellerId={focusedChat.ownerId}
+                resellerId={focusedChat._id}
                 trigger={trigger}
               />
             )}

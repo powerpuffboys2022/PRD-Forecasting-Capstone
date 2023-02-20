@@ -34,10 +34,10 @@ const ChatContent = ({ onClose, resellerId, chatWith, trigger }) => {
       const chats = await axios.post("/api/prd/chat", {
         mode: 0,
         filter: {
-          ownerId: currentUser.userType < 1 ? currentUser._id : resellerId,
+          ownerId: resellerId ? resellerId : currentUser._id,
           isDeleted: false,
         },
-        create_on_null : true
+        create_on_null : currentUser.userType >= 1 ? false : true
       });
       setChat(chats.data);
       setLoading(false);
@@ -51,6 +51,7 @@ const ChatContent = ({ onClose, resellerId, chatWith, trigger }) => {
   const send = async (message) => {
     if (message.length === 0) return;
     try {
+        var stmp = new Date();
       const snd = await axios.post("/api/prd/chat", {
         mode: 2,
         filter: {
@@ -62,6 +63,7 @@ const ChatContent = ({ onClose, resellerId, chatWith, trigger }) => {
             ...(currentUser.userType > 0
               ? { adminUnread: false, userUnread: true }
               : { userUnread: false, adminUnread: true }),
+              lastChat : stmp
           },
           $push: {
             chats: {
@@ -72,7 +74,7 @@ const ChatContent = ({ onClose, resellerId, chatWith, trigger }) => {
               userType: currentUser.userType,
               type: contentMode, // 0 - text, 1 - url/link
               message: write,
-              date: new Date(),
+              date: stmp
             },
           },
         },
@@ -162,7 +164,7 @@ const ChatContent = ({ onClose, resellerId, chatWith, trigger }) => {
 
   useEffect(() => {
     loadMe();
-  }, []);
+  }, [ resellerId]);
 
   useEffect(() => {
     if (!currentUser) return;

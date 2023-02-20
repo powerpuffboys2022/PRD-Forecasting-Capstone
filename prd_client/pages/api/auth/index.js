@@ -53,10 +53,11 @@ const handler = async (req, res) => {
     
     if(authMode === 0 && loginData){
         
-        const userData = await User.findOne({ email : loginData.email });
+        let userData = await User.findOne({ email : loginData.email });
         if(!userData) return res.status(404).json({ message : `User (${loginData.email}) not found`});
-
         if(!await bcrypt.compare(loginData.password, userData.password)) return res.status(403).json({ message : "Invalid Password"})
+        delete userData.password
+        const updateSignInInfo = await User.updateOne({ email : loginData.email }, { $inc : { signInCount : 1 }});
 
         await setAuthCookie(res, userData.toObject(), Number.parseInt(process.env.AUTHORIZATION_EXPIRATION));
 

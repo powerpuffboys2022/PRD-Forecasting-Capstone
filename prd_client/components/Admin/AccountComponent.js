@@ -21,7 +21,7 @@ const AccountComponent = ({ isNew, role, data, onUpdate, onDelete, close }) => {
 
   const [fileImg, setFileImg] = useState();
   const [imgUrl, setImgUrl] = useState(
-    "https://cdn.discordapp.com/attachments/955281529481883729/1042486237413519440/propertyCat.png"
+    "https://cdn.discordapp.com/attachments/1040843356441423882/1076767514501058620/blank-profile-picture-973460_640.png"
   );
 
   const [_id, setId] = useState();
@@ -188,7 +188,6 @@ const AccountComponent = ({ isNew, role, data, onUpdate, onDelete, close }) => {
 
   return (
     <div className="p-4 w-full">
-  
 
       <div className="flex justify-between">
         <p>{isNew ? "New Account" : "Edit Profile"}</p>
