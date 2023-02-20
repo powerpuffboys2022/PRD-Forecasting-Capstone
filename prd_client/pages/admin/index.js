@@ -34,6 +34,14 @@ import RangeSelector, {
 export default function Home() {
     const [forecast, setForecast] = useState([])
     const [prediction, setPrediction] = useState([])
+    const initalize = async () => {
+        await getForcasts();
+        await getPredictionForecasts();
+
+    }
+    useEffect(() => {
+        initalize()
+    }, []);
 
 
     const getForcasts = async () => {
@@ -77,14 +85,6 @@ export default function Home() {
 
 
 
-    const initalize = async () => {
-        await getForcasts();
-        await getPredictionForecasts();
-
-    }
-    useEffect(() => {
-        initalize()
-    }, []);
 
 
     return (
@@ -146,17 +146,18 @@ export default function Home() {
 
 
 const ForecastDashboard = ({ forecast, prediction }) => {
-    if (prediction.length == 0 || forecast.length == 0) return (
-        <div className="w-full flex justify-center content-center h-24">
-            <Loading loading={true} />
-        </div>
-    )
     const [estimate, setEstimate] = useState(forecast.concat(prediction))
     const [visualRange, setVisualRange] = useState({});
     const updateVisualRange = (e) => {
         setVisualRange(e.value)
 
     }
+    if (prediction.length == 0 || forecast.length == 0) return (
+        <div className="w-full flex justify-center content-center h-24">
+            <Loading loading={true} />
+        </div>
+    )
+
 
     return (
         <div className="w-full">
