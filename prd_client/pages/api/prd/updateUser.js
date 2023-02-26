@@ -42,6 +42,11 @@ const handler = async (req, res) => {
         return res.status(200).json(users)
     }
 
+    if(mode === 3) {
+        const users = await User.find(filter)
+        return res.status(200).json(users)
+    }
+
     if(mode === -1 && _id){
         const updateUser = await User.deleteOne({ _id })
         return res.status(200).json({ message : "Account Deleted"})
