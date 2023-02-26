@@ -10,14 +10,13 @@ import { CiCircleRemove, CiCirclePlus, CiCircleMinus } from "react-icons/ci";
 import Notify from "../../components/modals/Notify";
 import LoadingModal from "../../components/modals/LoadingModal";
 
-import { beautifyMoney } from "../../helpers"
+import { beautifyMoney } from "../../helpers";
 
 import { useRouter } from "next/router";
+import axios from "axios";
 
 const Cart = () => {
-
-    const router = useRouter()
-
+  const router = useRouter();
   const [userData, setUserData] = useState();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -38,9 +37,9 @@ const Cart = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        mode : 0,
-        filter : { _id: userData._id },
-        content : {
+        mode: 0,
+        filter: { _id: userData._id },
+        content: {
           cart: cartState,
         },
       }),
@@ -61,51 +60,70 @@ const Cart = () => {
   };
 
   const buildCheckoutItems = () => {
-    let plc = [] 
-    items.forEach((itm)=>plc.push({ 
-        _id : itm._id, 
-        name : itm.articleName, 
-        imgUrl : itm.imgUrl,
-        price : itm.price, 
-        description : itm.description,
-        netWeight : itm.netWeight, 
-        qty : itm.qty }))
-    return plc
-  }
+    let plc = [];
+    items.forEach((itm) =>
+      plc.push({
+        _id: itm._id,
+        name: itm.articleName,
+        imgUrl: itm.imgUrl,
+        price: itm.price,
+        description: itm.description,
+        netWeight: itm.netWeight,
+        qty: itm.qty,
+      })
+    );
+    return plc;
+  };
+
+  const sendMailNotice = async (transaction) => {
+    try {
+      const resp = await axios.post("/api/prd/mail", {
+        email: userData.email,
+        content: {
+          userName: userData.userName,
+          subject: "Order Placed",
+          template_name: "orderPlaced",
+          orderId : transaction._id,
+          invoiceUrl: `https://prd-forecasting-capstone.vercel.app/general/invoice?invoiceId=${transaction._id}`,
+        },
+      });
+    } catch (e) {}
+  };
 
   const placeOrder = () => {
-    setModal(0)
+    setModal(0);
     const response = fetch("/api/prd/transaction", {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          Accept: "application/json, text/plain, */*",
-          "Content-Type": "application/json",
+      method: "POST",
+      mode: "cors",
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        mode: 1,
+        content: {
+          rice: buildCheckoutItems(),
+          totalPrice: total,
+          userId: userData._id,
+          status: 1,
         },
-        body: JSON.stringify({
-          mode : 1,
-          content : {
-            rice : buildCheckoutItems(),
-            totalPrice : total,
-            userId : userData._id,
-            status : 1
-          }
-        }),
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        //   toast.success("Added To Cart", {
+        //     position: toast.POSITION.TOP_LEFT,
+        //   });
+        //   onAddToCart();
+        updateUserCart([]);
+        setModal(1);
+        sendMailNotice(data.transaction)
       })
-        .then((response) => response.json())
-        .then((data) => {
-          //   toast.success("Added To Cart", {
-          //     position: toast.POSITION.TOP_LEFT,
-          //   });
-          //   onAddToCart();
-          updateUserCart([]);
-          setModal(1);
-        })
-        .catch((err) => {
-            toast.error("Checkout failed", {
-              position: toast.POSITION.TOP_LEFT,
-            });
+      .catch((err) => {
+        toast.error("Checkout failed", {
+          position: toast.POSITION.TOP_LEFT,
         });
+      });
   };
 
   const add = (id) => {
@@ -212,11 +230,24 @@ const Cart = () => {
         title="Checkout Complete"
         shown={modal === 1}
         content={
-            <div className="p-4">
-                <img src="/checkout.png" className="mx-auto h-24"/>
-                <p className="text-justify mt-4">Your order has been placed and waiting for admin aproval. You can still cancel it if your order is still pending. Once accepted by admin, you cannot cancel it anymore.</p>
-                <p className="mt-4">You can view/track it&apos;s progress on the <a className="link font-semibold" onClick={()=>router.push("/shop/transaction")}>Transaction</a> tab.</p>
-            </div>
+          <div className="p-4">
+            <img src="/checkout.png" className="mx-auto h-24" />
+            <p className="text-justify mt-4">
+              Your order has been placed and waiting for admin aproval. You can
+              still cancel it if your order is still pending. Once accepted by
+              admin, you cannot cancel it anymore.
+            </p>
+            <p className="mt-4">
+              You can view/track it&apos;s progress on the{" "}
+              <a
+                className="link font-semibold"
+                onClick={() => router.push("/shop/transaction")}
+              >
+                Transaction
+              </a>{" "}
+              tab.
+            </p>
+          </div>
         }
         onOkay={() => {
           setModal(-1);
@@ -239,10 +270,7 @@ const Cart = () => {
           itemProp="description"
           content="Philip Rice Dealer Online store & forecasting"
         />
-        <meta
-          itemProp="image"
-          content="cover.png"
-        />
+        <meta itemProp="image" content="cover.png" />
 
         <meta
           property="og:url"
@@ -254,10 +282,7 @@ const Cart = () => {
           property="og:description"
           content="Philip Rice Dealer Online store & forecasting"
         />
-        <meta
-          property="og:image"
-          content="cover.png"
-        />
+        <meta property="og:image" content="cover.png" />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Philip Rice Dealer" />
@@ -265,10 +290,7 @@ const Cart = () => {
           name="twitter:description"
           content="Philip Rice Dealer Online store & forecasting"
         />
-        <meta
-          name="twitter:image"
-          content="cover.png"
-        />
+        <meta name="twitter:image" content="cover.png" />
 
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -282,9 +304,11 @@ const Cart = () => {
           </div>
           <button
             disabled={loading || items.length === 0}
-            className={`btn btn-sm bg-yellow-400 hover:bg-yellow-500 ${loading ? "loading" : ""}`}
+            className={`btn btn-sm bg-yellow-400 hover:bg-yellow-500 ${
+              loading ? "loading" : ""
+            }`}
             onClick={() => {
-              placeOrder()
+              placeOrder();
             }}
           >
             Checkout
@@ -316,7 +340,7 @@ const Cart = () => {
                             className="h-24 w-24 bg-cover bg-transparent bg-center duration-300 rounded-lg "
                             style={{ backgroundImage: `url(${prod.imgUrl})` }}
                             alt="Shoes"
-                            />
+                          />
                           <div>
                             <div className="font-bold">{prod.articleName}</div>
                             <div className="text-sm opacity-50">
@@ -345,6 +369,8 @@ const Cart = () => {
                             <input
                               type="text"
                               placeholder="10"
+                              disabled
+                              onChange={(e)=>{}}
                               value={prod.qty}
                               className="input w-16 input-sm input-bordered text-sm"
                             />

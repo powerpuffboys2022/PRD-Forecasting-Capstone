@@ -14,8 +14,8 @@ const CancelConfirm = ({ onAccept, onDecline, acceptText, declineText }) => {
             setMessage(e.target.value);
           }}
           value={message}
-          className="mt-4 block p-2.5 w-full text-gray-50 ease-in-out duration-150 rounded-md outline-none bg-neutral border focus:ring-2 shadow-sm focus:shadow-md focus:ring-yellow-200"
-          placeholder="Write your thoughts here..."
+          className="mt-4 block p-2.5 w-full text-sm text-gray-900 outline-none bg-gray-50 rounded-lg border border-gray-300 ring ring-transparent ease-in-out duration-150 focus:ring-red-100"
+          placeholder="Write your reason here..."
         ></textarea>
       </div>
       <div className="modal-action">

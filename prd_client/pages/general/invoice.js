@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 
 import { dateMomentBeautify, getDateAgo } from "../../helpers";
 
-import { HiSpeakerphone } from "react-icons/hi"
+import { HiSpeakerphone } from "react-icons/hi";
 import { SlPrinter } from "react-icons/sl";
+
+import Loading from "../../components/Loading";
 
 const Invoice = () => {
   const router = useRouter();
@@ -183,13 +185,18 @@ const Invoice = () => {
             <div className="w-8/12 p-4 print:p-0">
               <div className="flex justify-between items-center">
                 <img className="h-14 prdlogo" src="/logo_big.png" />
-                <button
-                  className="print:hidden inline-flex gap-2 items-center px-4 py-2 duration-200 bg-blue-400 rounded-lg text-white hover:bg-blue-300"
-                  onClick={() => printme()}
-                >
-                  <SlPrinter className="text-lg" />
-                  Print Invoice
-                </button>
+
+                {loading ? (
+                  <Loading loading={loading} />
+                ) : (
+                  <button
+                    className="print:hidden inline-flex gap-2 items-center px-4 py-2 duration-200 bg-blue-400 rounded-lg text-white hover:bg-blue-300"
+                    onClick={() => printme()}
+                  >
+                    <SlPrinter className="text-lg" />
+                    Print Invoice
+                  </button>
+                )}
               </div>
 
               {transaction && (
@@ -249,14 +256,16 @@ const Invoice = () => {
                                       transaction.trackingDates.canceledDate
                                     ),
                                     "DD MMM, YYYY"
-                                  )}  <span className="text-xs font-medium text-gray-400">
-                                  {" "}
-                                  {getDateAgo(
-                                    new Date(),
-                                    new Date(
-                                      transaction.trackingDates.canceledDate
-                                    )
-                                  )} days ago
+                                  )}{" "}
+                                  <span className="text-xs font-medium text-gray-400">
+                                    {" "}
+                                    {getDateAgo(
+                                      new Date(),
+                                      new Date(
+                                        transaction.trackingDates.canceledDate
+                                      )
+                                    )}{" "}
+                                    days ago
                                   </span>
                                 </>
                               ) : (
@@ -286,7 +295,8 @@ const Invoice = () => {
                   {transaction.status === -1 && (
                     <div className="mt-8 rounded-md bg-gray-50 smooth-shadow-fine p-5">
                       <p className="text-rose-600 print:text-xs inline-flex gap-2 items-center">
-                        <HiSpeakerphone className=" animate-pulse -rotate-45 text-lg"/>We need to cancel your order becaue of the following
+                        <HiSpeakerphone className=" animate-pulse -rotate-45 text-lg" />
+                        We need to cancel your order becaue of the following
                         reason
                       </p>
                       <p className="text-xs my-5 ">
@@ -340,9 +350,9 @@ const Invoice = () => {
                         <th className="py-5 text-sm text-gray-500">
                           Net Weight
                         </th>
-                        <th className="py-5 text-sm text-gray-500">Price</th>
-                        <th className="py-5 text-sm text-gray-500">Qty</th>
-                        <th className="py-5 text-sm text-gray-500">Amount</th>
+                        <th className="py-5 text-sm text-gray-500 text-right">Price</th>
+                        <th className="py-5 text-sm text-gray-500 text-right">Qty</th>
+                        <th className="py-5 text-sm text-gray-500 text-right">Amount</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -357,14 +367,14 @@ const Invoice = () => {
                               kg
                             </span>
                           </td>
-                          <td className="py-3 text-sm text-gray-600 font-inter">
-                            {rc.price.toLocaleString()}
+                          <td className="py-3 text-sm text-gray-600 font-inter text-right">
+                            {rc.price.toLocaleString('en-Us', { minimumFractionDigits: 2 })}
                           </td>
-                          <td className="py-3 text-sm text-gray-600">
+                          <td className="py-3 text-sm text-gray-600 text-right">
                             x{rc.qty}
                           </td>
-                          <td className="py-3 text-sm text-gray-700 font-inter font-medium">
-                            {(rc.qty * rc.price).toLocaleString()}
+                          <td className="py-3 text-sm text-gray-700 font-inter font-medium text-right">
+                            {(rc.qty * rc.price).toLocaleString('en-Us', { minimumFractionDigits: 2 })}
                           </td>
                         </tr>
                       ))}
@@ -374,10 +384,10 @@ const Invoice = () => {
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td className="py-4 text-sm text-gray-500">Total</td>
-                        <td className="font-inter  text-sm text-gray-700 font-medium">
+                        <td className="py-4 text-sm text-gray-500 font-medium text-right">Total</td>
+                        <td className="font-inter  text-sm text-gray-700 font-medium text-right">
                           {transaction
-                            ? transaction.totalPrice.toLocaleString()
+                            ? transaction.totalPrice.toLocaleString('en-Us', { minimumFractionDigits: 2 })
                             : "0.00"}
                         </td>
                       </tr>

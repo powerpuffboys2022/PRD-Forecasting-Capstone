@@ -28,13 +28,45 @@ const handler = async (req, res) => {
       return res.status(200).json(transactions);
     }
 
+    if (mode === 11) {
+        // get transaction with userdata
+        const transactions = await Transaction.aggregate([
+            {
+                $match : {}
+            },
+            {
+                $lookup : {
+                    from : "users",
+                    localField : "userId",
+                    foreignField: '_id',
+                    as : "ownerInfo"
+                }
+            },
+            {
+                "$project": {
+                    rice : 1,
+                    totalPrice : 1,
+                    userId : 1,
+                    updatedBy : 1,
+                    status : 1,
+                    trackingDates : 1,
+                    reason : 1,
+                    processedBy : 1,
+                    isDeleted : 1,
+                    placedDate : 1,
+                    "ownerInfo.email" : 1,
+                    "ownerInfo.userName" : 1
+                }
+            }
+        ]);
+        return res.status(200).json(transactions);
+      }
+
     if (mode === 1) {
       // create order / checkout
       const transaction = await Transaction.create({ ...content });
-
       // also clear user cart
-
-      return res.status(200).json({ message: "created" });
+      return res.status(200).json({ message: "created", transaction });
     }
 
     if (mode === 2) {

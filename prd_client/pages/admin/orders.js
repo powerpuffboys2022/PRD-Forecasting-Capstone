@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import HomeLayout from "../../layouts/HomeLayout";
 
 var XLSX = require("xlsx");
@@ -64,7 +64,7 @@ const Orders = () => {
       setOrders([]);
       setCOrders([]);
       setLoading(true);
-      let orders = await axios.post("/api/prd/transaction", { mode: 0 });
+      let orders = await axios.post("/api/prd/transaction", { mode : 11 });
       setSearch("");
       setSelected(null);
       setReason("");
@@ -133,6 +133,17 @@ const Orders = () => {
         updateProduct: true,
         incr: false,
       });
+
+      const resp = await axios.post("/api/prd/mail", {
+        email: order.ownerInfo[0].email,
+        content: {
+            userName: order.ownerInfo[0].userName,
+            subject: "Order Processing",
+            template_name: "orderProcessing",
+            orderId : order._id,
+            invoiceUrl : `https://prd-forecasting-capstone.vercel.app/general/invoice?invoiceId=${order._id}`,
+        }})
+
       init();
       toast.success("Successfuly Accepted", {
         position: toast.POSITION.BOTTOM_RIGHT,
@@ -162,6 +173,18 @@ const Orders = () => {
         updateProduct: order.status > 1,
         incr: order.status >= 2,
       });
+      
+      const resp = await axios.post("/api/prd/mail", {
+        email: order.ownerInfo[0].email,
+        content: {
+            userName: order.ownerInfo[0].userName,
+            subject: "Order Cancelled",
+            template_name: "orderCancelled",
+            orderId : order._id,
+            reason,
+            invoiceUrl : `https://prd-forecasting-capstone.vercel.app/general/invoice?invoiceId=${order._id}`,
+        }})
+        
       init();
       toast.success("Successfuly declined", {
         position: toast.POSITION.BOTTOM_RIGHT,
@@ -187,6 +210,17 @@ const Orders = () => {
         _id: content._id,
         content,
       });
+
+      const resp = await axios.post("/api/prd/mail", {
+        email: order.ownerInfo[0].email,
+        content: {
+            userName: order.ownerInfo[0].userName,
+            subject: "Order Shipped",
+            template_name: "orderShipped",
+            orderId : order._id,
+            invoiceUrl : `https://prd-forecasting-capstone.vercel.app/general/invoice?invoiceId=${order._id}`,
+        }})
+
       init();
       toast.success("Set status to Shipped", {
         position: toast.POSITION.BOTTOM_RIGHT,
@@ -207,7 +241,6 @@ const Orders = () => {
         content.trackingDates.completed,
         "YYYY-MM-DD"
       );
-      console.log(completedw);
       content.trackingDates.completed = new Date();
       if (editorData) {
         content.processedBy = editorData._id;
@@ -220,6 +253,17 @@ const Orders = () => {
         content,
         pushToForeCast: true,
       });
+
+      const resp = await axios.post("/api/prd/mail", {
+        email: order.ownerInfo[0].email,
+        content: {
+            userName: order.ownerInfo[0].userName,
+            subject: "Order Completed",
+            template_name: "orderCompleted",
+            orderId : order._id,
+            invoiceUrl : `https://prd-forecasting-capstone.vercel.app/general/invoice?invoiceId=${order._id}`,
+        }})
+
       init();
       toast.success("Order Completed", {
         position: toast.POSITION.BOTTOM_RIGHT,
@@ -759,11 +803,10 @@ const Orders = () => {
                     </thead>
                     <tbody>
                       {[...orders].map((ords, idx) => (
-                        <>
+                        <React.Fragment key={idx}>
                           {idx >= currentPage * pageMax &&
                           idx + 1 <= currentPage * pageMax + pageMax ? (
                             <tr
-                              key={idx}
                               className="bg-white border-t border-dashed hover:bg-gray-50 py-4"
                             >
                               {( tab === 4 || tab === -1) && (
@@ -887,7 +930,7 @@ const Orders = () => {
                           ) : (
                             <></>
                           )}
-                        </>
+                        </React.Fragment>
                       ))}
                     </tbody>
                   </table>

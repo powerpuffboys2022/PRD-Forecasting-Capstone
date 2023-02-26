@@ -2,6 +2,7 @@ import Head from "next/head";
 import UserLayout from "../../layouts/UserLayout";
 import { useState, useEffect } from "react";
 import moment from "moment";
+import axios from "axios";
 
 import { AiFillCloseCircle, AiFillEye } from "react-icons/ai";
 import { CiReceipt } from "react-icons/ci";
@@ -111,6 +112,22 @@ const Transactions = () => {
     loadUserData();
   }, []);
 
+  const sendMailNotice = async (orderId, reason) => {
+    try {
+      const resp = await axios.post("/api/prd/mail", {
+        email: userData.email,
+        content: {
+          userName: userData.userName,
+          subject: "Order Cancelled",
+          template_name: "orderCancelled",
+          orderId,
+          reason,
+          invoiceUrl : `https://prd-forecasting-capstone.vercel.app/general/invoice?invoiceId=${orderId}`,
+        },
+      });
+    } catch (e) {}
+  };
+
   const cancelOrder = (reason) => {
     let content = { status: -1, reason };
     const response = fetch("/api/prd/transaction", {
@@ -129,6 +146,7 @@ const Transactions = () => {
       .then((response) => response.json())
       .then((data) => {
         setTransactions(data);
+        sendMailNotice(focusedOrderId, reason)
         loadTransactions();
       })
       .finally(() => {
@@ -309,9 +327,9 @@ const Transactions = () => {
                       </td>
                       <td>
                         <div>
-                          <p className="">
+                          <p className="text-xs">
                             {moment(new Date(trans.placedDate)).format(
-                              "MMMM Do YYYY, h:mm:ss a"
+                              "MMM Do YYYY, h:mm:ss a"
                             )}
                           </p>
                           <p className="text-sm opacity-90">
@@ -326,10 +344,10 @@ const Transactions = () => {
                             <p className="text-lg font-bold">-</p>
                           ) : (
                             <>
-                              <p className="">
+                              <p className="text-xs">
                                 {moment(
                                   new Date(trans.trackingDates.processed)
-                                ).format("MMMM Do YYYY, h:mm:ss a")}
+                                ).format("MMM Do YYYY, h:mm:ss a")}
                               </p>
                               <p className="text-sm opacity-90">
                                 {getDateAgo(
@@ -348,10 +366,10 @@ const Transactions = () => {
                             <p className="text-lg font-bold">-</p>
                           ) : (
                             <>
-                              <p className="">
+                              <p className="text-xs">
                                 {moment(
                                   new Date(trans.trackingDates.shipped)
-                                ).format("MMMM Do YYYY, h:mm:ss a")}
+                                ).format("MMM Do YYYY, h:mm:ss a")}
                               </p>
                               <p className="text-sm opacity-90">
                                 {getDateAgo(
@@ -370,10 +388,10 @@ const Transactions = () => {
                             <p className="text-lg font-bold">-</p>
                           ) : (
                             <>
-                              <p className="">
+                              <p className="text-xs">
                                 {moment(
                                   new Date(trans.trackingDates.completed)
-                                ).format("MMMM Do YYYY, h:mm:ss a")}
+                                ).format("MMM Do YYYY, h:mm:ss a")}
                               </p>
                               <p className="text-sm opacity-90">
                                 {getDateAgo(
@@ -389,7 +407,8 @@ const Transactions = () => {
                       <td>
                         <p
                           className={
-                            "font-medium " + `${getStatusColor(trans.status)}`
+                            "font-medium text-sm " +
+                            `${getStatusColor(trans.status)}`
                           }
                         >
                           {statusToWord(trans.status)}
@@ -397,8 +416,8 @@ const Transactions = () => {
                         <p className="text-rose-600 text-gray-700 text-green-600 animate-pulse duration-700 text-yellow-500 text-teal-700"></p>
                       </td>
                       <td>
-                        <p className="font-inter font-medium">
-                          {beautifyMoney(trans.totalPrice, 2)}
+                        <p className="font-inter font-medium text-sm">
+                          {trans.totalPrice.toLocaleString("en-Us")}
                         </p>
                       </td>
                       <td>
@@ -409,12 +428,19 @@ const Transactions = () => {
                           >
                             <button
                               onClick={() => {
-                                console.log(trans.status)
+                                console.log(trans.status);
                                 setFocusedOrderId(trans._id);
                                 setModalState(1);
                               }}
                               disabled={trans.status > 2 || trans.status === -1}
-                              className={"text-xs text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg px-2 py-1 text-center inline-flex items-center mr-2 mb-2 " + `${trans.status < 2 && trans.status !== -1 ? "cursor-pointer " : "opacity-50 cursor-not-allowed"}`}
+                              className={
+                                "text-xs text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg px-2 py-1 text-center inline-flex items-center mr-2 mb-2 " +
+                                `${
+                                  trans.status < 2 && trans.status !== -1
+                                    ? "cursor-pointer "
+                                    : "opacity-50 cursor-not-allowed"
+                                }`
+                              }
                             >
                               Cancel
                             </button>
@@ -434,13 +460,13 @@ const Transactions = () => {
                           <div
                             className="tooltip tooltip-left"
                             data-tip="Delete"
-                              onClick={() => {
-                                setFocusedOrderId(trans._id);
-                                setModalState(2);
-                              }}
-                              disabled={trans.status > -1 && trans.status < 4}
-                            >
-                              <AiFillCloseCircle className="text-xl ease-in-out duration-200 drop-shadow-md text-gray-500 cursor-pointer hover:text-gray-900" />
+                            onClick={() => {
+                              setFocusedOrderId(trans._id);
+                              setModalState(2);
+                            }}
+                            disabled={trans.status > -1 && trans.status < 4}
+                          >
+                            <AiFillCloseCircle className="text-xl ease-in-out duration-200 drop-shadow-md text-gray-500 cursor-pointer hover:text-gray-900" />
                           </div>
                         </div>
                       </td>
