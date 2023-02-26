@@ -105,6 +105,10 @@ body {
     background-color: #f5f8fa;
 }
 
+.animateonchange{
+    @apply duration-150 ease-in-out
+}
+
 .checkboxcustom{
     @apply rounded-md bg-gray-100 border-none
 }

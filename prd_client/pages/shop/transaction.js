@@ -413,7 +413,6 @@ const Transactions = () => {
                         >
                           {statusToWord(trans.status)}
                         </p>
-                        <p className="text-rose-600 text-gray-700 text-green-600 animate-pulse duration-700 text-yellow-500 text-teal-700"></p>
                       </td>
                       <td>
                         <p className="font-inter font-medium text-sm">

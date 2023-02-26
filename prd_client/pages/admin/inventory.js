@@ -314,7 +314,7 @@ const Inventory = () => {
                     /> */}
                     <img className="h-16 w-16 mr-3 drop-shadow-lg" src={rc.imgUrl} />
                     {rc.stock <= 0 && <p className="font-medium absolute top-1/2 mt-4 left-0 -skew-x-12 -rotate-12 px-2 py-1 rounded-sm mr-3 drop-shadow-lg bg-rose-500/80 animate-pulse text-xs text-white"> out of stock </p>}
-                    {rc.stock <= 10 && <p className="font-medium absolute top-1/2 mt-4 left-0 -skew-x-12 -rotate-12 px-2 py-1 rounded-sm mr-3 drop-shadow-lg bg-amber-500/80 text-xs text-white"> getting low </p>}
+                    {rc.stock >0 && rc.stock <= 10 && <p className="font-medium absolute top-1/2 mt-4 left-0 -skew-x-12 -rotate-12 px-2 py-1 rounded-sm mr-3 drop-shadow-lg bg-amber-500/80 text-xs text-white"> getting low </p>}
                     <div className="grow mr-2">
                       <p className="">
                         <span className="text-[#1c232c]">

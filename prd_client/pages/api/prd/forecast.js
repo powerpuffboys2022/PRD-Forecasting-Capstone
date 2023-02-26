@@ -18,7 +18,15 @@ const resetForecast = async (req, res) => {
     return res.status(200).json({ success: true })
 }
 const getForcasts = async (req, res) => {
-    const forecasts = await Forecast.find();
+    let forecasts;
+    const { mode, filter } = req.body
+    if(!mode) forecasts = await Forecast.find();
+    else {
+        if(mode === 1) forecasts = await Forecast.find(filter).sort({date : 0});
+        else forecasts = []
+        return res.status(200).json(forecasts)
+    }
+
     return res.status(200).json({ success: true, forecasts: forecasts })
 }
 

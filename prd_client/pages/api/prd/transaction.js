@@ -12,11 +12,13 @@ const handler = async (req, res) => {
       mode,
       _id,
       updaterId,
+      filter,
       content,
       batch,
       updateProduct,
       incr,
       pushToForeCast,
+      project
     } = req.body;
 
     if (mode === 0) {
@@ -29,10 +31,25 @@ const handler = async (req, res) => {
     }
 
     if (mode === 11) {
-        // get transaction with userdata
+        if(!project) project = {
+            rice : 1,
+            totalPrice : 1,
+            userId : 1,
+            updatedBy : 1,
+            status : 1,
+            trackingDates : 1,
+            reason : 1,
+            processedBy : 1,
+            isDeleted : 1,
+            placedDate : 1,
+            "ownerInfo.email" : 1,
+            "ownerInfo.userName" : 1
+        }
+        if(!filter) filter = {}
+        
         const transactions = await Transaction.aggregate([
             {
-                $match : {}
+                $match : filter
             },
             {
                 $lookup : {
@@ -43,20 +60,7 @@ const handler = async (req, res) => {
                 }
             },
             {
-                "$project": {
-                    rice : 1,
-                    totalPrice : 1,
-                    userId : 1,
-                    updatedBy : 1,
-                    status : 1,
-                    trackingDates : 1,
-                    reason : 1,
-                    processedBy : 1,
-                    isDeleted : 1,
-                    placedDate : 1,
-                    "ownerInfo.email" : 1,
-                    "ownerInfo.userName" : 1
-                }
+                "$project": project
             }
         ]);
         return res.status(200).json(transactions);
