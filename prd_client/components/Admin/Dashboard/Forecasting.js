@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import Head from "next/head";
 import Loading from "../../Loading"
+const https = require('https');
 
 import Chart, {
     Series,
@@ -64,6 +66,11 @@ const Forecasting = () => {
     };
 
     const getPredictionForecasts = async () => {
+        const httpsAgent = new https.Agent({
+            rejectUnauthorized: false,
+        });
+
+
         const response = await fetch(
             "http://deployprd-env.eba-naqwvpva.ap-southeast-1.elasticbeanstalk.com/xgboost-predict",
             {
@@ -73,6 +80,7 @@ const Forecasting = () => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ "days": 365 }),
+                agent: httpsAgent,
             }
         )
             .then((response) => response.json())
@@ -152,6 +160,7 @@ const ForecastDashboard = ({ forecast, prediction, loading }) => {
 
     return (
         <div className="w-full">
+
             {loading && <div className="flex justify-center"><Loading loading={true} /></div>}
             <Chart
                 id="zoomedChart"
