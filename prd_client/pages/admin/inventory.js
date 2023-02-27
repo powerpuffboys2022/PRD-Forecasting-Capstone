@@ -27,6 +27,8 @@ const Inventory = () => {
 
   const init = async () => {
     try {
+      setSelected(null);
+      setIsNew(false);
       setLoading({ ...loading, rice: true });
       const req = await axios.post("/api/prd/rice", { mode: 0 });
       setRices(req.data);

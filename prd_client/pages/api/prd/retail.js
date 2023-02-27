@@ -13,7 +13,7 @@ const handler = async (req, res) => {
       const transactions = await Retail.find({
         ...content,
         isDeleted: false,
-      });
+      }).sort({date : -1});
       return res.status(200).json(transactions);
     }
 

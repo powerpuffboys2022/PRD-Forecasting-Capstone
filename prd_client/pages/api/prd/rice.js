@@ -8,7 +8,7 @@ const handler = async (req, res) => {
     let { mode, _id, content } = req.body;
 
     if(mode === 0){ // get all rice
-        const rices = await Rice.find({...content, isDeleted : false});
+        const rices = await Rice.find({...content, isDeleted : false}).sort({dateAdded : -1});
         return res.status(200).json(rices);
     }
 
