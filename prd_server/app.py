@@ -7,11 +7,13 @@ from dateutil import parser
 import pandas as pd
 import numpy as np
 import xgboost as xgb
-
+import os
 # Application CORS
+ASSETS_DIR = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
 cors = CORS(app, resources={r"/xgboost-predict": {"origins": "*"}})
 app.config['CORS_HEADERS'] = 'Content-Type'
+
 
 #   Load Model
 model_path = 'prd-sales.bin'
@@ -80,3 +82,9 @@ def create_features(df, target_variable):
         y = df[target_variable]
         return X, y
     return X
+
+
+if __name__ == '__main__':
+    # json_url = os.path.join(SITE_ROOT, 'static', 'data.json')
+    context = ('cert.pem', 'key.pem')  # certificate and key files
+    app.run(debug=True, ssl_context=context)
