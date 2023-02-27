@@ -65,15 +65,14 @@ const Forecasting = () => {
 
     const getPredictionForecasts = async () => {
         const response = await fetch(
-            "http://forecastprd-env-1.eba-jutzyivj.ap-southeast-1.elasticbeanstalk.com/xgboost-predict",
+            "http://deployprd-env.eba-naqwvpva.ap-southeast-1.elasticbeanstalk.com/xgboost-predict",
             {
                 method: "POST",
-                mode: "cors",
                 headers: {
                     Accept: "application/json, text/plain, */*",
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ days: 365 }),
+                body: JSON.stringify({ "days": 365 }),
             }
         )
             .then((response) => response.json())

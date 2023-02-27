@@ -28,7 +28,7 @@ xgboost_model.load_model(model_path)
 
 
 @app.route("/xgboost-predict", methods=['POST'])
-@cross_origin(origin='*')
+@cross_origin(origin='*', headers=['Content-Type', 'application/json'])
 def xgboost_predict():
     if request.method != 'POST':
         return "Post Request Only"
@@ -49,7 +49,6 @@ def xgboost_predict():
         status=200,
         mimetype='application/json'
     )
-    response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
 
