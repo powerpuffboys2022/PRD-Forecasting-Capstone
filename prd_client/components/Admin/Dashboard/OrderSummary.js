@@ -122,12 +122,12 @@ const OrderSummary = ({ trigger, className }) => {
             <div className="flex justify-start items-center space-x-2">
               <div className="avatar cursor-pointer">
                 <div className="w-8 rounded-full">
-                  <img src={ords.ownerInfo[0].imgUrl} />
+                  <img src={ords.ownerInfo.length === 0 ? 'https://cdn.discordapp.com/attachments/1040843356441423882/1076767514501058620/blank-profile-picture-973460_640.png' : ords.ownerInfo[0].imgUrl} />
                 </div>
               </div>
               <p className="text-xs font-medium">
                 <span className="text-xs text-gray-500">By</span>{" "}
-                {ords.ownerInfo[0].userName}
+                { ords.ownerInfo.length === 0 ? 'deleted user' : ords.ownerInfo[0].userName }
               </p>
             </div>
             <p className="text-sm font-medium">

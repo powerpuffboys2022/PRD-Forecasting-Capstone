@@ -129,7 +129,7 @@ const Transactions = () => {
   };
 
   const cancelOrder = (reason) => {
-    let content = { status: -1, reason };
+    let content = { status: -1, reason, "trackingDates.canceledDate" : new Date() };
     const response = fetch("/api/prd/transaction", {
       method: "POST",
       mode: "cors",

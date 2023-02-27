@@ -37,6 +37,21 @@ const ChatSupport = () => {
     } catch (e) {}
   };
 
+  const deleteCht = async (chtid) => {
+    try {
+      const snd = await axios.post("/api/prd/chat", {
+        mode: -1,
+        filter: {
+          _id: chtid,
+          isDeleted: false,
+        },
+        content: { $set: { isDeleted: true,  adminUnread : false, userUnread : false } },
+      });
+    } catch (e) {
+      console.log("Wont ", e);
+    }
+  };
+
   useEffect(() => {
     const interval = setInterval(async () => {
       if (requesting) return;
@@ -95,20 +110,26 @@ const ChatSupport = () => {
               {list.sort((a,b)=>{return new Date(b.lastChat) - new Date(a.lastChat);}).map((cht, i) => (
                 <div
                   key={i}
-                  onClick={(e) => setFocusedChat(cht.ownerInfo[0]) }
+                  onClick={(e) => {
+                    if(cht.ownerInfo.length === 0) {
+                        deleteCht(cht._id)
+                        return;
+                    }
+                    setFocusedChat(cht.ownerInfo[0]) 
+                  }}
                   className="py-3 cursor-pointer group items-center flex justify-start space-x-3 relative"
                 >
                   <div className="avatar cursor-pointer">
                     <div className="w-10 rounded-full">
-                      <img src={cht.ownerInfo[0].imgUrl} />
+                      <img src={cht.ownerInfo.length === 0 ? 'https://cdn.discordapp.com/attachments/1040843356441423882/1076767514501058620/blank-profile-picture-973460_640.png' :  cht.ownerInfo[0].imgUrl} />
                     </div>
                   </div>
                   <div>
                     <p className="font-medium group-hover:text-blue-400 duration-200 ease-in text-gray-700">
-                      {cht.ownerInfo[0].userName}
+                      {cht.ownerInfo.length === 0 ? 'deleted' :cht.ownerInfo[0].userName}
                     </p>
                     <p className="text-xs text-gray-400">
-                      {cht.ownerInfo[0].email}
+                      {cht.ownerInfo.length === 0 ? 'deleted' : cht.ownerInfo[0].email}
                     </p>
                   </div>
                   {cht.adminUnread && (

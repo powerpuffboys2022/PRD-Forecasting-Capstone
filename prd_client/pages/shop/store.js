@@ -316,7 +316,6 @@ const Store = () => {
             </div>
           </div>
         </section>
-
         <section className="relative bg-slate-50 bg-2 font-inter min-h-screen w-full py-8 md:py-16 flex justify-center items-center">
           <div className="w-full mx-5 md:mx-0 md:w-3/4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {rices.map((rice, i) => (

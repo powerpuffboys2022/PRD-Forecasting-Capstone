@@ -8,6 +8,7 @@ import { HiSpeakerphone } from "react-icons/hi";
 import { SlPrinter } from "react-icons/sl";
 
 import Loading from "../../components/Loading";
+import axios from "axios";
 
 const Invoice = () => {
   const router = useRouter();
@@ -55,28 +56,17 @@ const Invoice = () => {
       });
   };
 
-  const loadReseller = () => {
+  const loadReseller = async () => {
     setLoading(true);
-    const response = fetch("/api/prd/userInfo", {
-      method: "POST",
-      mode: "cors",
-      headers: {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    try {
+      const res = await axios.post("/api/prd/userInfo", {
         _id: transaction.userId,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setReseller(data);
-        setImgUrl(data.imgUrl);
-        setUserName(data.userName);
-      })
-      .finally(() => {
-        setLoading(false);
       });
+      setReseller(res.data);
+      setImgUrl(res.data.imgUrl);
+      setUserName(res.data.userName);
+    } catch (e) {}
+    setLoading(false);
   };
 
   const loadAdmin = () => {
@@ -322,22 +312,18 @@ const Invoice = () => {
                         </p>
                       </div>
                       <div className="w-1/4">
-                        {reseller && (
-                          <>
-                            <p className="text-xs font-inter font-medium text-gray-500 print:text-gray-500 print:text-xs">
-                              Issued To
-                            </p>
-                            <p className="mt-2 text-xs font-inter font-medium text-gray-800">
-                              {reseller.userName}
-                            </p>
-                            <p className="text-sm font-inter text-gray-500">
-                              {reseller.email}
-                            </p>
-                            <p className="text-sm font-inter text-gray-500">
-                              {reseller.address}
-                            </p>
-                          </>
-                        )}
+                        <p className="text-xs font-inter font-medium text-gray-500 print:text-gray-500 print:text-xs">
+                          Issued To
+                        </p>
+                        <p className="mt-2 text-xs font-inter font-medium text-gray-800">
+                          {!reseller ? 'partner not found' : reseller.userName}
+                        </p>
+                        <p className="text-sm font-inter text-gray-500">
+                          {!reseller ? 'partner not found' :reseller.email}
+                        </p>
+                        <p className="text-sm font-inter text-gray-500">
+                          {!reseller ? 'partner not found' :reseller.address}
+                        </p>
                       </div>
                       <div className="w-1/4"></div>
                     </div>
@@ -350,9 +336,15 @@ const Invoice = () => {
                         <th className="py-5 text-sm text-gray-500">
                           Net Weight
                         </th>
-                        <th className="py-5 text-sm text-gray-500 text-right">Price</th>
-                        <th className="py-5 text-sm text-gray-500 text-right">Qty</th>
-                        <th className="py-5 text-sm text-gray-500 text-right">Amount</th>
+                        <th className="py-5 text-sm text-gray-500 text-right">
+                          Price
+                        </th>
+                        <th className="py-5 text-sm text-gray-500 text-right">
+                          Qty
+                        </th>
+                        <th className="py-5 text-sm text-gray-500 text-right">
+                          Amount
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -368,13 +360,17 @@ const Invoice = () => {
                             </span>
                           </td>
                           <td className="py-3 text-sm text-gray-600 font-inter text-right">
-                            {rc.price.toLocaleString('en-Us', { minimumFractionDigits: 2 })}
+                            {rc.price.toLocaleString("en-Us", {
+                              minimumFractionDigits: 2,
+                            })}
                           </td>
                           <td className="py-3 text-sm text-gray-600 text-right">
                             x{rc.qty}
                           </td>
                           <td className="py-3 text-sm text-gray-700 font-inter font-medium text-right">
-                            {(rc.qty * rc.price).toLocaleString('en-Us', { minimumFractionDigits: 2 })}
+                            {(rc.qty * rc.price).toLocaleString("en-Us", {
+                              minimumFractionDigits: 2,
+                            })}
                           </td>
                         </tr>
                       ))}
@@ -384,10 +380,14 @@ const Invoice = () => {
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td className="py-4 text-sm text-gray-500 font-medium text-right">Total</td>
+                        <td className="py-4 text-sm text-gray-500 font-medium text-right">
+                          Total
+                        </td>
                         <td className="font-inter  text-sm text-gray-700 font-medium text-right">
                           {transaction
-                            ? transaction.totalPrice.toLocaleString('en-Us', { minimumFractionDigits: 2 })
+                            ? transaction.totalPrice.toLocaleString("en-Us", {
+                                minimumFractionDigits: 2,
+                              })
                             : "0.00"}
                         </td>
                       </tr>
