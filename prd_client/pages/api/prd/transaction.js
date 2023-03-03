@@ -87,11 +87,14 @@ const handler = async (req, res) => {
             datew: content.completedDateWord,
             totalSale: content.totalPrice,
           });
+          console.log("Created new forecast today ", upsforecast)
         } else {
           const upsforecast = await Forecast.updateOne(
             { datew: content.completedDateWord },
             { $inc: { totalSale: content.totalPrice } }
           );
+
+          console.log("Updated forecast today ", upsforecast, `Content ${content.totalPrice}`)
         }
       }
 

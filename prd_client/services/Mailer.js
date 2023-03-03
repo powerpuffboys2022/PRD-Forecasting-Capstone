@@ -75,7 +75,7 @@ const sendEmail = async(userEmail, template_content) => {
     // sendMail(mailOptions)
     try{
         const sent = await sgMail.send(mailOptions);
-        console.log("Email Sent To "+userEmail, sent)
+        console.log("Email Sent To "+userEmail)
         return sent;
     }catch(e){
         console.log(e)
