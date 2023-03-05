@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
 import Loading from "../../Loading"
+import { getago, dateMomentBeautify } from "../../../helpers";
 const https = require('https');
-
+import axios from "axios";
 import Chart, {
     Series,
     Aggregation,
@@ -31,6 +32,7 @@ import RangeSelector, {
 } from "devextreme-react/range-selector";
 
 const Forecasting = () => {
+
     const [forecast, setForecast] = useState([]);
     const [prediction, setPrediction] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -108,13 +110,25 @@ const Forecasting = () => {
 };
 
 const ForecastDashboard = ({ forecast, prediction, loading }) => {
+    const [todaysSales, setTodaysSales] = useState({ date: new Date(), totalSale: 0 })
+
     const [estimate, setEstimate] = useState([]);
     const [visualRange, setVisualRange] = useState({});
+    const [today, setToday] = useState(new Date());
 
     const updateVisualRange = (e) => {
         setVisualRange(e.value);
     };
-
+    const getToday = async () => {
+        const todayss = await axios.post("api/prd/forecast", {
+            mode: 1,
+            filter: {
+                datew: dateMomentBeautify(today, "yyyy-MM-DD")
+            },
+        });
+        if (todayss.data.length === 0) return
+        setTodaysSales(todayss.data[0])
+    }
     useEffect(() => {
         if (
             prediction.length != 0 &&
@@ -122,6 +136,8 @@ const ForecastDashboard = ({ forecast, prediction, loading }) => {
             estimate.length != forecast.length + prediction.length
         ) {
             setEstimate(forecast.concat(prediction));
+            getToday();
+
         }
     });
     const sameDay = (d1, d2) => {
@@ -130,13 +146,8 @@ const ForecastDashboard = ({ forecast, prediction, loading }) => {
             d1.getUTCDate() == d2.getUTCDate();
     }
     const GetCurrentSale = () => {
-        if (estimate.length == 0) return null;
-        const cur = estimate[estimate.length - 1]
-        if (!sameDay(new Date(cur.date), new Date())) {
-            return 0
-        } else {
-            return estimate[estimate.length - 1].totalSale
-        }
+        if (!todaysSales) return 0;
+        return todaysSales.totalSale;
     }
 
     const MAPEStatus = (f, a) => {
