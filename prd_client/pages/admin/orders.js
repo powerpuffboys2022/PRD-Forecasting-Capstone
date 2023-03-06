@@ -69,12 +69,12 @@ const Orders = () => {
       setSelected(null);
       setReason("");
       orders = orders.data.map((obj) => {
-        return {
-          ...obj,
-          datew: dateMomentBeautify(new Date(obj.placedDate), "MM-DD-YYYY, "),
-          w_status: statusToWord(obj.status),
-        };
-      });
+            return {
+            ...obj,
+            datew: dateMomentBeautify(new Date(obj.placedDate), "MM-DD-YYYY, "),
+            w_status: statusToWord(obj.status),
+            };
+        })
       setOrders(orders);
       setCOrders(orders);
     } catch (e) {
@@ -89,6 +89,11 @@ const Orders = () => {
     );
     if (tab !== -2)
       candidates = candidates.filter((data) => data.status === tab);
+    if(tab === -2 || tab === 4 || tab === -1) candidates = candidates.sort(function(a, b) {
+        var c = new Date(a.placedDate);
+        var d = new Date(b.placedDate);
+        return d-c;
+    });
     setCurrentPage(0);
     setOrders(candidates);
   };
@@ -237,11 +242,13 @@ const Orders = () => {
   const completed = async (order) => {
     try {
       let content = { ...order, status: 4 };
+      content.trackingDates.completed = new Date();
       let completedw = dateMomentBeautify(
         content.trackingDates.completed,
         "YYYY-MM-DD"
       );
-      content.trackingDates.completed = new Date();
+      console.log(content.trackingDates.completed, completedw)
+
       if (editorData) {
         content.processedBy = editorData._id;
         content.updatedBy = editorData._id;

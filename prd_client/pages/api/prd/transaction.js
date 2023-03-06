@@ -94,7 +94,7 @@ const handler = async (req, res) => {
             { $inc: { totalSale: content.totalPrice } }
           );
 
-          console.log("Updated forecast today ", upsforecast, `Content ${content.totalPrice}`)
+          console.log("Updated forecast today ", upsforecast)
         }
       }
 
