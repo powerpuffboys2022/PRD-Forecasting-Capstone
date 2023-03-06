@@ -26,7 +26,7 @@ import {
   statusToWord,
   statusToComponentWord,
   dateMomentBeautify,
-  getDateAgo,
+  getago,
 } from "../../helpers";
 
 import OrderComponent from "../../components/Admin/OrderComponent";
@@ -849,11 +849,7 @@ const Orders = () => {
                                 {ords.datew}
                                 <span className="text-xs text-gray-500">
                                   (
-                                  {getDateAgo(
-                                    new Date(),
-                                    new Date(ords.placedDate)
-                                  )}{" "}
-                                  days ago)
+                                  {getago( new Date(ords.placedDate)).finalResult}{" "})
                                 </span>
                               </th>
                               <td className="px-6 py-4">
