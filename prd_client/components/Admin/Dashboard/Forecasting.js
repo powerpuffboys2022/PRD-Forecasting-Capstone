@@ -193,7 +193,7 @@ const ForecastDashboard = ({ forecast, prediction, loading }) => {
       <Chart
         id="zoomedChart"
         dataSource={estimate}
-        title="PRD Daily Forcasting"
+        title="PRD Daily Forecasting"
       >
         <CommonSeriesSettings argumentField="datew" type={"line"} />
         <Series name="Daily Sales" valueField="totalSale"></Series>
@@ -235,7 +235,7 @@ const ForecastDashboard = ({ forecast, prediction, loading }) => {
             return (
               <div>
                 <span className="text-xs text-gray-600">{value}</span>
-                <p className="font-bold text-sm">
+                <p className="text-sm font-bold">
                   {parseFloat(info.valueText).toFixed(2)}
                 </p>
               </div>
@@ -264,16 +264,16 @@ const ForecastDashboard = ({ forecast, prediction, loading }) => {
         <Behavior snapToTicks={true} callValueChanged="onMoving" />
       </RangeSelector>
       {prediction.length != 0 && GetCurrentSale() !== null &&
-        <div className="w-full flex justify-center mt-16" data-theme="light">
-          <div className="stats bg-inherit shadow">
+        <div className="flex justify-center w-full mt-16" data-theme="light">
+          <div className="shadow stats bg-inherit">
 
             <div className="stat">
               <div className="stat-title">Todays Prediction</div>
               <div className="stat-value">{parseInt(prediction[0].prediction).toLocaleString("en-US")}</div>
               <div className="stat-actions">
-                <div className="stat-desc mt-1">
+                <div className="mt-1 stat-desc">
                   <div className="stat-desc">Prediction Lower than :  {(prediction[0].prediction + 2711).toLocaleString("en-US")}</div>
-                  <div className="stat-desc mt-1">Prediction Higher than : {(prediction[0].prediction - 2711).toLocaleString("en-US")}</div>
+                  <div className="mt-1 stat-desc">Prediction Higher than : {(prediction[0].prediction - 2711).toLocaleString("en-US")}</div>
 
                 </div>
               </div>
@@ -282,7 +282,7 @@ const ForecastDashboard = ({ forecast, prediction, loading }) => {
             <div className="stat">
               <div className="stat-title">Current Sale</div>
               <div className="stat-value">{GetCurrentSale().toLocaleString("en-US")}</div>
-              <div className="stat-desc mt-1">
+              <div className="mt-1 stat-desc">
                 Based on MAPE : {MAPE(prediction[0].prediction, GetCurrentSale())}%
                 <p className="text-xs">
                   status <strong>{MAPEStatus(prediction[0].prediction, GetCurrentSale())}</strong>
@@ -294,8 +294,8 @@ const ForecastDashboard = ({ forecast, prediction, loading }) => {
           </div>
         </div>
       }
-      {/* {prediction.length != 0 && <div className="w-full flex justify-center m-5" data-theme="light">
-                <div className="stats stats-vertical lg:stats-horizontal shadow">
+      {/* {prediction.length != 0 && <div className="flex justify-center w-full m-5" data-theme="light">
+                <div className="shadow stats stats-vertical lg:stats-horizontal">
 
                     <div className="stat">
                         <div className="stat-title">MAPE</div>
